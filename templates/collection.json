@@ -103,7 +103,7 @@
       "type": "product-card",
       "name": "Filtered Product Grid",
       "settings": {
-        "collection": "best-sellers",
+        "collection": "all-products",
         "products_per_page": 16,
         "columns_desktop": 3
       }
@@ -222,6 +222,7 @@
           ]
         }
       },
+      "disabled": true,
       "settings": {
         "layout_type": "grid",
         "product_card_size": "medium",
