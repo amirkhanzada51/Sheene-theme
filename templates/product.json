@@ -69,14 +69,6 @@
             "padding-inline-end": 0
           },
           "blocks": {
-            "custom_liquid_Nf9Nmy": {
-              "type": "custom-liquid",
-              "name": "t:names.custom_liquid",
-              "settings": {
-                "custom_liquid": "{% render 'sheene-product-page-body' %}"
-              },
-              "blocks": {}
-            },
             "group_icgrde": {
               "type": "group",
               "name": "t:names.header",
@@ -491,7 +483,6 @@
             }
           },
           "block_order": [
-            "custom_liquid_Nf9Nmy",
             "group_icgrde",
             "text_4mwimm",
             "buy_buttons_eYQEYi",
