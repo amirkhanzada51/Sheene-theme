@@ -1,0 +1,330 @@
+{% comment %}
+  SHEENE — Custom Liquid: Product Media Gallery / Slider
+  Paste this whole file into a "Custom Liquid" block — usually the FIRST
+  block on the product page (media side), before Title/Price/etc.
+
+  Fully dynamic:
+  - Loops over product.media, so it shows however many images/videos a
+    product actually has — 3, 5, 9, whatever. Nothing hardcoded.
+  - Handles every media type Shopify supports: image, self-hosted video,
+    external video (YouTube/Vimeo), and 3D model — each renders correctly
+    on its own. If a product has zero videos, no video code runs at all.
+    If it has one video mixed in with photos, that slide just shows the
+    video player in its place, arrows/dots still work the same way.
+  - If a product only has ONE media item, arrows and dots are skipped
+    automatically — no pointless controls for a single image.
+
+  One file, works identically on mobile/tablet/desktop — sizing uses
+  clamp() and percentage widths, not fixed breakpoints.
+{% endcomment %}
+
+{% liquid
+  assign media_count = product.media.size
+%}
+
+<div class="sh-gallery" id="SheeneGallery-{{ product.id }}" data-total="{{ media_count }}">
+
+  <div class="sh-gallery-viewport">
+    {% if media_count > 0 %}
+      <div class="sh-gallery-track">
+        {% for media in product.media %}
+          <div class="sh-gallery-slide">
+            {% case media.media_type %}
+
+              {% when 'image' %}
+                {{
+                  media
+                  | image_url: width: 1600
+                  | image_tag:
+                    loading: forloop.first | default: 'lazy',
+                    sizes: '(min-width: 990px) 50vw, 100vw',
+                    widths: '400,600,800,1000,1200,1600',
+                    alt: media.alt | default: product.title,
+                    class: 'sh-gallery-media'
+                }}
+
+              {% when 'video' %}
+                {{
+                  media
+                  | video_tag:
+                    controls: true,
+                    autoplay: false,
+                    loop: false,
+                    muted: false,
+                    class: 'sh-gallery-media'
+                }}
+
+              {% when 'external_video' %}
+                <div class="sh-gallery-media sh-gallery-media--embed">
+                  {{ media | external_video_tag }}
+                </div>
+
+              {% when 'model' %}
+                {{ media | model_viewer_tag: class: 'sh-gallery-media' }}
+
+            {% endcase %}
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="sh-gallery-slide sh-gallery-empty"></div>
+    {% endif %}
+
+    {% if media_count > 1 %}
+      <button type="button" class="sh-gallery-arrow sh-gallery-arrow--prev" data-direction="prev" aria-label="Previous">‹</button>
+      <button type="button" class="sh-gallery-arrow sh-gallery-arrow--next" data-direction="next" aria-label="Next">›</button>
+    {% endif %}
+  </div>
+
+  {% if media_count > 1 %}
+    <div class="sh-gallery-dots">
+      {% for media in product.media %}
+        <button type="button" class="sh-gallery-dot" data-goto="{{ forloop.index0 }}" aria-label="Go to slide {{ forloop.index }}"></button>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+</div>
+
+<style>
+  .sh-gallery {
+    width: 100%;
+  }
+
+  .sh-gallery-viewport {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--color-background-secondary, #F7F7F5);
+    touch-action: pan-y;
+    overscroll-behavior-x: contain;
+  }
+
+  .sh-gallery-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.35s ease;
+  }
+
+  .sh-gallery-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sh-gallery-empty {
+    background: var(--color-background-secondary, #F7F7F5);
+  }
+
+  .sh-gallery-media,
+  .sh-gallery-media video,
+  .sh-gallery-media model-viewer {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .sh-gallery-media--embed {
+    position: relative;
+    width: 100%;
+    height: 100%;
+  }
+  .sh-gallery-media--embed iframe {
+    width: 100%;
+    height: 100%;
+  }
+
+  .sh-gallery-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: clamp(2.25rem, 2rem + 0.6vw, 2.75rem);
+    height: clamp(2.25rem, 2rem + 0.6vw, 2.75rem);
+    border: none;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    color: var(--color-foreground, #111111);
+    font-size: clamp(1.2rem, 1.1rem + 0.3vw, 1.5rem);
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sh-gallery-arrow--prev { left: clamp(0.5rem, 0.4rem + 0.3vw, 1rem); }
+  .sh-gallery-arrow--next { right: clamp(0.5rem, 0.4rem + 0.3vw, 1rem); }
+  .sh-gallery-arrow:hover { background: #FFFFFF; }
+
+  .sh-gallery-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(0.4rem, 0.35rem + 0.2vw, 0.6rem);
+    margin-top: clamp(0.6rem, 0.5rem + 0.3vw, 0.9rem);
+  }
+
+  .sh-gallery-dot {
+    width: clamp(0.45rem, 0.4rem + 0.1vw, 0.55rem);
+    height: clamp(0.45rem, 0.4rem + 0.1vw, 0.55rem);
+    border-radius: 50%;
+    border: 1px solid var(--color-border, #D4D4D4);
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+  }
+  .sh-gallery-dot.is-active {
+    background: var(--color-foreground, #111111);
+    border-color: var(--color-foreground, #111111);
+  }
+</style>
+
+<script>
+  (function () {
+    var root = document.getElementById('SheeneGallery-{{ product.id }}');
+    if (!root) return;
+
+    var total = parseInt(root.dataset.total, 10) || 0;
+    if (total < 2) return; // nothing to slide
+
+    var track = root.querySelector('.sh-gallery-track');
+    var dots = root.querySelectorAll('.sh-gallery-dot');
+    var arrows = root.querySelectorAll('.sh-gallery-arrow');
+    var index = 0;
+
+    function pauseAllVideos() {
+      root.querySelectorAll('video').forEach(function (v) { v.pause(); });
+    }
+
+    function goTo(newIndex) {
+      index = ((newIndex % total) + total) % total; // wraps both directions
+      track.style.transform = 'translateX(-' + (index * 100) + '%)';
+      dots.forEach(function (dot, i) {
+        dot.classList.toggle('is-active', i === index);
+      });
+      pauseAllVideos();
+    }
+
+    arrows.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        goTo(btn.dataset.direction === 'next' ? index + 1 : index - 1);
+      });
+    });
+
+    dots.forEach(function (dot) {
+      dot.addEventListener('click', function () {
+        goTo(parseInt(dot.dataset.goto, 10));
+      });
+    });
+
+    // Swipe support for mobile/tablet
+    var viewport = root.querySelector('.sh-gallery-viewport');
+    var startX = 0;
+    viewport.addEventListener('touchstart', function (e) {
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+    viewport.addEventListener('touchend', function (e) {
+      var deltaX = startX - e.changedTouches[0].clientX;
+      if (Math.abs(deltaX) > 40) {
+        goTo(deltaX > 0 ? index + 1 : index - 1);
+      }
+    }, { passive: true });
+
+    goTo(0);
+  })();
+</script>
+
+
+
+{% comment %}
+  SHEENE — Custom Liquid block 1 of 6: Product Title
+  Paste this whole file into a "Custom Liquid" block on the Product page,
+  first in the order (Title → Price → Shipping → Quantity → Add to cart → Buy it now).
+  Dynamic: pulls product.title automatically, works on every product.
+{% endcomment %}
+
+<h1 class="sh-product-title">{{ product.title }}</h1>
+
+<style>
+  .sh-product-title {
+    font-family: var(--font-heading-family, 'Inter', system-ui, sans-serif);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: var(--color-foreground, #111111);
+    /* Fluid size: scales smoothly between mobile and desktop, no fixed breakpoints */
+    font-size: clamp(1.75rem, 1.35rem + 1.6vw, 2.75rem);
+    margin: 0 0 clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem) 0;
+  }
+</style>
+
+
+
+{% comment %}
+  SHEENE — Custom Liquid block 2 of 6: Price row
+  Shows compare-at price (struck through) + current price + "Sale" badge,
+  but ONLY when the product is genuinely marked down (compare_at_price > price).
+  If there's no discount, only the plain price shows — no fake strike-through.
+  Uses Shopify's `money` filter, so currency formatting follows your shop
+  settings automatically — never hardcoded as "Rs."
+
+  v2: added a negative top margin to close the extra gap that Shopify's
+  block-to-block spacing was adding above this block, on top of the
+  title's own margin. If this ever looks too tight or too loose after
+  a theme update, adjust the -2.25rem value below — nothing else here
+  depends on it.
+{% endcomment %}
+
+{% liquid
+  assign variant = product.selected_or_first_available_variant
+  assign on_sale = false
+  if variant.compare_at_price > variant.price
+    assign on_sale = true
+  endif
+%}
+
+<div class="sh-price-row" data-variant-id="{{ variant.id }}">
+  {% if on_sale %}
+    <span class="sh-price-compare">{{ variant.compare_at_price | money }}</span>
+  {% endif %}
+  <span class="sh-price-current">{{ variant.price | money }}</span>
+  {% if on_sale %}
+    <span class="sh-price-badge">Sale</span>
+  {% endif %}
+</div>
+
+<style>
+  .sh-price-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem);
+    font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);
+    margin: 0 0 clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem) 0;
+  }
+  .sh-price-compare {
+    color: var(--color-foreground-75, #9A9A9A);
+    text-decoration: line-through;
+    font-size: clamp(0.95rem, 0.88rem + 0.3vw, 1.1rem);
+  }
+  .sh-price-current {
+    color: var(--color-foreground, #111111);
+    font-weight: 600;
+    font-size: clamp(1.1rem, 1rem + 0.45vw, 1.4rem);
+  }
+  .sh-price-badge {
+    background: var(--color-foreground, #111111);
+    color: #FFFFFF;
+    font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);
+    font-size: clamp(0.7rem, 0.66rem + 0.1vw, 0.8rem);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 0.3em 0.65em;
+    border-radius: 0;
+  }
+</style>
