@@ -320,6 +320,191 @@
                         "custom_liquid": "{% comment %}\n  SHEENE — Custom Liquid: \"Goes Well With\"\n  Paste this block AFTER the Add to Cart block on the product page.\n\n  Reads a hand-picked list of products from the \"Goes Well With\" product\n  metafield (up to 7, set per-product in Admin) and shows each one as a\n  card: image, price, title, size/variant buttons if the product has more\n  than one variant, and an Add to Cart button — all rendered directly\n  from Shopify data, no separate fetch needed.\n\n  If the metafield is empty for a product, this whole block renders\n  nothing — safe to paste on every product page.\n\n  ONE THING TO CHECK before using: this assumes your metafield's\n  namespace/key is custom.goes_well_with — Shopify's default when a\n  definition called \"Goes Well With\" is created through the simple admin\n  UI. To confirm: Settings → Custom data → Products → click \"Goes Well\n  With\" → the Namespace and key shown there should read\n  custom.goes_well_with. If it's different, change ONLY the line below\n  marked CHANGE THIS.\n{% endcomment %}\n\n{% liquid\n  assign gww_products = product.metafields.custom.goes_well_products.value\n  # This matches your metafield named \"Goes Well Products\" (custom.goes_well_products)\n%}\n\n{% if gww_products.size > 0 %}\n\n  <div class=\"sh-gww\">\n\n    <div class=\"sh-gww-label\">Goes well with</div>\n\n    {% for gww in gww_products limit: 7 %}\n      {% liquid\n        assign gww_variant = gww.selected_or_first_available_variant | default: gww.variants.first\n        assign gww_title_escaped = gww.title | escape\n        assign gww_on_sale = false\n        if gww_variant.compare_at_price > gww_variant.price\n          assign gww_on_sale = true\n        endif\n      %}\n\n      <div class=\"sh-gww-card\" {% if forloop.first %}data-first{% endif %}>\n\n        <a href=\"{{ gww.url }}\" class=\"sh-gww-image\">\n          {{\n            gww.featured_image\n            | image_url: width: 300\n            | image_tag: loading: 'lazy', alt: gww_title_escaped, sizes: '120px', widths: '120,180,240'\n          }}\n        </a>\n\n        <div class=\"sh-gww-details\">\n\n          <div class=\"sh-gww-price\">\n            <span class=\"sh-gww-price-current\" data-current-price>{{ gww_variant.price | money }}</span>\n            {% if gww_on_sale %}\n              <span class=\"sh-gww-price-compare\" data-compare-price>{{ gww_variant.compare_at_price | money }}</span>\n            {% else %}\n              <span class=\"sh-gww-price-compare\" data-compare-price hidden></span>\n            {% endif %}\n          </div>\n\n          <a href=\"{{ gww.url }}\" class=\"sh-gww-title\">{{ gww.title }}</a>\n\n          {% if gww.variants.size > 1 %}\n            <div class=\"sh-gww-variants\">\n              {% for variant in gww.variants %}\n                <button\n                  type=\"button\"\n                  class=\"sh-gww-variant-btn\"\n                  data-variant-id=\"{{ variant.id }}\"\n                  data-price-formatted=\"{{ variant.price | money }}\"\n                  data-compare-formatted=\"{{ variant.compare_at_price | money }}\"\n                  data-on-sale=\"{% if variant.compare_at_price > variant.price %}true{% else %}false{% endif %}\"\n                  {% unless variant.available %}disabled{% endunless %}\n                >\n                  {{ variant.title }}\n                </button>\n              {% endfor %}\n            </div>\n          {% endif %}\n\n          <button\n            type=\"button\"\n            class=\"sh-gww-add {% if gww.variants.size > 1 %}needs-selection{% endif %}\"\n            data-add-to-cart\n            data-variant-id=\"{{ gww_variant.id }}\"\n            {% unless gww.available %}disabled{% endunless %}\n          >\n            {% if gww.available == false %}\n              Sold out\n            {% elsif gww.variants.size > 1 %}\n              Select Size\n            {% else %}\n              Add to Cart\n            {% endif %}\n          </button>\n\n        </div>\n\n      </div>\n    {% endfor %}\n\n  </div>\n\n  <style>\n    .sh-gww {\n      border: 1px solid var(--color-border, #D4D4D4);\n      border-radius: 0;\n      padding: clamp(1rem, 0.85rem + 0.5vw, 1.5rem);\n      margin: clamp(1rem, 0.8rem + 0.5vw, 1.5rem) 0;\n    }\n\n    .sh-gww-label {\n      font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n      font-weight: 600;\n      font-size: clamp(0.75rem, 0.7rem + 0.15vw, 0.85rem);\n      text-transform: uppercase;\n      letter-spacing: 0.08em;\n      color: var(--color-foreground, #111111);\n      padding-bottom: clamp(0.75rem, 0.6rem + 0.4vw, 1.1rem);\n      border-bottom: 1px solid var(--color-border, #D4D4D4);\n      margin-bottom: clamp(0.9rem, 0.75rem + 0.4vw, 1.25rem);\n    }\n\n    .sh-gww-card {\n      display: flex;\n      flex-wrap: wrap;\n      gap: clamp(0.85rem, 0.7rem + 0.4vw, 1.25rem);\n    }\n    .sh-gww-card:not([data-first]) {\n      margin-top: clamp(0.9rem, 0.75rem + 0.4vw, 1.25rem);\n      padding-top: clamp(0.9rem, 0.75rem + 0.4vw, 1.25rem);\n      border-top: 1px solid var(--color-border, #D4D4D4);\n    }\n\n    .sh-gww-image {\n      flex: 0 0 clamp(80px, 70px + 4vw, 120px);\n      display: block;\n    }\n    .sh-gww-image img {\n      width: 100%;\n      aspect-ratio: 1 / 1;\n      object-fit: cover;\n      display: block;\n      background: var(--color-background-secondary, #F7F7F5);\n    }\n\n    .sh-gww-details {\n      flex: 1 1 200px;\n      min-width: 200px;\n      display: flex;\n      flex-direction: column;\n      gap: clamp(0.35rem, 0.3rem + 0.15vw, 0.5rem);\n    }\n\n    .sh-gww-price {\n      font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n    }\n    .sh-gww-price-current {\n      font-weight: 600;\n      font-size: clamp(0.95rem, 0.88rem + 0.25vw, 1.1rem);\n      color: var(--color-foreground, #111111);\n    }\n    .sh-gww-price-compare {\n      font-size: clamp(0.85rem, 0.8rem + 0.15vw, 0.95rem);\n      color: var(--color-foreground-75, #9A9A9A);\n      text-decoration: line-through;\n    }\n    .sh-gww-price-compare[hidden] {\n      display: none;\n    }\n\n    .sh-gww-title {\n      font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n      font-weight: 600;\n      font-size: clamp(0.95rem, 0.88rem + 0.25vw, 1.05rem);\n      color: var(--color-foreground, #111111);\n      text-decoration: none;\n    }\n\n    .sh-gww-variants {\n      display: flex;\n      flex-wrap: wrap;\n      gap: clamp(0.35rem, 0.3rem + 0.1vw, 0.5rem);\n      margin-top: 0.15rem;\n    }\n    .sh-gww-variant-btn {\n      background: none;\n      border: 1px solid var(--color-border, #D4D4D4);\n      border-radius: 0;\n      padding: clamp(0.4rem, 0.35rem + 0.15vw, 0.55rem) clamp(0.6rem, 0.55rem + 0.2vw, 0.85rem);\n      font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n      font-size: clamp(0.8rem, 0.76rem + 0.12vw, 0.9rem);\n      color: var(--color-foreground, #111111);\n      cursor: pointer;\n    }\n    .sh-gww-variant-btn.is-active {\n      border-color: var(--color-foreground, #111111);\n      border-width: 2px;\n    }\n    .sh-gww-variant-btn:disabled {\n      opacity: 0.4;\n      cursor: not-allowed;\n      text-decoration: line-through;\n    }\n\n    .sh-gww-add {\n      width: 100%;\n      background: var(--color-primary-button-background, #111111);\n      color: var(--color-primary-button-text, #FFFFFF);\n      font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n      font-weight: 600;\n      font-size: clamp(0.85rem, 0.8rem + 0.15vw, 0.95rem);\n      letter-spacing: 0.02em;\n      border: none;\n      border-radius: 0;\n      padding: clamp(0.6rem, 0.55rem + 0.2vw, 0.8rem) 1rem;\n      margin-top: clamp(0.25rem, 0.2rem + 0.1vw, 0.4rem);\n      cursor: pointer;\n      transition: opacity 0.2s ease;\n    }\n    .sh-gww-add:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n    .sh-gww-add:not(:disabled):hover {\n      opacity: 0.85;\n    }\n  </style>\n\n  <script>\n    (function () {\n      document.querySelectorAll('.sh-gww-card').forEach(function (card) {\n\n        var variantButtons = card.querySelectorAll('.sh-gww-variant-btn');\n        var addButton = card.querySelector('[data-add-to-cart]');\n        var currentPriceEl = card.querySelector('[data-current-price]');\n        var comparePriceEl = card.querySelector('[data-compare-price]');\n\n        variantButtons.forEach(function (btn) {\n          btn.addEventListener('click', function () {\n            if (btn.disabled) return;\n\n            variantButtons.forEach(function (b) { b.classList.remove('is-active'); });\n            btn.classList.add('is-active');\n\n            currentPriceEl.textContent = btn.dataset.priceFormatted;\n\n            if (btn.dataset.onSale === 'true') {\n              comparePriceEl.textContent = btn.dataset.compareFormatted;\n              comparePriceEl.hidden = false;\n            } else {\n              comparePriceEl.hidden = true;\n            }\n\n            addButton.dataset.variantId = btn.dataset.variantId;\n            addButton.textContent = 'Add to Cart';\n            addButton.classList.remove('needs-selection');\n          });\n        });\n\n        if (addButton) {\n          addButton.addEventListener('click', function () {\n            if (addButton.disabled) return;\n            if (addButton.classList.contains('needs-selection')) return; // ask them to pick a size first\n\n            var variantId = addButton.dataset.variantId;\n            if (!variantId) return;\n\n            var originalLabel = addButton.textContent;\n            addButton.disabled = true;\n            addButton.textContent = 'Adding…';\n\n            fetch('/cart/add.js', {\n              method: 'POST',\n              headers: { 'Content-Type': 'application/json' },\n              body: JSON.stringify({\n                items: [{ id: variantId, quantity: 1 }]\n              })\n            })\n              .then(function (res) {\n                if (!res.ok) throw new Error('Add to cart failed');\n                return res.json();\n              })\n              .then(function () {\n                addButton.textContent = 'Added';\n                window.location.reload();\n              })\n              .catch(function () {\n                addButton.textContent = originalLabel;\n                addButton.disabled = false;\n                alert('Something went wrong adding this to your cart. Please try again.');\n              });\n          });\n        }\n\n      });\n    })();\n  </script>\n\n{% endif %}"
                       },
                       "blocks": {}
+                    },
+                    "accordion_jgFpNM": {
+                      "type": "accordion",
+                      "name": "t:names.accordion",
+                      "settings": {
+                        "icon": "plus",
+                        "dividers": true,
+                        "divider_color": "#e8e7e7",
+                        "type_preset": "",
+                        "background_color": "",
+                        "text_color": "",
+                        "border": "none",
+                        "border_width": 1,
+                        "border_opacity": 100,
+                        "border_color": "",
+                        "border_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {
+                        "accordion_row_MCKBVj": {
+                          "type": "_accordion-row",
+                          "settings": {
+                            "heading": "What Makes It Potent?",
+                            "open_by_default": false,
+                            "icon": "none",
+                            "width": 20
+                          },
+                          "blocks": {
+                            "text_KFMyEy": {
+                              "type": "text",
+                              "settings": {
+                                "text": "<ul><li>Contains Salicylic Acid (BHA) that penetrates deep into the skin & scoops out the dirt, debris, and sebum, hence reducing the oily look of the skin</li><li>Formulated with Capryloyl Salicylic Acid (LHA), which unlike Salicylic Acid, stays on outer layer of skin and provides gentle exfoliation, revealing soft skin. The combination provides multi-level cleansing</li><li>Boosted with anti-bacterial Zinc and several hydrating & soothing ingredients like Xylitylglucoside, Panthenol (Vitamin B5), Allantoin, Pentyle Glycol for hydrating overall after-feel</li><li>Formulated with 2 very mild sulfate-free surfactants (cleansers) that provide optimum cleaning without stripping skin lipids or proteins<br/><br/>All our ingredients are sourced from leading global supplier. Our Salicylic Acid is a high purity grade ingredient</li></ul>",
+                                "width": "100%",
+                                "max_width": "normal",
+                                "alignment": "left",
+                                "type_preset": "rte",
+                                "font": "var(--font-body--family)",
+                                "font_size": "1rem",
+                                "line_height": "normal",
+                                "letter_spacing": "normal",
+                                "case": "none",
+                                "wrap": "pretty",
+                                "text_color": "",
+                                "background": false,
+                                "background_color": "#00000026",
+                                "corner_radius": 0,
+                                "padding-block-start": 0,
+                                "padding-block-end": 0,
+                                "padding-inline-start": 0,
+                                "padding-inline-end": 0
+                              },
+                              "blocks": {}
+                            }
+                          },
+                          "block_order": [
+                            "text_KFMyEy"
+                          ]
+                        },
+                        "accordion_row_7A8HtE": {
+                          "type": "_accordion-row",
+                          "settings": {
+                            "heading": "Ideal For",
+                            "open_by_default": false,
+                            "icon": "none",
+                            "width": 20
+                          },
+                          "blocks": {
+                            "text_Mrp3fE": {
+                              "type": "text",
+                              "settings": {
+                                "text": "<p><strong>Skin type:</strong> Oily/Combination, Acne-Prone</p><p><strong>Concerns:</strong> Acne, Breakouts & Oiliness</p><p><strong>Suitable for:</strong> 15+ years of age</p>",
+                                "width": "100%",
+                                "max_width": "normal",
+                                "alignment": "left",
+                                "type_preset": "rte",
+                                "font": "var(--font-body--family)",
+                                "font_size": "1rem",
+                                "line_height": "normal",
+                                "letter_spacing": "normal",
+                                "case": "none",
+                                "wrap": "pretty",
+                                "text_color": "",
+                                "background": false,
+                                "background_color": "#00000026",
+                                "corner_radius": 0,
+                                "padding-block-start": 0,
+                                "padding-block-end": 0,
+                                "padding-inline-start": 0,
+                                "padding-inline-end": 0
+                              },
+                              "blocks": {}
+                            }
+                          },
+                          "block_order": [
+                            "text_Mrp3fE"
+                          ]
+                        },
+                        "accordion_row_VxMGzX": {
+                          "type": "_accordion-row",
+                          "settings": {
+                            "heading": "How to Use",
+                            "open_by_default": false,
+                            "icon": "none",
+                            "width": 20
+                          },
+                          "blocks": {
+                            "text_tCATaG": {
+                              "type": "text",
+                              "settings": {
+                                "text": "<p>Apply on wet face. Pour an appropriate quantity into wet hands, rub together into a light lather, and massage into face. Rinse thoroughly.<br/><br/><strong>When to use:</strong>When to use: AM & PM. Everyday.<br/><br/></p>",
+                                "width": "100%",
+                                "max_width": "normal",
+                                "alignment": "left",
+                                "type_preset": "rte",
+                                "font": "var(--font-body--family)",
+                                "font_size": "1rem",
+                                "line_height": "normal",
+                                "letter_spacing": "normal",
+                                "case": "none",
+                                "wrap": "pretty",
+                                "text_color": "",
+                                "background": false,
+                                "background_color": "#00000026",
+                                "corner_radius": 0,
+                                "padding-block-start": 0,
+                                "padding-block-end": 0,
+                                "padding-inline-start": 0,
+                                "padding-inline-end": 0
+                              },
+                              "blocks": {}
+                            }
+                          },
+                          "block_order": [
+                            "text_tCATaG"
+                          ]
+                        },
+                        "accordion_row_qWx4Gh": {
+                          "type": "_accordion-row",
+                          "settings": {
+                            "heading": "Consumer Studies",
+                            "open_by_default": false,
+                            "icon": "none",
+                            "width": 20
+                          },
+                          "blocks": {
+                            "text_T6KYpe": {
+                              "type": "text",
+                              "settings": {
+                                "text": "<p>Balanced combination of mild surfactants with BHA & LHA gives gentle cleansing and multi-level exfoliation without irritating & drying the skin</p><p><strong>90%</strong> subjects agreed significant reduction in skin oiliness after 6 washes</p><p><strong>87%</strong> subjects agreed acne occurrences reduced after 6 weeks</p><p><strong>90%</strong>subjects agreed skin felt smoother & brighter after 4 weeks</p><p><strong>Note:</strong> The product has been evaluated for safety through patch testing under the supervision of a Dermatologist.</p>",
+                                "width": "100%",
+                                "max_width": "normal",
+                                "alignment": "left",
+                                "type_preset": "rte",
+                                "font": "var(--font-body--family)",
+                                "font_size": "1rem",
+                                "line_height": "normal",
+                                "letter_spacing": "normal",
+                                "case": "none",
+                                "wrap": "pretty",
+                                "text_color": "",
+                                "background": false,
+                                "background_color": "#00000026",
+                                "corner_radius": 0,
+                                "padding-block-start": 0,
+                                "padding-block-end": 0,
+                                "padding-inline-start": 0,
+                                "padding-inline-end": 0
+                              },
+                              "blocks": {}
+                            }
+                          },
+                          "block_order": [
+                            "text_T6KYpe"
+                          ]
+                        }
+                      },
+                      "block_order": [
+                        "accordion_row_MCKBVj",
+                        "accordion_row_7A8HtE",
+                        "accordion_row_VxMGzX",
+                        "accordion_row_qWx4Gh"
+                      ]
                     }
                   },
                   "block_order": [
@@ -331,7 +516,8 @@
                     "custom_liquid_dqgyJX",
                     "custom_liquid_YbHkfV",
                     "buy_buttons_CRTRrX",
-                    "custom_liquid_7V8NUK"
+                    "custom_liquid_7V8NUK",
+                    "accordion_jgFpNM"
                   ]
                 }
               },
@@ -366,197 +552,11 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
-            },
-            "accordion_hdqLx6": {
-              "type": "accordion",
-              "name": "t:names.accordion",
-              "settings": {
-                "icon": "plus",
-                "dividers": true,
-                "divider_color": "#e8e7e7",
-                "type_preset": "",
-                "background_color": "",
-                "text_color": "",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_color": "",
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {
-                "accordion_row_MCKBVj": {
-                  "type": "_accordion-row",
-                  "settings": {
-                    "heading": "What Makes It Potent?",
-                    "open_by_default": false,
-                    "icon": "none",
-                    "width": 20
-                  },
-                  "blocks": {
-                    "text_KFMyEy": {
-                      "type": "text",
-                      "settings": {
-                        "text": "<ul><li>Contains Salicylic Acid (BHA) that penetrates deep into the skin & scoops out the dirt, debris, and sebum, hence reducing the oily look of the skin</li><li>Formulated with Capryloyl Salicylic Acid (LHA), which unlike Salicylic Acid, stays on outer layer of skin and provides gentle exfoliation, revealing soft skin. The combination provides multi-level cleansing</li><li>Boosted with anti-bacterial Zinc and several hydrating & soothing ingredients like Xylitylglucoside, Panthenol (Vitamin B5), Allantoin, Pentyle Glycol for hydrating overall after-feel</li><li>Formulated with 2 very mild sulfate-free surfactants (cleansers) that provide optimum cleaning without stripping skin lipids or proteins<br/><br/>All our ingredients are sourced from leading global supplier. Our Salicylic Acid is a high purity grade ingredient</li></ul>",
-                        "width": "100%",
-                        "max_width": "normal",
-                        "alignment": "left",
-                        "type_preset": "rte",
-                        "font": "var(--font-body--family)",
-                        "font_size": "1rem",
-                        "line_height": "normal",
-                        "letter_spacing": "normal",
-                        "case": "none",
-                        "wrap": "pretty",
-                        "text_color": "",
-                        "background": false,
-                        "background_color": "#00000026",
-                        "corner_radius": 0,
-                        "padding-block-start": 0,
-                        "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
-                      },
-                      "blocks": {}
-                    }
-                  },
-                  "block_order": [
-                    "text_KFMyEy"
-                  ]
-                },
-                "accordion_row_7A8HtE": {
-                  "type": "_accordion-row",
-                  "settings": {
-                    "heading": "Ideal For",
-                    "open_by_default": false,
-                    "icon": "none",
-                    "width": 20
-                  },
-                  "blocks": {
-                    "text_Mrp3fE": {
-                      "type": "text",
-                      "settings": {
-                        "text": "<p><strong>Skin type:</strong> Oily/Combination, Acne-Prone</p><p><strong>Concerns:</strong> Acne, Breakouts & Oiliness</p><p><strong>Suitable for:</strong> 15+ years of age</p>",
-                        "width": "100%",
-                        "max_width": "normal",
-                        "alignment": "left",
-                        "type_preset": "rte",
-                        "font": "var(--font-body--family)",
-                        "font_size": "1rem",
-                        "line_height": "normal",
-                        "letter_spacing": "normal",
-                        "case": "none",
-                        "wrap": "pretty",
-                        "text_color": "",
-                        "background": false,
-                        "background_color": "#00000026",
-                        "corner_radius": 0,
-                        "padding-block-start": 0,
-                        "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
-                      },
-                      "blocks": {}
-                    }
-                  },
-                  "block_order": [
-                    "text_Mrp3fE"
-                  ]
-                },
-                "accordion_row_VxMGzX": {
-                  "type": "_accordion-row",
-                  "settings": {
-                    "heading": "How to Use",
-                    "open_by_default": false,
-                    "icon": "none",
-                    "width": 20
-                  },
-                  "blocks": {
-                    "text_tCATaG": {
-                      "type": "text",
-                      "settings": {
-                        "text": "<p>Apply on wet face. Pour an appropriate quantity into wet hands, rub together into a light lather, and massage into face. Rinse thoroughly.<br/><br/><strong>When to use:</strong>When to use: AM & PM. Everyday.<br/><br/></p>",
-                        "width": "100%",
-                        "max_width": "normal",
-                        "alignment": "left",
-                        "type_preset": "rte",
-                        "font": "var(--font-body--family)",
-                        "font_size": "1rem",
-                        "line_height": "normal",
-                        "letter_spacing": "normal",
-                        "case": "none",
-                        "wrap": "pretty",
-                        "text_color": "",
-                        "background": false,
-                        "background_color": "#00000026",
-                        "corner_radius": 0,
-                        "padding-block-start": 0,
-                        "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
-                      },
-                      "blocks": {}
-                    }
-                  },
-                  "block_order": [
-                    "text_tCATaG"
-                  ]
-                },
-                "accordion_row_qWx4Gh": {
-                  "type": "_accordion-row",
-                  "settings": {
-                    "heading": "Consumer Studies",
-                    "open_by_default": false,
-                    "icon": "none",
-                    "width": 20
-                  },
-                  "blocks": {
-                    "text_T6KYpe": {
-                      "type": "text",
-                      "settings": {
-                        "text": "<p>Balanced combination of mild surfactants with BHA & LHA gives gentle cleansing and multi-level exfoliation without irritating & drying the skin</p><p><strong>90%</strong> subjects agreed significant reduction in skin oiliness after 6 washes</p><p><strong>87%</strong> subjects agreed acne occurrences reduced after 6 weeks</p><p><strong>90%</strong>subjects agreed skin felt smoother & brighter after 4 weeks</p><p><strong>Note:</strong> The product has been evaluated for safety through patch testing under the supervision of a Dermatologist.</p>",
-                        "width": "100%",
-                        "max_width": "normal",
-                        "alignment": "left",
-                        "type_preset": "rte",
-                        "font": "var(--font-body--family)",
-                        "font_size": "1rem",
-                        "line_height": "normal",
-                        "letter_spacing": "normal",
-                        "case": "none",
-                        "wrap": "pretty",
-                        "text_color": "",
-                        "background": false,
-                        "background_color": "#00000026",
-                        "corner_radius": 0,
-                        "padding-block-start": 0,
-                        "padding-block-end": 0,
-                        "padding-inline-start": 0,
-                        "padding-inline-end": 0
-                      },
-                      "blocks": {}
-                    }
-                  },
-                  "block_order": [
-                    "text_T6KYpe"
-                  ]
-                }
-              },
-              "block_order": [
-                "accordion_row_MCKBVj",
-                "accordion_row_7A8HtE",
-                "accordion_row_VxMGzX",
-                "accordion_row_qWx4Gh"
-              ]
             }
           },
           "block_order": [
             "group_icgrde",
-            "text_aEtTtq",
-            "accordion_hdqLx6"
+            "text_aEtTtq"
           ]
         }
       },
