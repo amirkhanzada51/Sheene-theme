@@ -1,0 +1,2031 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "custom_liquid_HChwgB": {
+      "type": "custom-liquid",
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "<style>\n/* =========================================================\n   3 IMAGE HERO SLIDER\n   FULLY RESPONSIVE\n   ZERO HORIZONTAL PAGE OVERFLOW\n   CUSTOM LIQUID\n   ========================================================= */\n/* ---------------------------------------------------------\n   CRITICAL GLOBAL FIX\n   --------------------------------------------------------- */\nhtml {\n  max-width: 100%;\n  overflow-x: hidden !important;\n}\nbody {\n  max-width: 100%;\n  overflow-x: hidden !important;\n}\n/* ---------------------------------------------------------\n   HERO\n   --------------------------------------------------------- */\n.custom-five-hero {\n  position: relative;\n  display: block;\n  width: 100% !important;\n  max-width: 100% !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  overflow: hidden !important;\n  line-height: 0;\n  isolation: isolate;\n  box-sizing: border-box;\n  contain: paint;\n}\n/* ---------------------------------------------------------\n   ALL CHILDREN\n   --------------------------------------------------------- */\n.custom-five-hero *,\n.custom-five-hero *::before,\n.custom-five-hero *::after {\n  box-sizing: border-box;\n}\n/* ---------------------------------------------------------\n   VIEWPORT\n   --------------------------------------------------------- */\n.custom-five-hero__viewport {\n  position: relative;\n  display: block;\n  width: 100% !important;\n  max-width: 100% !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  overflow: hidden !important;\n  line-height: 0;\n  touch-action: pan-y;\n  box-sizing: border-box;\n}\n/* ---------------------------------------------------------\n   TRACK\n   --------------------------------------------------------- */\n.custom-five-hero__track {\n  display: flex;\n  width: 300% !important;\n  max-width: none !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  transform:\n    translate3d(0, 0, 0);\n  transition:\n    transform 0.55s\n    cubic-bezier(\n      0.22,\n      0.61,\n      0.36,\n      1\n    );\n  will-change: transform;\n  line-height: 0;\n  white-space: nowrap;\n  backface-visibility: hidden;\n}\n/* ---------------------------------------------------------\n   SLIDE\n   --------------------------------------------------------- */\n.custom-five-hero__slide {\n  display: block;\n  position: relative;\n  width: 33.3333% !important;\n  min-width: 33.3333% !important;\n  max-width: 33.3333% !important;\n  flex: 0 0 33.3333% !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  overflow: hidden;\n  line-height: 0;\n  box-sizing: border-box;\n  aspect-ratio: 1600 / 528;\n}\n/* ---------------------------------------------------------\n   IMAGE\n   --------------------------------------------------------- */\n.custom-five-hero__slide img {\n  display: block;\n  width: 100% !important;\n  max-width: 100% !important;\n  height: 100% !important;\n  margin: 0 !important;\n  padding: 0 !important;\n  border: 0 !important;\n  outline: 0 !important;\n  object-fit: cover;\n  object-position: center;\n  vertical-align: top;\n  user-select: none;\n  -webkit-user-select: none;\n  -webkit-user-drag: none;\n  pointer-events: none;\n}\n/* =========================================================\n   ARROWS\n   ========================================================= */\n.custom-five-hero__arrow {\n  position: absolute;\n  top: 50%;\n  z-index: 20;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 50px;\n  height: 50px;\n  margin: 0;\n  padding: 0;\n  border: 0;\n  border-radius: 50%;\n  background:\n    rgba(255,255,255,.95);\n  color: #000;\n  cursor: pointer;\n  transform:\n    translateY(-50%);\n  box-shadow:\n    0 4px 18px\n    rgba(0,0,0,.10);\n  transition:\n    transform .2s ease,\n    background .2s ease,\n    box-shadow .2s ease;\n  appearance: none;\n  -webkit-appearance: none;\n  touch-action: manipulation;\n}\n/* ---------------------------------------------------------\n   ARROW HOVER\n   --------------------------------------------------------- */\n.custom-five-hero__arrow:hover {\n  background: #fff;\n  box-shadow:\n    0 6px 22px\n    rgba(0,0,0,.16);\n}\n/* ---------------------------------------------------------\n   ARROW ACTIVE\n   --------------------------------------------------------- */\n.custom-five-hero__arrow:active {\n  transform:\n    translateY(-50%)\n    scale(.94);\n}\n/* ---------------------------------------------------------\n   PREVIOUS\n   --------------------------------------------------------- */\n.custom-five-hero__arrow--prev {\n  left: 24px;\n}\n/* ---------------------------------------------------------\n   NEXT\n   --------------------------------------------------------- */\n.custom-five-hero__arrow--next {\n  right: 24px;\n}\n/* ---------------------------------------------------------\n   ARROW SVG\n   --------------------------------------------------------- */\n.custom-five-hero__arrow svg {\n  display: block;\n  width: 28px;\n  height: 28px;\n  fill: none;\n  stroke: #000;\n  stroke-width: 2.5;\n  stroke-linecap: round;\n  stroke-linejoin: round;\n}\n/* =========================================================\n   DOTS\n   ========================================================= */\n.custom-five-hero__dots {\n  position: absolute;\n  left: 50%;\n  bottom: 18px;\n  z-index: 20;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  gap: 8px;\n  max-width:\n    calc(100% - 40px);\n  transform:\n    translateX(-50%);\n  line-height: 0;\n}\n/* ---------------------------------------------------------\n   DOT\n   --------------------------------------------------------- */\n.custom-five-hero__dot {\n  display: block;\n  width: 8px;\n  height: 8px;\n  min-width: 8px;\n  margin: 0;\n  padding: 0;\n  border: 0;\n  border-radius: 50%;\n  background:\n    rgba(0,0,0,.25);\n  cursor: pointer;\n  flex-shrink: 0;\n  appearance: none;\n  -webkit-appearance: none;\n  transition:\n    width .25s ease,\n    background .25s ease;\n}\n/* ---------------------------------------------------------\n   ACTIVE DOT\n   --------------------------------------------------------- */\n.custom-five-hero__dot.is-active {\n  width: 24px;\n  border-radius: 20px;\n  background: #000;\n}\n/* =========================================================\n   LARGE TABLET / SMALL LAPTOP\n   ========================================================= */\n@media screen and (max-width: 1199px) {\n  .custom-five-hero__arrow {\n    width: 46px;\n    height: 46px;\n  }\n  .custom-five-hero__arrow--prev {\n    left: 18px;\n  }\n  .custom-five-hero__arrow--next {\n    right: 18px;\n  }\n  .custom-five-hero__arrow svg {\n    width: 25px;\n    height: 25px;\n  }\n}\n/* =========================================================\n   TABLET\n   ========================================================= */\n@media screen and (max-width: 989px) {\n  .custom-five-hero {\n    width: 100% !important;\n    max-width: 100% !important;\n    margin: 0 !important;\n    overflow: hidden !important;\n  }\n  .custom-five-hero__viewport {\n    width: 100% !important;\n    max-width: 100% !important;\n    overflow: hidden !important;\n  }\n  .custom-five-hero__arrow {\n    width: 44px;\n    height: 44px;\n  }\n  .custom-five-hero__arrow--prev {\n    left: 15px;\n  }\n  .custom-five-hero__arrow--next {\n    right: 15px;\n  }\n  .custom-five-hero__arrow svg {\n    width: 23px;\n    height: 23px;\n  }\n  .custom-five-hero__dots {\n    bottom: 14px;\n    gap: 7px;\n  }\n  .custom-five-hero__dot {\n    width: 7px;\n    height: 7px;\n    min-width: 7px;\n  }\n  .custom-five-hero__dot.is-active {\n    width: 21px;\n  }\n}\n/* =========================================================\n   MOBILE\n   ========================================================= */\n@media screen and (max-width: 749px) {\n  .custom-five-hero {\n    position: relative;\n    display: block;\n    width: 100% !important;\n    max-width: 100% !important;\n    min-width: 0 !important;\n    margin: 0 !important;\n    padding: 0 !important;\n    overflow: hidden !important;\n    left: auto !important;\n    right: auto !important;\n  }\n  .custom-five-hero__viewport {\n    width: 100% !important;\n    max-width: 100% !important;\n    min-width: 0 !important;\n    margin: 0 !important;\n    padding: 0 !important;\n    overflow: hidden !important;\n  }\n  .custom-five-hero__track {\n    width: 300% !important;\n    max-width: none !important;\n    transform:\n      translate3d(0,0,0);\n  }\n  .custom-five-hero__slide {\n    width: 33.3333% !important;\n    min-width: 33.3333% !important;\n    max-width: 33.3333% !important;\n    flex: 0 0 33.3333% !important;\n  }\n  .custom-five-hero__slide img {\n    width: 100% !important;\n    max-width: 100% !important;\n    height: 100% !important;\n  }\n  /* -------------------------------------------------------\n     MOBILE ARROWS\n     ------------------------------------------------------- */\n  .custom-five-hero__arrow {\n    width: 42px;\n    height: 42px;\n    box-shadow:\n      0 3px 14px\n      rgba(0,0,0,.12);\n  }\n  .custom-five-hero__arrow--prev {\n    left: 9px;\n  }\n  .custom-five-hero__arrow--next {\n    right: 9px;\n  }\n  .custom-five-hero__arrow svg {\n    width: 21px;\n    height: 21px;\n    stroke-width: 2.7;\n  }\n  /* -------------------------------------------------------\n     MOBILE DOTS\n     ------------------------------------------------------- */\n  .custom-five-hero__dots {\n    bottom: 9px;\n    gap: 6px;\n    max-width:\n      calc(100% - 30px);\n  }\n  .custom-five-hero__dot {\n    width: 6px;\n    height: 6px;\n    min-width: 6px;\n  }\n  .custom-five-hero__dot.is-active {\n    width: 18px;\n  }\n}\n/* =========================================================\n   SMALL MOBILE\n   ========================================================= */\n@media screen and (max-width: 480px) {\n  .custom-five-hero {\n    width: 100% !important;\n    max-width: 100% !important;\n    overflow: hidden !important;\n  }\n  .custom-five-hero__viewport {\n    width: 100% !important;\n    max-width: 100% !important;\n    overflow: hidden !important;\n  }\n  .custom-five-hero__arrow {\n    width: 38px;\n    height: 38px;\n  }\n  .custom-five-hero__arrow--prev {\n    left: 7px;\n  }\n  .custom-five-hero__arrow--next {\n    right: 7px;\n  }\n  .custom-five-hero__arrow svg {\n    width: 19px;\n    height: 19px;\n  }\n}\n/* =========================================================\n   EXTRA SMALL DEVICES\n   ========================================================= */\n@media screen and (max-width: 380px) {\n  .custom-five-hero {\n    width: 100% !important;\n    max-width: 100% !important;\n  }\n  .custom-five-hero__arrow {\n    width: 34px;\n    height: 34px;\n  }\n  .custom-five-hero__arrow--prev {\n    left: 6px;\n  }\n  .custom-five-hero__arrow--next {\n    right: 6px;\n  }\n  .custom-five-hero__arrow svg {\n    width: 17px;\n    height: 17px;\n  }\n}\n/* =========================================================\n   ULTRA SMALL\n   ========================================================= */\n@media screen and (max-width: 320px) {\n  .custom-five-hero__arrow {\n    width: 30px;\n    height: 30px;\n  }\n  .custom-five-hero__arrow--prev {\n    left: 5px;\n  }\n  .custom-five-hero__arrow--next {\n    right: 5px;\n  }\n  .custom-five-hero__arrow svg {\n    width: 15px;\n    height: 15px;\n  }\n  .custom-five-hero__dots {\n    bottom: 7px;\n  }\n}\n</style>\n<!-- =========================================================\n     HERO SLIDER\n     ========================================================= -->\n<div\n  class=\"custom-five-hero\"\n  id=\"CustomFiveHero\"\n>\n  <div class=\"custom-five-hero__viewport\">\n    <div class=\"custom-five-hero__track\">\n      <!-- =====================================================\n           SLIDE 1 - FACE MASKS\n           ===================================================== -->\n      <div class=\"custom-five-hero__slide\">\n        <img src=\"https://cdn.shopify.com/s/files/1/0704/1295/9787/files/ChatGPT_Image_Sep_3_2026_11_00_59_PM.png?v=1788458506\"\n          alt=\"Introducing Retinol and Glycolic Face Serums\" loading=\"eager\"\n          fetchpriority=\"high\"\n          draggable=\"false\"\n        >\n      </div>\n      <!-- =====================================================\n           SLIDE 2 - FACE SERUMS\n           ===================================================== -->\n      <div class=\"custom-five-hero__slide\">\n        <img src=\"https://cdn.shopify.com/s/files/1/0704/1295/9787/files/ChatGPT_Image_Sep_3_2026_10_53_57_PM.png?v=1788458054\"\n          alt=\"Introducing Oil to Milk and Sunscreen SPF 50 Plus\" loading=\"lazy\" draggable=\"false\">\n      </div>\n      <!-- =====================================================\n           SLIDE 3 - CLEANSER & SPF\n           ===================================================== -->\n      <div class=\"custom-five-hero__slide\">\n        <img src=\"https://cdn.shopify.com/s/files/1/0704/1295/9787/files/ChatGPT_Image_Sep_3_2026_10_46_09_PM.png?v=1788457586\"\n          alt=\"Introducing the bundle of all three face masks\"\n          loading=\"lazy\"\n          draggable=\"false\"\n        >\n      </div>\n    </div>\n    <!-- =======================================================\n         PREVIOUS\n         ======================================================= -->\n    <button\n      type=\"button\"\n      class=\"custom-five-hero__arrow custom-five-hero__arrow--prev\"\n      aria-label=\"Previous banner\"\n    >\n      <svg viewBox=\"0 0 24 24\">\n        <path d=\"M15 18L9 12L15 6\"></path>\n      </svg>\n    </button>\n    <!-- =======================================================\n         NEXT\n         ======================================================= -->\n    <button\n      type=\"button\"\n      class=\"custom-five-hero__arrow custom-five-hero__arrow--next\"\n      aria-label=\"Next banner\"\n    >\n      <svg viewBox=\"0 0 24 24\">\n        <path d=\"M9 18L15 12L9 6\"></path>\n      </svg>\n    </button>\n    <!-- =======================================================\n         DOTS\n         ======================================================= -->\n    <div class=\"custom-five-hero__dots\">\n      <button\n        type=\"button\"\n        class=\"custom-five-hero__dot is-active\"\n        data-slide=\"0\"\n        aria-label=\"Go to banner 1\"\n      ></button>\n      <button\n        type=\"button\"\n        class=\"custom-five-hero__dot\"\n        data-slide=\"1\"\n        aria-label=\"Go to banner 2\"\n      ></button>\n      <button\n        type=\"button\"\n        class=\"custom-five-hero__dot\"\n        data-slide=\"2\"\n        aria-label=\"Go to banner 3\"\n      ></button>\n    </div>\n  </div>\n</div>\n<script>\n(function () {\n  function initFiveHeroSlider() {\n    var slider =\n      document.querySelector(\n        '.custom-five-hero'\n      );\n    if (!slider) {\n      return;\n    }\n    if (\n      slider.dataset.initialized === 'true'\n    ) {\n      return;\n    }\n    slider.dataset.initialized = 'true';\n    var track =\n      slider.querySelector(\n        '.custom-five-hero__track'\n      );\n    var slides =\n      slider.querySelectorAll(\n        '.custom-five-hero__slide'\n      );\n    var prevButton =\n      slider.querySelector(\n        '.custom-five-hero__arrow--prev'\n      );\n    var nextButton =\n      slider.querySelector(\n        '.custom-five-hero__arrow--next'\n      );\n    var dots =\n      slider.querySelectorAll(\n        '.custom-five-hero__dot'\n      );\n    var currentSlide = 0;\n    var totalSlides =\n      slides.length;\n    var autoSlideDelay = 5000;\n    var autoSlideTimer = null;\n    var touchStartX = 0;\n    var touchEndX = 0;\n    var isDragging = false;\n    /* =====================================================\n       UPDATE\n       ===================================================== */\n    function updateSlider(index) {\n      if (index < 0) {\n        index =\n          totalSlides - 1;\n      }\n      if (\n        index >= totalSlides\n      ) {\n        index = 0;\n      }\n      currentSlide = index;\n      track.style.transform =\n        'translate3d(-' +\n        (currentSlide * (100 / totalSlides)) +\n        '%, 0, 0)';\n      dots.forEach(\n        function (dot, dotIndex) {\n          if (\n            dotIndex ===\n            currentSlide\n          ) {\n            dot.classList.add(\n              'is-active'\n            );\n          } else {\n            dot.classList.remove(\n              'is-active'\n            );\n          }\n        }\n      );\n    }\n    /* =====================================================\n       NEXT\n       ===================================================== */\n    function nextSlide() {\n      updateSlider(\n        currentSlide + 1\n      );\n    }\n    /* =====================================================\n       PREVIOUS\n       ===================================================== */\n    function previousSlide() {\n      updateSlider(\n        currentSlide - 1\n      );\n    }\n    /* =====================================================\n       AUTO PLAY\n       ===================================================== */\n    function startAutoSlide() {\n      stopAutoSlide();\n      autoSlideTimer =\n        setInterval(\n          function () {\n            nextSlide();\n          },\n          autoSlideDelay\n        );\n    }\n    function stopAutoSlide() {\n      if (\n        autoSlideTimer\n      ) {\n        clearInterval(\n          autoSlideTimer\n        );\n        autoSlideTimer = null;\n      }\n    }\n    /* =====================================================\n       NEXT BUTTON\n       ===================================================== */\n    if (nextButton) {\n      nextButton.addEventListener(\n        'click',\n        function () {\n          nextSlide();\n          startAutoSlide();\n        }\n      );\n    }\n    /* =====================================================\n       PREVIOUS BUTTON\n       ===================================================== */\n    if (prevButton) {\n      prevButton.addEventListener(\n        'click',\n        function () {\n          previousSlide();\n          startAutoSlide();\n        }\n      );\n    }\n    /* =====================================================\n       DOTS\n       ===================================================== */\n    dots.forEach(\n      function (dot) {\n        dot.addEventListener(\n          'click',\n          function () {\n            var index =\n              parseInt(\n                dot.getAttribute(\n                  'data-slide'\n                ),\n                10\n              );\n            updateSlider(index);\n            startAutoSlide();\n          }\n        );\n      }\n    );\n    /* =====================================================\n       TOUCH START\n       ===================================================== */\n    slider.addEventListener(\n      'touchstart',\n      function (event) {\n        if (\n          !event.touches ||\n          !event.touches.length\n        ) {\n          return;\n        }\n        touchStartX =\n          event.touches[0].clientX;\n        touchEndX =\n          touchStartX;\n        isDragging = true;\n        stopAutoSlide();\n      },\n      {\n        passive: true\n      }\n    );\n    /* =====================================================\n       TOUCH MOVE\n       ===================================================== */\n    slider.addEventListener(\n      'touchmove',\n      function (event) {\n        if (!isDragging) {\n          return;\n        }\n        if (\n          !event.touches ||\n          !event.touches.length\n        ) {\n          return;\n        }\n        touchEndX =\n          event.touches[0].clientX;\n      },\n      {\n        passive: true\n      }\n    );\n    /* =====================================================\n       TOUCH END\n       ===================================================== */\n    slider.addEventListener(\n      'touchend',\n      function () {\n        if (!isDragging) {\n          return;\n        }\n        isDragging = false;\n        var distance =\n          touchEndX -\n          touchStartX;\n        if (\n          Math.abs(distance) > 50\n        ) {\n          if (distance < 0) {\n            nextSlide();\n          } else {\n            previousSlide();\n          }\n        }\n        startAutoSlide();\n      },\n      {\n        passive: true\n      }\n    );\n    /* =====================================================\n       MOUSE\n       ===================================================== */\n    slider.addEventListener(\n      'mouseenter',\n      function () {\n        stopAutoSlide();\n      }\n    );\n    slider.addEventListener(\n      'mouseleave',\n      function () {\n        startAutoSlide();\n      }\n    );\n    /* =====================================================\n       INITIAL\n       ===================================================== */\n    updateSlider(0);\n    startAutoSlide();\n  }\n  /* =======================================================\n     DOM READY\n     ======================================================= */\n  if (\n    document.readyState ===\n    'loading'\n  ) {\n    document.addEventListener(\n      'DOMContentLoaded',\n      initFiveHeroSlider\n    );\n  } else {\n    initFiveHeroSlider();\n  }\n  /* =======================================================\n     SHOPIFY THEME EDITOR\n     ======================================================= */\n  document.addEventListener(\n    'shopify:section:load',\n    function () {\n      initFiveHeroSlider();\n    }\n  );\n})();\n</script>",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "custom_liquid_8DNTAz": {
+      "type": "custom-liquid",
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "<style>\n\n/* =========================================================\n   BEST SELLERS — FINAL STABLE VERSION\n   =========================================================\n   DESKTOP  : 4 PRODUCTS PER SLIDE\n   MOBILE   : 2 PRODUCTS PER SLIDE\n   PRODUCTS : MAX 8\n   IMAGES    : SMOOTH HORIZONTAL IMAGE SLIDER\n   VARIANTS  : REAL SHOPIFY VARIANT SELECTION\n   CART      : SELECTED VARIANT SAVED\n   ========================================================= */\n\n\n/* =========================================================\n   MAIN SECTION\n   ========================================================= */\n\n.custom-best-sellers {\n  width: 100%;\n  max-width: 100%;\n  margin: 0;\n  padding: 40px 7px 8px ;\n  background: #fff;\n  overflow: hidden !important;\n  box-sizing: border-box;\n\n}\n\n.custom-best-sellers *,\n.custom-best-sellers *::before,\n.custom-best-sellers *::after {\n  box-sizing: border-box;\n}\n\n\n/* =========================================================\n   HEADING\n   ========================================================= */\n\n.custom-best-sellers__heading {\n  margin: 0 0 34px;\n  padding: 0;\n\n  font-size: 32px;\n  line-height: 1.2;\n  font-weight: 500;\n\n  color: #111;\n\n  text-align: left;\n\n  letter-spacing: -0.5px;\n}\n\n\n/* =========================================================\n   PRODUCT VIEWPORT\n   ========================================================= */\n\n.custom-best-sellers__viewport {\n  position: relative;\n\n  width: 100%;\n  max-width: 100%;\n\n  overflow: hidden !important;\n}\n\n\n/* =========================================================\n   PRODUCT TRACK\n   ========================================================= */\n\n.custom-best-sellers__track {\n  display: flex;\n  flex-wrap: nowrap;\n\n  width: 100%;\n\n  margin: 0;\n  padding: 0;\n\n  gap: 24px;\n\n  transform: translate3d(0, 0, 0);\n\n  transition:\n    transform 0.55s cubic-bezier(.22, .61, .36, 1);\n\n  will-change: transform;\n}\n\n\n/* =========================================================\n   PRODUCT CARD\n   ========================================================= */\n\n.custom-best-sellers__card {\n  position: relative;\n\n  flex: 0 0 calc((100% - 72px) / 4);\n\n  width: calc((100% - 72px) / 4);\n\n  min-width: 0;\n\n  display: flex;\n  flex-direction: column;\n\n  background: #fff;\n\n  overflow: visible;\n}\n\n\n/* =========================================================\n   PRODUCT IMAGE BOX\n   ========================================================= */\n\n.custom-best-sellers__image-box {\n  position: relative;\n\n  width: 100%;\n\n  aspect-ratio: 2 / 3;\n\n  background: #e9edef;\n\n  overflow: hidden;\n}\n\n\n/* =========================================================\n   IMAGE LINK\n   ========================================================= */\n\n.custom-best-sellers__image-link {\n  position: absolute;\n\n  inset: 0;\n\n  display: block;\n\n  width: 100%;\n  height: 100%;\n\n  text-decoration: none;\n\n  overflow: hidden;\n\n  z-index: 1;\n}\n\n\n/* =========================================================\n   IMAGE TRACK\n   ========================================================= */\n\n.custom-best-sellers__image-track {\n  display: flex;\n  flex-wrap: nowrap;\n\n  width: 100%;\n  height: 100%;\n\n  margin: 0;\n  padding: 0;\n\n  transform: translate3d(0, 0, 0);\n\n  transition:\n    transform 0.45s cubic-bezier(.22, .61, .36, 1);\n\n  will-change: transform;\n}\n\n\n/* =========================================================\n   IMAGE SLIDE\n   ========================================================= */\n\n.custom-best-sellers__image-slide {\n  position: relative;\n\n  flex: 0 0 100%;\n\n  width: 100%;\n  height: 100%;\n\n  min-width: 100%;\n\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  overflow: hidden;\n}\n\n\n/* =========================================================\n   PRODUCT IMAGE\n   FULL IMAGE — NO CROP\n   ========================================================= */\n\n.custom-best-sellers__image {\n  display: block;\n\n  width: 100%;\n  height: 100%;\n\n  max-width: 100%;\n  max-height: 100%;\n\n  object-fit: contain;\n  object-position: center center;\n\n  margin: 0;\n  padding: 0;\n\n  border: 0;\n\n  vertical-align: middle;\n\n  user-select: none;\n\n  -webkit-user-drag: none;\n transform 0.38s ease;\n}\n.custom-best-sellers__image:hover{\ntransform: scale(1.025);\n}\n\n/* =========================================================\n   BEST SELLER BADGE\n   ========================================================= */\n\n.custom-best-sellers__badge {\n  position: absolute;\n\n  top: 11px;\n  right: 11px;\n\n  z-index: 30;\n\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  min-height: 21px;\n\n  padding: 4px 8px;\n\n  background: #000;\n  color: #fff;\n\n  border-radius: 10px;\n\n  font-size: 15px;\n  line-height: 1;\n\n  font-weight: 600;\n\n  white-space: nowrap;\n}\n\n\n/* =========================================================\n   IMAGE ARROWS\n   ========================================================= */\n\n.custom-best-sellers__image-arrow {\n  position: absolute;\n\n  top: 50%;\n\n  transform: translateY(-50%);\n\n  z-index: 40;\n\n  width: 20px;\n  height: 20px;\n\n  padding: 0;\n  margin: 0;\n\n  border: 0;\n\n  border-radius: 50%;\n\n  background: rgba(255, 255, 255, .94);\n\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  cursor: pointer;\n\n  appearance: none;\n  -webkit-appearance: none;\n\n  outline: none;\n\n  box-shadow:\n    0 1px 4px rgba(0, 0, 0, .06);\n\n  transition:\n    transform .15s ease;\n}\n\n\n/* NO HOVER COLOR CHANGE */\n\n.custom-best-sellers__image-arrow:hover {\n  background: rgba(255, 255, 255, .94);\n}\n\n\n/* CLICK */\n\n.custom-best-sellers__image-arrow:active {\n  transform:\n    translateY(-50%)\n    scale(.92);\n}\n\n\n/* PREVIOUS */\n\n.custom-best-sellers__image-arrow--prev {\n  left: 7px;\n}\n\n\n/* NEXT */\n\n.custom-best-sellers__image-arrow--next {\n  right: 7px;\n}\n\n\n/* SVG */\n\n.custom-best-sellers__image-arrow svg {\n  width: 13px;\n  height: 13px;\n\n  display: block;\n\n  fill: none;\n\n  stroke: #777;\n\n  stroke-width: 1.7;\n\n  stroke-linecap: round;\n  stroke-linejoin: round;\n\n  pointer-events: none;\n}\n\n\n/* =========================================================\n   IMAGE DOTS\n   ========================================================= */\n\n.custom-best-sellers__image-dots {\n  position: absolute;\n\n  left: 50%;\n  bottom: 8px;\n\n  transform: translateX(-50%);\n\n  z-index: 35;\n\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  gap: 3px;\n\n  height: 7px;\n\n  pointer-events: none;\n}\n\n\n.custom-best-sellers__image-dot {\n  width: 4px;\n  height: 4px;\n\n  min-width: 4px;\n\n  padding: 0;\n  margin: 0;\n\n  border: 0;\n\n  border-radius: 50%;\n\n  background: #b9b9b9;\n}\n\n\n.custom-best-sellers__image-dot.is-active {\n  background: #000;\n}\n\n\n/* =========================================================\n   PRODUCT CONTENT\n   ========================================================= */\n\n.custom-best-sellers__content {\n  display: flex;\n\n  flex-direction: column;\n\n  width: 100%;\n\n  min-width: 0;\n\n  padding-top: 17px;\n}\n\n\n/* =========================================================\n   PRODUCT TITLE\n   ========================================================= */\n\n.custom-best-sellers__title {\n  margin: 0;\n  padding: 0;\n\n  font-size: 18px;\n  line-height: 1.25;\n\n  font-weight: 600;\n\n  color: #111;\n\n  letter-spacing: 0;\n\n  white-space: normal;\n}\n\n\n.custom-best-sellers__title a {\n  color: inherit;\n\n  text-decoration: none;\n}\n\n\n/* =========================================================\n   DESCRIPTION\n   ========================================================= */\n\n.custom-best-sellers__description {\n  margin-top: 7px;\n\n  min-height: 20px;\n\n  overflow: hidden;\n\n  font-size: 15px;\n  line-height: 1.35;\n\n  font-weight: 400;\n\n  color: #858585;\n}\n\n\n/* =========================================================\n   RATING\n   ========================================================= */\n\n.custom-best-sellers__rating {\n  display: flex;\n\n  align-items: center;\n\n  gap: 1px;\n\n  margin-top: 7px;\n\n  height: 17px;\n}\n\n\n.custom-best-sellers__star {\n  font-size: 16px;\n\n  line-height: 1;\n\n  color: #000;\n}\n\n\n.custom-best-sellers__star.empty {\n  color: #777;\n}\n\n\n/* =========================================================\n   PRICE\n   ========================================================= */\n\n.custom-best-sellers__price-row {\n  display: flex;\n\n  align-items: center;\n\n  flex-wrap: wrap;\n\n  gap: 7px;\n\n  margin-top: 8px;\n\n  min-height: 21px;\n}\n\n\n.custom-best-sellers__price {\n  font-size: 15px;\n  line-height: 1.35;\n\n  font-weight: 500;\n\n  color: #111;\n}\n\n\n.custom-best-sellers__compare {\n  font-size: 15px;\n  line-height: 1.35;\n\n  font-weight: 400;\n\n  color: #888;\n\n  text-decoration: line-through;\n}\n\n\n/* =========================================================\n   VARIANTS\n   ========================================================= */\n\n.custom-best-sellers__variants {\n  display: flex;\n\n  align-items: center;\n\n  flex-wrap: wrap;\n\n  gap: 7px;\n\n  margin-top: 10px;\n\n  min-height: 30px;\n}\n\n\n.custom-best-sellers__variant {\n  display: inline-flex;\n\n  align-items: center;\n  justify-content: center;\n\n  min-height: 22px;\n\n  padding: 3px 12px;\n\n  border: 1px solid #bdbdbd;\n\n  border-radius: 15px;\n\n  background: #fff;\n\n  color: #222;\n\n  font-size: 15px;\n  line-height: 1.2;\n\n  font-weight: 400;\n\n  white-space: nowrap;\n\n  cursor: pointer;\n\n  font-family: inherit;\n\n  appearance: none;\n  -webkit-appearance: none;\n\n  outline: none;\n\n  transition:\n    background .15s ease,\n    color .15s ease,\n    border-color .15s ease;\n}\n\n\n/* SELECTED */\n\n.custom-best-sellers__variant.is-selected {\n  background: #000;\n\n  border-color: #000;\n\n  color: #fff;\n\n  font-weight: 600;\n}\n\n\n/* DISABLED */\n\n.custom-best-sellers__variant:disabled {\n  opacity: .4;\n\n  cursor: not-allowed;\n}\n\n\n/* =========================================================\n   CART FORM\n   ========================================================= */\n\n.custom-best-sellers__cart-form {\n  width: 100%;\n\n  margin: 0;\n  padding: 0;\n}\n\n\n/* =========================================================\n   ADD TO CART\n   ========================================================= */\n\n.custom-best-sellers__add {\n  width: 100%;\n\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  margin-top: 10px;\n\n  padding: 14px 15px;\n\n  min-height: 48px;\n\n  border: 1px solid #000;\n\n  border-radius: 0;\n\n  background: #000;\n\n  color: #fff;\n\n  font-family: Jost, sans-serif;\n\n  font-size: 16px;\n  line-height: 1.2;\n\n  font-weight: 500;\n\n  text-align: center;\n\n  cursor: pointer;\n\n  appearance: none;\n  -webkit-appearance: none;\n\n  outline: none;\n\n  box-shadow: none;\n\n  transition: none;\n}\n\n\n/* =========================================================\n   ADD TO CART — NO HOVER EFFECT\n   ========================================================= */\n\n.custom-best-sellers__add:hover,\n.custom-best-sellers__add:focus,\n.custom-best-sellers__add:active {\n  background: #000 !important;\n\n  color: #fff !important;\n\n  border-color: #000 !important;\n\n  box-shadow: none !important;\n}\n\n\n/* =========================================================\n   BOTTOM SLIDER\n   ========================================================= */\n\n.custom-best-sellers__bottom {\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  width: 100%;\n\n  margin-top: 42px;\n}\n\n\n.custom-best-sellers__bottom-dots {\n  display: flex;\n\n  align-items: center;\n\n  justify-content: center;\n\n  gap: 5px;\n}\n\n\n.custom-best-sellers__bottom-dot {\n  width: 24px;\n  height: 4px;\n\n  padding: 0;\n  margin: 0;\n\n  border: 0;\n\n  border-radius: 5px;\n\n  background: #e7e7e7;\n\n  cursor: pointer;\n\n  appearance: none;\n  -webkit-appearance: none;\n}\n\n\n.custom-best-sellers__bottom-dot.is-active {\n  background: #000;\n}\n\n\n/* =========================================================\n   VIEW ALL\n   ========================================================= */\n\n.custom-best-sellers__view-all-wrap {\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  margin-top: 20px;\n}\n\n\n.custom-best-sellers__view-all {\n  display: inline-flex;\n\n  align-items: center;\n  justify-content: center;\n\n  min-width: 163px;\n  min-height: 39px;\n\n  padding: 14px 46px;\n\n  border: 1px solid #111;\n\n  background: #fff;\n\n  color: #111;\n\n  text-decoration: none;\n\n  font-family: Jost, sans-serif;\n\n  font-size: 18px;\n  line-height: 1.2;\n\n  font-weight: 400;\n\n  transition: none;\n}\n\n\n/* =========================================================\n   VIEW ALL — NO HOVER\n   ========================================================= */\n\n.custom-best-sellers__view-all:hover,\n.custom-best-sellers__view-all:focus,\n.custom-best-sellers__view-all:active {\n  background: #fff !important;\n\n  color: #111 !important;\n\n  border-color: #111 !important;\n\n  box-shadow: none !important;\n}\n\n\n/* =========================================================\n   TABLET\n   ========================================================= */\n\n@media screen and (max-width: 989px) {\n\n  .custom-best-sellers {\n    padding-left: 12px;\n    padding-right: 12px;\n  }\n\n\n  .custom-best-sellers__track {\n    gap: 16px;\n  }\n\n\n  .custom-best-sellers__card {\n    flex: 0 0 calc((100% - 48px) / 4);\n\n    width: calc((100% - 48px) / 4);\n  }\n\n\n  .custom-best-sellers__image-box {\n    aspect-ratio: 2 / 3;\n  }\n\n}\n\n\n/* =========================================================\n   MOBILE\n   EXACTLY 2 PRODUCTS\n   ========================================================= */\n\n@media screen and (max-width: 749px) {\n\n  .custom-best-sellers {\n    width: 100% !important;\n    max-width: 100% !important;\n\n    padding:\n      28px 7px 12px !important;\n\n    margin: 0 !important;\n\n    overflow-x: hidden !important;\n    overflow-y: visible !important;\n  }\n\n\n  .custom-best-sellers__heading {\n    margin:\n      0 0 28px !important;\n\n    padding: 0 !important;\n\n    font-size: 32px !important;\n\n    line-height: 1.2;\n  }\n\n\n  .custom-best-sellers__viewport {\n    width: 100% !important;\n\n    max-width: 100% !important;\n\n    overflow: hidden !important;\n  }\n\n\n  .custom-best-sellers__track {\n    gap: 12px;\n  }\n\n\n  .custom-best-sellers__card {\n    flex:\n      0 0 calc((100% - 12px) / 2);\n\n    width:\n      calc((100% - 12px) / 2);\n\n    min-width: 0;\n  }\n\n\n  .custom-best-sellers__image-box {\n    width: 100%;\n\n    aspect-ratio: 2 / 3;\n\n    overflow: hidden;\n  }\n\n\n  .custom-best-sellers__badge {\n    top: 8px;\n    right: 8px;\n\n    min-height: 20px;\n\n    padding: 4px 7px;\n\n    font-size: 15px;\n  }\n\n\n  .custom-best-sellers__image-arrow {\n    width: 20px;\n    height: 20px;\n  }\n\n\n  .custom-best-sellers__image-arrow--prev {\n    left: 6px;\n  }\n\n\n  .custom-best-sellers__image-arrow--next {\n    right: 6px;\n  }\n\n\n  .custom-best-sellers__content {\n    padding-top: 13px;\n  }\n\n\n  .custom-best-sellers__title {\n    font-size: 18px !important;\n\n    line-height: 1.25;\n  }\n\n\n  .custom-best-sellers__description {\n    margin-top: 6px;\n\n    min-height: 19px;\n\n    font-size: 15px !important;\n\n    line-height: 1.3;\n  }\n\n\n  .custom-best-sellers__rating {\n    margin-top: 6px;\n  }\n\n\n  .custom-best-sellers__star {\n    font-size: 15px;\n  }\n\n\n  .custom-best-sellers__price-row {\n    margin-top: 7px;\n\n    gap: 5px;\n  }\n\n\n  .custom-best-sellers__price,\n  .custom-best-sellers__compare {\n    font-size: 15px !important;\n  }\n\n\n  .custom-best-sellers__variants {\n    gap: 5px;\n\n    margin-top: 9px;\n  }\n\n\n  .custom-best-sellers__variant {\n    font-size: 15px !important;\n\n    padding:\n      3px 9px;\n  }\n\n\n  .custom-best-sellers__add {\n    margin-top: 9px;\n\n    padding:\n      14px 15px !important;\n\n    min-height: 0;\n\n    font-size: 16px !important;\n  }\n\n\n  .custom-best-sellers__bottom {\n    margin-top: 35px;\n  }\n\n\n  .custom-best-sellers__bottom-dot {\n    width: 22px;\n    height: 4px;\n  }\n\n\n  .custom-best-sellers__view-all-wrap {\n    margin-top: 19px;\n  }\n\n\n  .custom-best-sellers__view-all {\n    min-width: 163px;\n\n    min-height: 39px;\n\n    padding:\n      14px 30px;\n\n    font-size: 18px;\n  }\n\n}\n\n\n/* =========================================================\n   SMALL MOBILE\n   ========================================================= */\n\n@media screen and (max-width: 380px) {\n\n  .custom-best-sellers {\n    padding-left: 6px !important;\n    padding-right: 6px !important;\n  }\n\n\n  .custom-best-sellers__track {\n    gap: 10px;\n  }\n\n\n  .custom-best-sellers__card {\n    flex:\n      0 0 calc((100% - 10px) / 2);\n\n    width:\n      calc((100% - 10px) / 2);\n  }\n\n\n  .custom-best-sellers__title {\n    font-size: 18px !important;\n  }\n\n\n  .custom-best-sellers__description {\n    font-size: 15px !important;\n  }\n\n\n  .custom-best-sellers__variant {\n    padding-left: 7px;\n    padding-right: 7px;\n  }\n\n}\n\n\n/* =========================================================\n   SAFETY\n   ========================================================= */\n\nhtml,\nbody {\n  max-width: 100%;\n  overflow-x: hidden;\n}\n\n\n.custom-best-sellers {\n  contain: layout paint;\n}\n\n</style>\n\n\n<section\n  class=\"custom-best-sellers\"\n  id=\"CustomBestSellers-{{ section.id | default: 'main' }}\"\n>\n\n  <!-- =====================================================\n       HEADING\n       ===================================================== -->\n\n  <h2 class=\"custom-best-sellers__heading\">\n    Our Best Sellers\n  </h2>\n\n\n  <!-- =====================================================\n       PRODUCT VIEWPORT\n       ===================================================== -->\n\n  <div class=\"custom-best-sellers__viewport\">\n\n    <div class=\"custom-best-sellers__track\">\n\n      {% assign best_seller_collection = collections['best-sellers'] %}\n      {% assign product_limit = 8 %}\n\n\n      {% if best_seller_collection != blank\n        and best_seller_collection.products_count > 0\n      %}\n\n\n        {% for product in best_seller_collection.products limit: product_limit %}\n\n          <!-- =================================================\n               PRODUCT CARD\n               ================================================= -->\n\n          <article\n            class=\"custom-best-sellers__card\"\n            data-product-card\n          >\n\n\n            <!-- =================================================\n                 PRODUCT IMAGE AREA\n                 ================================================= -->\n\n            <div\n              class=\"custom-best-sellers__image-box\"\n              data-image-slider\n            >\n\n\n              <!-- BEST SELLER -->\n\n              <span class=\"custom-best-sellers__badge\">\n                Best Seller\n              </span>\n\n\n              <!-- =================================================\n                   IMAGE LINK + REAL IMAGE TRACK\n                   ================================================= -->\n\n              <a\n                href=\"{{ product.url }}\"\n                class=\"custom-best-sellers__image-link\"\n                aria-label=\"{{ product.title | escape }}\"\n              >\n\n                <div\n                  class=\"custom-best-sellers__image-track\"\n                  data-image-track\n                >\n\n                  {% if product.images.size > 0 %}\n\n                    {% for image in product.images limit: 8 %}\n\n                      <div\n                        class=\"custom-best-sellers__image-slide\"\n                      >\n\n                        <img\n                          class=\"custom-best-sellers__image\"\n                          src=\"{{ image | image_url: width: 1200 }}\"\n                          alt=\"{{ image.alt | default: product.title | escape }}\"\n                          loading=\"{% if forloop.first %}eager{% else %}lazy{% endif %}\"\n                          width=\"{{ image.width }}\"\n                          height=\"{{ image.height }}\"\n                          draggable=\"false\"\n                        >\n\n                      </div>\n\n                    {% endfor %}\n\n                  {% elsif product.featured_image %}\n\n                    <div class=\"custom-best-sellers__image-slide\">\n\n                      <img\n                        class=\"custom-best-sellers__image\"\n                        src=\"{{ product.featured_image | image_url: width: 1200 }}\"\n                        alt=\"{{ product.featured_image.alt | default: product.title | escape }}\"\n                        loading=\"lazy\"\n                        width=\"{{ product.featured_image.width }}\"\n                        height=\"{{ product.featured_image.height }}\"\n                        draggable=\"false\"\n                      >\n\n                    </div>\n\n                  {% endif %}\n\n                </div>\n\n              </a>\n\n\n              <!-- =================================================\n                   PREVIOUS IMAGE\n                   ================================================= -->\n\n              <button\n                type=\"button\"\n                class=\"\n                  custom-best-sellers__image-arrow\n                  custom-best-sellers__image-arrow--prev\n                \"\n                aria-label=\"Previous product image\"\n                data-image-prev\n              >\n\n                <svg viewBox=\"0 0 24 24\">\n\n                  <path\n                    d=\"M14.5 5L7.5 12L14.5 19\"\n                  ></path>\n\n                </svg>\n\n              </button>\n\n\n              <!-- =================================================\n                   NEXT IMAGE\n                   ================================================= -->\n\n              <button\n                type=\"button\"\n                class=\"\n                  custom-best-sellers__image-arrow\n                  custom-best-sellers__image-arrow--next\n                \"\n                aria-label=\"Next product image\"\n                data-image-next\n              >\n\n                <svg viewBox=\"0 0 24 24\">\n\n                  <path\n                    d=\"M9.5 5L16.5 12L9.5 19\"\n                  ></path>\n\n                </svg>\n\n              </button>\n\n\n              <!-- =================================================\n                   IMAGE DOTS\n                   ================================================= -->\n\n              {% if product.images.size > 1 %}\n\n                <div\n                  class=\"custom-best-sellers__image-dots\"\n                  data-image-dots\n                >\n\n                  {% for image in product.images limit: 8 %}\n\n                    <span\n                      class=\"\n                        custom-best-sellers__image-dot\n                        {% if forloop.first %}is-active{% endif %}\n                      \"\n                    ></span>\n\n                  {% endfor %}\n\n                </div>\n\n              {% endif %}\n\n\n            </div>\n\n\n            <!-- =================================================\n                 PRODUCT CONTENT\n                 ================================================= -->\n\n            <div class=\"custom-best-sellers__content\">\n\n\n              <!-- PRODUCT TITLE -->\n\n              <h3 class=\"custom-best-sellers__title\">\n\n                <a href=\"{{ product.url }}\">\n                  {{ product.title }}\n                </a>\n\n              </h3>\n\n\n              <!-- PRODUCT DESCRIPTION -->\n\n              <div class=\"custom-best-sellers__description\">\n\n                {{ product.description\n                  | strip_html\n                  | truncate: 72\n                }}\n\n              </div>\n\n\n              <!-- =================================================\n                   RATING\n                   ================================================= -->\n\n              <div\n                class=\"custom-best-sellers__rating\"\n                aria-label=\"4 out of 5 stars\"\n              >\n\n                <span class=\"custom-best-sellers__star\">\n                  ★\n                </span>\n\n                <span class=\"custom-best-sellers__star\">\n                  ★\n                </span>\n\n                <span class=\"custom-best-sellers__star\">\n                  ★\n                </span>\n\n                <span class=\"custom-best-sellers__star\">\n                  ★\n                </span>\n\n                <span class=\"custom-best-sellers__star empty\">\n                  ☆\n                </span>\n\n              </div>\n\n\n              <!-- =================================================\n                   PRICE\n                   ================================================= -->\n\n              <div class=\"custom-best-sellers__price-row\">\n\n                <span\n                  class=\"custom-best-sellers__price\"\n                  data-product-price\n                >\n                  {{ product.selected_or_first_available_variant.price | money }}\n                </span>\n\n\n                {% if product.selected_or_first_available_variant.compare_at_price\n                  > product.selected_or_first_available_variant.price\n                %}\n\n                  <span\n                    class=\"custom-best-sellers__compare\"\n                    data-product-compare\n                  >\n                    {{ product.selected_or_first_available_variant.compare_at_price | money }}\n                  </span>\n\n                {% else %}\n\n                  <span\n                    class=\"custom-best-sellers__compare\"\n                    data-product-compare\n                    style=\"display:none;\"\n                  ></span>\n\n                {% endif %}\n\n              </div>\n\n\n              <!-- =================================================\n                   VARIANTS\n                   REAL SHOPIFY VARIANTS\n                   ================================================= -->\n\n              {% assign available_variant = product.selected_or_first_available_variant %}\n\n\n              {% if product.variants.size > 1 %}\n\n                <div\n                  class=\"custom-best-sellers__variants\"\n                  data-variant-selector\n                >\n\n                  {% for variant in product.variants %}\n\n                    <button\n                      type=\"button\"\n                      class=\"\n                        custom-best-sellers__variant\n                        {% if variant.id == available_variant.id %}\n                          is-selected\n                        {% endif %}\n                      \"\n                      data-variant-id=\"{{ variant.id }}\"\n                      data-variant-price=\"{{ variant.price | money | escape }}\"\n                      data-variant-compare=\"{{ variant.compare_at_price | default: 0 | money | escape }}\"\n                      data-variant-available=\"{{ variant.available }}\"\n                      {% unless variant.available %}\n                        disabled\n                      {% endunless %}\n                    >\n\n                      {{ variant.title }}\n\n                    </button>\n\n                  {% endfor %}\n\n                </div>\n\n\n              {% elsif product.variants.first.title != 'Default Title' %}\n\n                <div\n                  class=\"custom-best-sellers__variants\"\n                  data-variant-selector\n                >\n\n                  <button\n                    type=\"button\"\n                    class=\"\n                      custom-best-sellers__variant\n                      is-selected\n                    \"\n                    data-variant-id=\"{{ product.variants.first.id }}\"\n                    data-variant-price=\"{{ product.variants.first.price | money | escape }}\"\n                    data-variant-compare=\"{{ product.variants.first.compare_at_price | default: 0 | money | escape }}\"\n                    data-variant-available=\"{{ product.variants.first.available }}\"\n                    {% unless product.variants.first.available %}\n                      disabled\n                    {% endunless %}\n                  >\n\n                    {{ product.variants.first.title }}\n\n                  </button>\n\n                </div>\n\n              {% endif %}\n\n\n              <!-- =================================================\n                   ADD TO CART\n                   ================================================= -->\n\n              <form\n                action=\"{{ routes.cart_add_url }}\"\n                method=\"post\"\n                class=\"custom-best-sellers__cart-form\"\n                data-cart-form\n              >\n\n                <input\n                  type=\"hidden\"\n                  name=\"id\"\n                  value=\"{{ available_variant.id }}\"\n                  data-selected-variant\n                >\n\n\n                <button\n                  type=\"submit\"\n                  class=\"custom-best-sellers__add\"\n                  {% unless available_variant.available %}\n                    disabled\n                  {% endunless %}\n                >\n\n                  {% if available_variant.available %}\n                    Add to cart\n                  {% else %}\n                    Sold out\n                  {% endif %}\n\n                </button>\n\n              </form>\n\n\n            </div>\n\n          </article>\n\n        {% endfor %}\n\n\n      {% else %}\n\n        <div\n          style=\"\n            width:100%;\n            padding:50px 20px;\n            text-align:center;\n            font-size:16px;\n          \"\n        >\n\n          Please create a Shopify collection with handle\n          <strong>best-sellers</strong>.\n\n        </div>\n\n      {% endif %}\n\n    </div>\n\n  </div>\n\n\n  <!-- =====================================================\n       BOTTOM PRODUCT SLIDER DOTS\n       ===================================================== -->\n\n  <div class=\"custom-best-sellers__bottom\">\n\n    <div\n      class=\"custom-best-sellers__bottom-dots\"\n      data-product-slider-dots\n    ></div>\n\n  </div>\n\n\n  <!-- =====================================================\n       VIEW ALL\n       ===================================================== -->\n\n  {% if best_seller_collection != blank %}\n\n    <div class=\"custom-best-sellers__view-all-wrap\">\n\n      <a\n        href=\"{{ best_seller_collection.url }}\"\n        class=\"custom-best-sellers__view-all\"\n      >\n        View all products\n      </a>\n\n    </div>\n\n  {% endif %}\n\n\n</section>\n\n\n<script>\n\n(function () {\n\n  'use strict';\n\n\n  /* =========================================================\n     INITIALIZE\n     ========================================================= */\n\n  function initBestSellers() {\n\n    var sections =\n      document.querySelectorAll(\n        '.custom-best-sellers'\n      );\n\n\n    sections.forEach(function (section) {\n\n\n      if (\n        section.dataset.initialized === 'true'\n      ) {\n        return;\n      }\n\n\n      section.dataset.initialized = 'true';\n\n\n      /* =====================================================\n         PRODUCT SLIDER ELEMENTS\n         ===================================================== */\n\n      var viewport =\n        section.querySelector(\n          '.custom-best-sellers__viewport'\n        );\n\n\n      var track =\n        section.querySelector(\n          '.custom-best-sellers__track'\n        );\n\n\n      var cards =\n        Array.from(\n          section.querySelectorAll(\n            '.custom-best-sellers__card'\n          )\n        );\n\n\n      var dotsContainer =\n        section.querySelector(\n          '[data-product-slider-dots]'\n        );\n\n\n      if (\n        !viewport ||\n        !track ||\n        !cards.length\n      ) {\n        return;\n      }\n\n\n      /* =====================================================\n         CURRENT PRODUCT PAGE\n         ===================================================== */\n\n      var currentPage = 0;\n\n\n      /* =====================================================\n         GET VISIBLE PRODUCTS\n         ===================================================== */\n\n      function getVisibleProducts() {\n\n        if (\n          window.innerWidth <= 749\n        ) {\n\n          return 2;\n\n        }\n\n\n        return 4;\n\n      }\n\n\n      /* =====================================================\n         GET GAP\n         ===================================================== */\n\n      function getGap() {\n\n        if (\n          window.innerWidth <= 749\n        ) {\n\n          return window.innerWidth <= 380\n            ? 10\n            : 12;\n\n        }\n\n\n        if (\n          window.innerWidth <= 989\n        ) {\n\n          return 16;\n\n        }\n\n\n        return 24;\n\n      }\n\n\n      /* =====================================================\n         TOTAL PAGES\n         ===================================================== */\n\n      function getTotalPages() {\n\n        var visible =\n          getVisibleProducts();\n\n\n        return Math.max(\n          1,\n          Math.ceil(\n            cards.length / visible\n          )\n        );\n\n      }\n\n\n      /* =====================================================\n         BUILD BOTTOM DOTS\n         ===================================================== */\n\n      function buildBottomDots() {\n\n        if (!dotsContainer) {\n          return;\n        }\n\n\n        dotsContainer.innerHTML = '';\n\n\n        var totalPages =\n          getTotalPages();\n\n\n        for (\n          var i = 0;\n          i < totalPages;\n          i++\n        ) {\n\n          var button =\n            document.createElement(\n              'button'\n            );\n\n\n          button.type =\n            'button';\n\n\n          button.className =\n            'custom-best-sellers__bottom-dot';\n\n\n          button.setAttribute(\n            'aria-label',\n            'Show product group ' +\n            (i + 1)\n          );\n\n\n          button.dataset.page =\n            i;\n\n\n          if (\n            i === currentPage\n          ) {\n\n            button.classList.add(\n              'is-active'\n            );\n\n          }\n\n\n          button.addEventListener(\n            'click',\n            function () {\n\n              var page =\n                parseInt(\n                  this.dataset.page,\n                  10\n                );\n\n\n              if (\n                isNaN(page)\n              ) {\n                return;\n              }\n\n\n              currentPage =\n                Math.max(\n                  0,\n                  Math.min(\n                    page,\n                    getTotalPages() - 1\n                  )\n                );\n\n\n              updateProductSlider();\n\n            }\n          );\n\n\n          dotsContainer.appendChild(\n            button\n          );\n\n        }\n\n      }\n\n\n      /* =====================================================\n         PRODUCT SLIDER\n         IMPORTANT:\n         EXACT CARD-BASED CALCULATION\n         ===================================================== */\n\n      function updateProductSlider() {\n\n        var visible =\n          getVisibleProducts();\n\n\n        var gap =\n          getGap();\n\n\n        var totalPages =\n          getTotalPages();\n\n\n        if (\n          currentPage >= totalPages\n        ) {\n\n          currentPage =\n            totalPages - 1;\n\n        }\n\n\n        if (\n          currentPage < 0\n        ) {\n\n          currentPage = 0;\n\n        }\n\n\n        /*\n          Calculate actual card width\n          directly from DOM.\n        */\n\n        var cardWidth =\n          cards[0].getBoundingClientRect().width;\n\n\n        /*\n          Move exactly:\n          card width + gap\n          multiplied by visible cards.\n        */\n\n        var moveDistance =\n          currentPage *\n          visible *\n          (cardWidth + gap);\n\n\n        /*\n          For final page calculate actual\n          available movement so there is\n          no blank area.\n        */\n\n        var maxMove =\n          Math.max(\n            0,\n            track.scrollWidth -\n            viewport.clientWidth\n          );\n\n\n        moveDistance =\n          Math.min(\n            moveDistance,\n            maxMove\n          );\n\n\n        /*\n          Smooth product movement.\n        */\n\n        track.style.transform =\n          'translate3d(' +\n          (-moveDistance) +\n          'px, 0, 0)';\n\n\n        /*\n          Update dots.\n        */\n\n        if (dotsContainer) {\n\n          var dots =\n            dotsContainer.querySelectorAll(\n              '.custom-best-sellers__bottom-dot'\n            );\n\n\n          dots.forEach(\n            function (dot, index) {\n\n              dot.classList.toggle(\n                'is-active',\n                index === currentPage\n              );\n\n            }\n          );\n\n        }\n\n      }\n\n\n      /* =====================================================\n         PRODUCT IMAGE SLIDERS\n         ===================================================== */\n\n      cards.forEach(function (card) {\n\n\n        var imageBox =\n          card.querySelector(\n            '[data-image-slider]'\n          );\n\n\n        if (!imageBox) {\n          return;\n        }\n\n\n        var imageTrack =\n          imageBox.querySelector(\n            '[data-image-track]'\n          );\n\n\n        var slides =\n          Array.from(\n            imageBox.querySelectorAll(\n              '.custom-best-sellers__image-slide'\n            )\n          );\n\n\n        var prevButton =\n          imageBox.querySelector(\n            '[data-image-prev]'\n          );\n\n\n        var nextButton =\n          imageBox.querySelector(\n            '[data-image-next]'\n          );\n\n\n        var dots =\n          Array.from(\n            imageBox.querySelectorAll(\n              '.custom-best-sellers__image-dot'\n            )\n          );\n\n\n        /*\n          If only one image,\n          arrows and dots are hidden.\n        */\n\n        if (\n          slides.length <= 1\n        ) {\n\n          if (prevButton) {\n            prevButton.style.display =\n              'none';\n          }\n\n\n          if (nextButton) {\n            nextButton.style.display =\n              'none';\n          }\n\n\n          if (dots.length) {\n\n            dots.forEach(\n              function (dot) {\n\n                dot.style.display =\n                  'none';\n\n              }\n            );\n\n          }\n\n\n          return;\n\n        }\n\n\n        var currentImage = 0;\n\n\n        /* =================================================\n           UPDATE IMAGE SLIDER\n           ================================================= */\n\n        function updateImageSlider(\n          direction\n        ) {\n\n          /*\n            Calculate next index.\n          */\n\n          if (\n            direction === 'next'\n          ) {\n\n            currentImage++;\n\n\n            if (\n              currentImage >=\n              slides.length\n            ) {\n\n              currentImage = 0;\n\n            }\n\n          }\n\n\n          if (\n            direction === 'prev'\n          ) {\n\n            currentImage--;\n\n\n            if (\n              currentImage < 0\n            ) {\n\n              currentImage =\n                slides.length - 1;\n\n            }\n\n          }\n\n\n          /*\n            Actual horizontal movement.\n            Each slide = 100%.\n          */\n\n          var move =\n            currentImage * 100;\n\n\n          imageTrack.style.transform =\n            'translate3d(-' +\n            move +\n            '%, 0, 0)';\n\n\n          /*\n            Update dots.\n          */\n\n          dots.forEach(\n            function (\n              dot,\n              index\n            ) {\n\n              dot.classList.toggle(\n                'is-active',\n                index === currentImage\n              );\n\n            }\n          );\n\n        }\n\n\n        /* =================================================\n           NEXT IMAGE\n           ================================================= */\n\n        if (nextButton) {\n\n          nextButton.addEventListener(\n            'click',\n            function (event) {\n\n              event.preventDefault();\n\n              event.stopPropagation();\n\n\n              updateImageSlider(\n                'next'\n              );\n\n            }\n          );\n\n        }\n\n\n        /* =================================================\n           PREVIOUS IMAGE\n           ================================================= */\n\n        if (prevButton) {\n\n          prevButton.addEventListener(\n            'click',\n            function (event) {\n\n              event.preventDefault();\n\n              event.stopPropagation();\n\n\n              updateImageSlider(\n                'prev'\n              );\n\n            }\n          );\n\n        }\n\n\n        /*\n          Prevent arrow clicks from\n          following the image link.\n        */\n\n        [prevButton, nextButton].forEach(\n          function (button) {\n\n            if (!button) {\n              return;\n            }\n\n\n            button.addEventListener(\n              'mousedown',\n              function (event) {\n\n                event.preventDefault();\n\n              }\n            );\n\n          }\n        );\n\n\n      });\n\n\n      /* =====================================================\n         VARIANT SELECTOR\n         ===================================================== */\n\n      cards.forEach(function (card) {\n\n\n        var selector =\n          card.querySelector(\n            '[data-variant-selector]'\n          );\n\n\n        var hiddenInput =\n          card.querySelector(\n            '[data-selected-variant]'\n          );\n\n\n        var addButton =\n          card.querySelector(\n            '.custom-best-sellers__add'\n          );\n\n\n        var priceElement =\n          card.querySelector(\n            '[data-product-price]'\n          );\n\n\n        var compareElement =\n          card.querySelector(\n            '[data-product-compare]'\n          );\n\n\n        if (\n          !selector ||\n          !hiddenInput\n        ) {\n          return;\n        }\n\n\n        var variants =\n          Array.from(\n            selector.querySelectorAll(\n              '.custom-best-sellers__variant'\n            )\n          );\n\n\n        variants.forEach(\n          function (variant) {\n\n\n            variant.addEventListener(\n              'click',\n              function (event) {\n\n                event.preventDefault();\n\n\n                /*\n                  Don't select unavailable\n                  variants.\n                */\n\n                if (\n                  variant.disabled\n                ) {\n\n                  return;\n\n                }\n\n\n                /*\n                  Remove previous selection.\n                */\n\n                variants.forEach(\n                  function (item) {\n\n                    item.classList.remove(\n                      'is-selected'\n                    );\n\n                  }\n                );\n\n\n                /*\n                  Select clicked variant.\n                */\n\n                variant.classList.add(\n                  'is-selected'\n                );\n\n\n                /*\n                  Get REAL Shopify\n                  variant ID.\n                */\n\n                var variantId =\n                  variant.getAttribute(\n                    'data-variant-id'\n                  );\n\n\n                if (\n                  variantId\n                ) {\n\n                  hiddenInput.value =\n                    variantId;\n\n                }\n\n\n                /*\n                  Update price.\n                */\n\n                var variantPrice =\n                  variant.getAttribute(\n                    'data-variant-price'\n                  );\n\n\n                if (\n                  priceElement &&\n                  variantPrice\n                ) {\n\n                  priceElement.textContent =\n                    variantPrice;\n\n                }\n\n\n                /*\n                  Update compare price.\n                */\n\n                var variantCompare =\n                  variant.getAttribute(\n                    'data-variant-compare'\n                  );\n\n\n                if (\n                  compareElement\n                ) {\n\n                  if (\n                    variantCompare &&\n                    variantCompare !==\n                    'Rs. 0.00' &&\n                    variantCompare !==\n                    'Rs.0.00'\n                  ) {\n\n                    compareElement.textContent =\n                      variantCompare;\n\n                    compareElement.style.display =\n                      '';\n\n                  } else {\n\n                    compareElement.textContent =\n                      '';\n\n                    compareElement.style.display =\n                      'none';\n\n                  }\n\n                }\n\n\n                /*\n                  Update Add to Cart.\n                */\n\n                if (addButton) {\n\n                  addButton.disabled =\n                    false;\n\n                  addButton.textContent =\n                    'Add to cart';\n\n                }\n\n              }\n            );\n\n          }\n        );\n\n\n      });\n\n\n      /* =====================================================\n         CART FORM\n         ===================================================== */\n\n      var cartForms =\n        section.querySelectorAll(\n          '[data-cart-form]'\n        );\n\n\n      cartForms.forEach(\n        function (form) {\n\n\n          form.addEventListener(\n            'submit',\n            function (event) {\n\n\n              var selectedVariant =\n                form.querySelector(\n                  '[data-selected-variant]'\n                );\n\n\n              /*\n                Make sure an actual\n                variant ID exists.\n              */\n\n              if (\n                !selectedVariant ||\n                !selectedVariant.value\n              ) {\n\n                event.preventDefault();\n\n                return;\n\n              }\n\n\n              /*\n                The form submits the exact\n                selected Shopify variant ID\n                to /cart/add.\n              */\n\n            }\n          );\n\n        }\n      );\n\n\n      /* =====================================================\n         INITIAL PRODUCT SLIDER\n         ===================================================== */\n\n      buildBottomDots();\n\n\n      setTimeout(\n        function () {\n\n          updateProductSlider();\n\n        },\n        100\n      );\n\n\n      /* =====================================================\n         RESIZE\n         ===================================================== */\n\n      var resizeTimer = null;\n\n\n      window.addEventListener(\n        'resize',\n        function () {\n\n\n          clearTimeout(\n            resizeTimer\n          );\n\n\n          resizeTimer =\n            setTimeout(\n              function () {\n\n\n                var totalPages =\n                  getTotalPages();\n\n\n                if (\n                  currentPage >=\n                  totalPages\n                ) {\n\n                  currentPage =\n                    Math.max(\n                      0,\n                      totalPages - 1\n                    );\n\n                }\n\n\n                buildBottomDots();\n\n\n                updateProductSlider();\n\n\n              },\n              120\n            );\n\n        }\n      );\n\n\n    });\n\n  }\n\n\n  /* =========================================================\n     INITIAL LOAD\n     ========================================================= */\n\n  if (\n    document.readyState ===\n    'loading'\n  ) {\n\n    document.addEventListener(\n      'DOMContentLoaded',\n      initBestSellers\n    );\n\n  } else {\n\n    initBestSellers();\n\n  }\n\n\n  /* =========================================================\n     SHOPIFY THEME EDITOR\n     ========================================================= */\n\n  document.addEventListener(\n    'shopify:section:load',\n    function (event) {\n\n\n      var section =\n        event.target &&\n        event.target.querySelector\n          ? event.target.querySelector(\n              '.custom-best-sellers'\n            )\n          : null;\n\n\n      if (section) {\n\n        section.dataset.initialized =\n          'false';\n\n      }\n\n\n      initBestSellers();\n\n    }\n  );\n\n\n})();\n\n</script>",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "custom_liquid_z7Rkbn": {
+      "type": "custom-liquid",
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "custom_liquid_Hft4Gx": {
+      "type": "custom-liquid",
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "{% comment %}\n  Minimalist — Exact Hero Banner\n  Upload screenshot/banner to Shopify > Settings > Files\n  Filename: hero-banner.png\n{% endcomment %}\n\n<section class=\"exact-hero-banner\">\n  <img\n    src=\"{{ 'hero-banner.png' | file_url }}\"\n    alt=\"Build Your Own Bundle\"\n    class=\"exact-hero-banner__image\"\n    width=\"1826\"\n    height=\"813\"\n    loading=\"eager\"\n    fetchpriority=\"high\"\n  >\n</section>\n\n<style>\n  .exact-hero-banner {\n    width: 100%;\n    max-width: 100%;\n    margin: 0;\n    margin-top:100px;\n    padding: 0;\n    overflow: hidden;\n    line-height: 0;\n  }\n\n  .exact-hero-banner__image {\n    display: block;\n    width: 100%;\n    height: auto;\n    max-width: 100%;\n    margin: 0;\n    padding: 0;\n    border: 0;\n  }\n\n  /* Mobile — keeps the complete original image proportional */\n  @media screen and (max-width: 749px) {\n    .exact-hero-banner {\n      width: 100%;\n      overflow: hidden;\n    }\n\n    .exact-hero-banner__image {\n      width: 100%;\n      height: auto;\n      min-width: 0;\n      object-fit: contain;\n    }\n  }\n</style>",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "custom_liquid_YrKN6a": {
+      "type": "custom-liquid",
+      "disabled": true,
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "{% comment %}\n  Minimalist — Exact Hero Banner\n  Upload screenshot/banner to Shopify > Settings > Files\n  Filename: hero-banner.png\n{% endcomment %}\n\n<section class=\"exact-hero-banner\">\n  <img\n    src=\"{{ 'skininsights.avif' | file_url }}\"\n    alt=\"Build Your Own Bundle\"\n    class=\"exact-hero-banner__image\"\n    width=\"1826\"\n    height=\"813\"\n    loading=\"eager\"\n    fetchpriority=\"high\"\n  >\n</section>\n\n<style>\n  .exact-hero-banner {\n    width: 100%;\n    max-width: 100%;\n    margin: 0;\n    padding: 0;\n    overflow: hidden;\n    line-height: 0;\n  }\n\n  .exact-hero-banner__image {\n    display: block;\n    width: 100%;\n    height: auto;\n    max-width: 100%;\n    margin: 0;\n    padding: 0;\n    border: 0;\n  }\n\n  /* Mobile — keeps the complete original image proportional */\n  @media screen and (max-width: 749px) {\n    .exact-hero-banner {\n      width: 100%;\n      overflow: hidden;\n    }\n\n    .exact-hero-banner__image {\n      width: 100%;\n      height: auto;\n      min-width: 0;\n      object-fit: contain;\n    }\n  }\n</style>",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "shop_by_category_bU8Mkd": {
+      "type": "shop-by-category",
+      "blocks": {
+        "category_V4y89h": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/1707202320-67ef6468516dd5c6.avif",
+            "title": "Skin Care",
+            "link": ""
+          }
+        },
+        "category_pr3qcV": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/1706099885-2900ece1f743c65a.avif",
+            "title": "Eye Care",
+            "link": ""
+          }
+        },
+        "category_pAMKT8": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/1707202423-7af38ee9fbec530d.avif",
+            "title": "Lip Care",
+            "link": ""
+          }
+        },
+        "category_TnwmME": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/1706099804-80666e6d221da1a8.avif",
+            "title": "Body Care",
+            "link": ""
+          }
+        },
+        "category_bP8Bzh": {
+          "type": "category",
+          "settings": {
+            "image": "shopify://shop_images/1706099761-f86e95709c7aaba4.avif",
+            "title": "Hair Care",
+            "link": ""
+          }
+        },
+        "category_L86ke4": {
+          "type": "category",
+          "settings": {
+            "title": "Category",
+            "link": ""
+          }
+        },
+        "category_kAKzrG": {
+          "type": "category",
+          "settings": {
+            "title": "Category",
+            "link": ""
+          }
+        },
+        "category_ibkj7X": {
+          "type": "category",
+          "settings": {
+            "title": "Category",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "category_V4y89h",
+        "category_pr3qcV",
+        "category_pAMKT8",
+        "category_TnwmME",
+        "category_bP8Bzh",
+        "category_L86ke4",
+        "category_kAKzrG",
+        "category_ibkj7X"
+      ],
+      "disabled": true,
+      "name": "Shop by Category",
+      "settings": {
+        "heading": "Shop by Category"
+      }
+    },
+    "shop_by_concerns_KcpE9K": {
+      "type": "shop-by-concerns",
+      "name": "Shop by Concerns",
+      "settings": {}
+    },
+    "custom_liquid_PX7KKm": {
+      "type": "custom-liquid",
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "<style>\n\n/* =========================================================\n   NEW ARRIVALS — FINAL STABLE VERSION\n   =========================================================\n   DESKTOP  : 4 PRODUCTS PER SLIDE\n   MOBILE   : 2 PRODUCTS PER SLIDE\n   PRODUCTS : MAX 8\n   IMAGES    : SMOOTH HORIZONTAL IMAGE SLIDER\n   VARIANTS  : REAL SHOPIFY VARIANT SELECTION\n   CART      : SELECTED VARIANT SAVED\n   ========================================================= */\n\n\n/* =========================================================\n   MAIN SECTION\n   ========================================================= */\n\n.custom-best-sellers {\n  width: 100%;\n  max-width: 100%;\n  margin: 0;\n  padding: 40px 7px 8px;\n  background: #fff;\n  overflow: hidden !important;\n  box-sizing: border-box;\n}\n\n.custom-best-sellers *,\n.custom-best-sellers *::before,\n.custom-best-sellers *::after {\n  box-sizing: border-box;\n}\n\n\n/* =========================================================\n   HEADING\n   ========================================================= */\n\n.custom-best-sellers__heading {\n  margin: 0 0 34px;\n  padding: 0;\n\n  font-size: 32px;\n  line-height: 1.2;\n  font-weight: 500;\n\n  color: #111;\n\n  text-align: left;\n\n  letter-spacing: -0.5px;\n}\n\n\n/* =========================================================\n   PRODUCT VIEWPORT\n   ========================================================= */\n\n.custom-best-sellers__viewport {\n  position: relative;\n\n  width: 100%;\n  max-width: 100%;\n\n  overflow: hidden !important;\n}\n\n\n/* =========================================================\n   PRODUCT TRACK\n   ========================================================= */\n\n.custom-best-sellers__track {\n  display: flex;\n  flex-wrap: nowrap;\n\n  width: 100%;\n\n  margin: 0;\n  padding: 0;\n\n  gap: 24px;\n\n  transform: translate3d(0, 0, 0);\n\n  transition:\n    transform 0.55s cubic-bezier(.22, .61, .36, 1);\n\n  will-change: transform;\n}\n\n\n/* =========================================================\n   PRODUCT CARD\n   ========================================================= */\n\n.custom-best-sellers__card {\n  position: relative;\n\n  flex: 0 0 calc((100% - 72px) / 4);\n\n  width: calc((100% - 72px) / 4);\n\n  min-width: 0;\n\n  display: flex;\n  flex-direction: column;\n\n  background: #fff;\n\n  overflow: visible;\n}\n\n\n/* =========================================================\n   PRODUCT IMAGE BOX\n   ========================================================= */\n\n.custom-best-sellers__image-box {\n  position: relative;\n\n  width: 100%;\n\n  aspect-ratio: 2 / 3;\n\n  background: #e9edef;\n\n  overflow: hidden;\n}\n\n\n/* =========================================================\n   IMAGE LINK\n   ========================================================= */\n\n.custom-best-sellers__image-link {\n  position: absolute;\n\n  inset: 0;\n\n  display: block;\n\n  width: 100%;\n  height: 100%;\n\n  text-decoration: none;\n\n  overflow: hidden;\n\n  z-index: 1;\n}\n\n\n/* =========================================================\n   IMAGE TRACK\n   ========================================================= */\n\n.custom-best-sellers__image-track {\n  display: flex;\n  flex-wrap: nowrap;\n\n  width: 100%;\n  height: 100%;\n\n  margin: 0;\n  padding: 0;\n\n  transform: translate3d(0, 0, 0);\n\n  transition:\n    transform 0.45s cubic-bezier(.22, .61, .36, 1);\n\n  will-change: transform;\n}\n\n\n/* =========================================================\n   IMAGE SLIDE\n   ========================================================= */\n\n.custom-best-sellers__image-slide {\n  position: relative;\n\n  flex: 0 0 100%;\n\n  width: 100%;\n  height: 100%;\n\n  min-width: 100%;\n\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  overflow: hidden;\n}\n\n\n/* =========================================================\n   PRODUCT IMAGE\n   FULL IMAGE — NO CROP\n   ========================================================= */\n\n.custom-best-sellers__image {\n  display: block;\n\n  width: 100%;\n  height: 100%;\n\n  max-width: 100%;\n  max-height: 100%;\n\n  object-fit: contain;\n  object-position: center center;\n\n  margin: 0;\n  padding: 0;\n\n  border: 0;\n\n  vertical-align: middle;\n\n  user-select: none;\n\n  -webkit-user-drag: none;\n}\n\n\n/* =========================================================\n   BEST SELLER BADGE\n   ========================================================= */\n\n.custom-best-sellers__badge {\n  position: absolute;\n\n  top: 11px;\n  right: 11px;\n\n  z-index: 30;\n\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  min-height: 21px;\n\n  padding: 4px 8px;\n\n  background: #000;\n  color: #fff;\n\n  border-radius: 10px;\n\n  font-size: 15px;\n  line-height: 1;\n\n  font-weight: 600;\n\n  white-space: nowrap;\n}\n\n\n/* =========================================================\n   IMAGE ARROWS\n   ========================================================= */\n\n.custom-best-sellers__image-arrow {\n  position: absolute;\n\n  top: 50%;\n\n  transform: translateY(-50%);\n\n  z-index: 40;\n\n  width: 20px;\n  height: 20px;\n\n  padding: 0;\n  margin: 0;\n\n  border: 0;\n\n  border-radius: 50%;\n\n  background: rgba(255, 255, 255, .94);\n\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  cursor: pointer;\n\n  appearance: none;\n  -webkit-appearance: none;\n\n  outline: none;\n\n  box-shadow:\n    0 1px 4px rgba(0, 0, 0, .06);\n\n  transition:\n    transform .15s ease;\n}\n\n\n/* NO HOVER COLOR CHANGE */\n\n.custom-best-sellers__image-arrow:hover {\n  background: rgba(255, 255, 255, .94);\n}\n\n\n/* CLICK */\n\n.custom-best-sellers__image-arrow:active {\n  transform:\n    translateY(-50%)\n    scale(.92);\n}\n\n\n/* PREVIOUS */\n\n.custom-best-sellers__image-arrow--prev {\n  left: 7px;\n}\n\n\n/* NEXT */\n\n.custom-best-sellers__image-arrow--next {\n  right: 7px;\n}\n\n\n/* SVG */\n\n.custom-best-sellers__image-arrow svg {\n  width: 13px;\n  height: 13px;\n\n  display: block;\n\n  fill: none;\n\n  stroke: #777;\n\n  stroke-width: 1.7;\n\n  stroke-linecap: round;\n  stroke-linejoin: round;\n\n  pointer-events: none;\n}\n\n\n/* =========================================================\n   IMAGE DOTS\n   ========================================================= */\n\n.custom-best-sellers__image-dots {\n  position: absolute;\n\n  left: 50%;\n  bottom: 8px;\n\n  transform: translateX(-50%);\n\n  z-index: 35;\n\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  gap: 3px;\n\n  height: 7px;\n\n  pointer-events: none;\n}\n\n\n.custom-best-sellers__image-dot {\n  width: 4px;\n  height: 4px;\n\n  min-width: 4px;\n\n  padding: 0;\n  margin: 0;\n\n  border: 0;\n\n  border-radius: 50%;\n\n  background: #b9b9b9;\n}\n\n\n.custom-best-sellers__image-dot.is-active {\n  background: #000;\n}\n\n\n/* =========================================================\n   PRODUCT CONTENT\n   ========================================================= */\n\n.custom-best-sellers__content {\n  display: flex;\n\n  flex-direction: column;\n\n  width: 100%;\n\n  min-width: 0;\n\n  padding-top: 17px;\n}\n\n\n/* =========================================================\n   PRODUCT TITLE\n   ========================================================= */\n\n.custom-best-sellers__title {\n  margin: 0;\n  padding: 0;\n\n  font-size: 18px;\n  line-height: 1.25;\n\n  font-weight: 600;\n\n  color: #111;\n\n  letter-spacing: 0;\n\n  white-space: normal;\n}\n\n\n.custom-best-sellers__title a {\n  color: inherit;\n\n  text-decoration: none;\n}\n\n\n/* =========================================================\n   DESCRIPTION\n   ========================================================= */\n\n.custom-best-sellers__description {\n  margin-top: 7px;\n\n  min-height: 20px;\n\n  overflow: hidden;\n\n  font-size: 15px;\n  line-height: 1.35;\n\n  font-weight: 400;\n\n  color: #858585;\n}\n\n\n/* =========================================================\n   RATING\n   ========================================================= */\n\n.custom-best-sellers__rating {\n  display: flex;\n\n  align-items: center;\n\n  gap: 1px;\n\n  margin-top: 7px;\n\n  height: 17px;\n}\n\n\n.custom-best-sellers__star {\n  font-size: 16px;\n\n  line-height: 1;\n\n  color: #000;\n}\n\n\n.custom-best-sellers__star.empty {\n  color: #777;\n}\n\n\n/* =========================================================\n   PRICE\n   ========================================================= */\n\n.custom-best-sellers__price-row {\n  display: flex;\n\n  align-items: center;\n\n  flex-wrap: wrap;\n\n  gap: 7px;\n\n  margin-top: 8px;\n\n  min-height: 21px;\n}\n\n\n.custom-best-sellers__price {\n  font-size: 15px;\n  line-height: 1.35;\n\n  font-weight: 500;\n\n  color: #111;\n}\n\n\n.custom-best-sellers__compare {\n  font-size: 15px;\n  line-height: 1.35;\n\n  font-weight: 400;\n\n  color: #888;\n\n  text-decoration: line-through;\n}\n\n\n/* =========================================================\n   VARIANTS\n   ========================================================= */\n\n.custom-best-sellers__variants {\n  display: flex;\n\n  align-items: center;\n\n  flex-wrap: wrap;\n\n  gap: 7px;\n\n  margin-top: 10px;\n\n  min-height: 30px;\n}\n\n\n.custom-best-sellers__variant {\n  display: inline-flex;\n\n  align-items: center;\n  justify-content: center;\n\n  min-height: 22px;\n\n  padding: 3px 12px;\n\n  border: 1px solid #bdbdbd;\n\n  border-radius: 15px;\n\n  background: #fff;\n\n  color: #222;\n\n  font-size: 15px;\n  line-height: 1.2;\n\n  font-weight: 400;\n\n  white-space: nowrap;\n\n  cursor: pointer;\n\n  font-family: inherit;\n\n  appearance: none;\n  -webkit-appearance: none;\n\n  outline: none;\n\n  transition:\n    background .15s ease,\n    color .15s ease,\n    border-color .15s ease;\n}\n\n\n/* SELECTED */\n\n.custom-best-sellers__variant.is-selected {\n  background: #000;\n\n  border-color: #000;\n\n  color: #fff;\n\n  font-weight: 600;\n}\n\n\n/* DISABLED */\n\n.custom-best-sellers__variant:disabled {\n  opacity: .4;\n\n  cursor: not-allowed;\n}\n\n\n/* =========================================================\n   CART FORM\n   ========================================================= */\n\n.custom-best-sellers__cart-form {\n  width: 100%;\n\n  margin: 0;\n  padding: 0;\n}\n\n\n/* =========================================================\n   ADD TO CART\n   ========================================================= */\n\n.custom-best-sellers__add {\n  width: 100%;\n\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  margin-top: 10px;\n\n  padding: 14px 15px;\n\n  min-height: 48px;\n\n  border: 1px solid #000;\n\n  border-radius: 0;\n\n  background: #000;\n\n  color: #fff;\n\n  font-family: Jost, sans-serif;\n\n  font-size: 16px;\n  line-height: 1.2;\n\n  font-weight: 500;\n\n  text-align: center;\n\n  cursor: pointer;\n\n  appearance: none;\n  -webkit-appearance: none;\n\n  outline: none;\n\n  box-shadow: none;\n\n  transition: none;\n}\n\n\n/* =========================================================\n   ADD TO CART — NO HOVER EFFECT\n   ========================================================= */\n\n.custom-best-sellers__add:hover,\n.custom-best-sellers__add:focus,\n.custom-best-sellers__add:active {\n  background: #000 !important;\n\n  color: #fff !important;\n\n  border-color: #000 !important;\n\n  box-shadow: none !important;\n}\n\n\n/* =========================================================\n   BOTTOM SLIDER\n   ========================================================= */\n\n.custom-best-sellers__bottom {\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  width: 100%;\n\n  margin-top: 42px;\n}\n\n\n.custom-best-sellers__bottom-dots {\n  display: flex;\n\n  align-items: center;\n\n  justify-content: center;\n\n  gap: 5px;\n}\n\n\n.custom-best-sellers__bottom-dot {\n  width: 24px;\n  height: 4px;\n\n  padding: 0;\n  margin: 0;\n\n  border: 0;\n\n  border-radius: 5px;\n\n  background: #e7e7e7;\n\n  cursor: pointer;\n\n  appearance: none;\n  -webkit-appearance: none;\n}\n\n\n.custom-best-sellers__bottom-dot.is-active {\n  background: #000;\n}\n\n\n/* =========================================================\n   VIEW ALL\n   ========================================================= */\n\n.custom-best-sellers__view-all-wrap {\n  display: flex;\n\n  align-items: center;\n  justify-content: center;\n\n  margin-top: 20px;\n}\n\n\n.custom-best-sellers__view-all {\n  display: inline-flex;\n\n  align-items: center;\n  justify-content: center;\n\n  min-width: 163px;\n  min-height: 39px;\n\n  padding: 14px 46px;\n\n  border: 1px solid #111;\n\n  background: #fff;\n\n  color: #111;\n\n  text-decoration: none;\n\n  font-family: Jost, sans-serif;\n\n  font-size: 18px;\n  line-height: 1.2;\n\n  font-weight: 400;\n\n  transition: none;\n}\n\n\n/* =========================================================\n   VIEW ALL — NO HOVER\n   ========================================================= */\n\n.custom-best-sellers__view-all:hover,\n.custom-best-sellers__view-all:focus,\n.custom-best-sellers__view-all:active {\n  background: #fff !important;\n\n  color: #111 !important;\n\n  border-color: #111 !important;\n\n  box-shadow: none !important;\n}\n\n\n/* =========================================================\n   TABLET\n   ========================================================= */\n\n@media screen and (max-width: 989px) {\n\n  .custom-best-sellers {\n    padding-left: 12px;\n    padding-right: 12px;\n  }\n\n\n  .custom-best-sellers__track {\n    gap: 16px;\n  }\n\n\n  .custom-best-sellers__card {\n    flex: 0 0 calc((100% - 48px) / 4);\n\n    width: calc((100% - 48px) / 4);\n  }\n\n\n  .custom-best-sellers__image-box {\n    aspect-ratio: 2 / 3;\n  }\n\n}\n\n\n/* =========================================================\n   MOBILE\n   EXACTLY 2 PRODUCTS\n   ========================================================= */\n\n@media screen and (max-width: 749px) {\n\n  .custom-best-sellers {\n    width: 100% !important;\n    max-width: 100% !important;\n\n    padding:\n      28px 7px 12px !important;\n\n    margin: 0 !important;\n\n    overflow-x: hidden !important;\n    overflow-y: visible !important;\n  }\n\n\n  .custom-best-sellers__heading {\n    margin:\n      0 0 28px !important;\n\n    padding: 0 !important;\n\n    font-size: 32px !important;\n\n    line-height: 1.2;\n  }\n\n\n  .custom-best-sellers__viewport {\n    width: 100% !important;\n\n    max-width: 100% !important;\n\n    overflow: hidden !important;\n  }\n\n\n  .custom-best-sellers__track {\n    gap: 12px;\n  }\n\n\n  .custom-best-sellers__card {\n    flex:\n      0 0 calc((100% - 12px) / 2);\n\n    width:\n      calc((100% - 12px) / 2);\n\n    min-width: 0;\n  }\n\n\n  .custom-best-sellers__image-box {\n    width: 100%;\n\n    aspect-ratio: 2 / 3;\n\n    overflow: hidden;\n  }\n\n\n  .custom-best-sellers__badge {\n    top: 8px;\n    right: 8px;\n\n    min-height: 20px;\n\n    padding: 4px 7px;\n\n    font-size: 15px;\n  }\n\n\n  .custom-best-sellers__image-arrow {\n    width: 20px;\n    height: 20px;\n  }\n\n\n  .custom-best-sellers__image-arrow--prev {\n    left: 6px;\n  }\n\n\n  .custom-best-sellers__image-arrow--next {\n    right: 6px;\n  }\n\n\n  .custom-best-sellers__content {\n    padding-top: 13px;\n  }\n\n\n  .custom-best-sellers__title {\n    font-size: 18px !important;\n\n    line-height: 1.25;\n  }\n\n\n  .custom-best-sellers__description {\n    margin-top: 6px;\n\n    min-height: 19px;\n\n    font-size: 15px !important;\n\n    line-height: 1.3;\n  }\n\n\n  .custom-best-sellers__rating {\n    margin-top: 6px;\n  }\n\n\n  .custom-best-sellers__star {\n    font-size: 15px;\n  }\n\n\n  .custom-best-sellers__price-row {\n    margin-top: 7px;\n\n    gap: 5px;\n  }\n\n\n  .custom-best-sellers__price,\n  .custom-best-sellers__compare {\n    font-size: 15px !important;\n  }\n\n\n  .custom-best-sellers__variants {\n    gap: 5px;\n\n    margin-top: 9px;\n  }\n\n\n  .custom-best-sellers__variant {\n    font-size: 15px !important;\n\n    padding:\n      3px 9px;\n  }\n\n\n  .custom-best-sellers__add {\n    margin-top: 9px;\n\n    padding:\n      14px 15px !important;\n\n    min-height: 0;\n\n    font-size: 16px !important;\n  }\n\n\n  .custom-best-sellers__bottom {\n    margin-top: 35px;\n  }\n\n\n  .custom-best-sellers__bottom-dot {\n    width: 22px;\n    height: 4px;\n  }\n\n\n  .custom-best-sellers__view-all-wrap {\n    margin-top: 19px;\n  }\n\n\n  .custom-best-sellers__view-all {\n    min-width: 163px;\n\n    min-height: 39px;\n\n    padding:\n      14px 30px;\n\n    font-size: 18px;\n  }\n\n}\n\n\n/* =========================================================\n   SMALL MOBILE\n   ========================================================= */\n\n@media screen and (max-width: 380px) {\n\n  .custom-best-sellers {\n    padding-left: 6px !important;\n    padding-right: 6px !important;\n  }\n\n\n  .custom-best-sellers__track {\n    gap: 10px;\n  }\n\n\n  .custom-best-sellers__card {\n    flex:\n      0 0 calc((100% - 10px) / 2);\n\n    width:\n      calc((100% - 10px) / 2);\n  }\n\n\n  .custom-best-sellers__title {\n    font-size: 18px !important;\n  }\n\n\n  .custom-best-sellers__description {\n    font-size: 15px !important;\n  }\n\n\n  .custom-best-sellers__variant {\n    padding-left: 7px;\n    padding-right: 7px;\n  }\n\n}\n\n\n/* =========================================================\n   SAFETY\n   ========================================================= */\n\nhtml,\nbody {\n  max-width: 100%;\n  overflow-x: hidden;\n}\n\n\n.custom-best-sellers {\n  contain: layout paint;\n}\n\n</style>\n\n\n<section\n  class=\"custom-best-sellers\"\n  id=\"CustomBestSellers-{{ section.id | default: 'main' }}\"\n>\n\n  <!-- =====================================================\n       HEADING\n       ===================================================== -->\n\n  <h2 class=\"custom-best-sellers__heading\">\n    New Arrivals\n  </h2>\n\n\n  <!-- =====================================================\n       PRODUCT VIEWPORT\n       ===================================================== -->\n\n  <div class=\"custom-best-sellers__viewport\">\n\n    <div class=\"custom-best-sellers__track\">\n\n      {% assign best_seller_collection = collections['new-arrivals'] %}\n      {% assign product_limit = 8 %}\n\n\n      {% if best_seller_collection != blank\n        and best_seller_collection.products_count > 0\n      %}\n\n\n        {% for product in best_seller_collection.products limit: product_limit %}\n\n          <!-- =================================================\n               PRODUCT CARD\n               ================================================= -->\n\n          <article\n            class=\"custom-best-sellers__card\"\n            data-product-card\n          >\n\n\n            <!-- =================================================\n                 PRODUCT IMAGE AREA\n                 ================================================= -->\n\n            <div\n              class=\"custom-best-sellers__image-box\"\n              data-image-slider\n            >\n\n\n              <!-- NEW ARRIVAL BADGE -->\n\n              <span class=\"custom-best-sellers__badge\">\n                New Arrival\n              </span>\n\n\n              <!-- =================================================\n                   IMAGE LINK + REAL IMAGE TRACK\n                   ================================================= -->\n\n              <a\n                href=\"{{ product.url }}\"\n                class=\"custom-best-sellers__image-link\"\n                aria-label=\"{{ product.title | escape }}\"\n              >\n\n                <div\n                  class=\"custom-best-sellers__image-track\"\n                  data-image-track\n                >\n\n                  {% if product.images.size > 0 %}\n\n                    {% for image in product.images limit: 8 %}\n\n                      <div\n                        class=\"custom-best-sellers__image-slide\"\n                      >\n\n                        <img\n                          class=\"custom-best-sellers__image\"\n                          src=\"{{ image | image_url: width: 1200 }}\"\n                          alt=\"{{ image.alt | default: product.title | escape }}\"\n                          loading=\"{% if forloop.first %}eager{% else %}lazy{% endif %}\"\n                          width=\"{{ image.width }}\"\n                          height=\"{{ image.height }}\"\n                          draggable=\"false\"\n                        >\n\n                      </div>\n\n                    {% endfor %}\n\n                  {% elsif product.featured_image %}\n\n                    <div class=\"custom-best-sellers__image-slide\">\n\n                      <img\n                        class=\"custom-best-sellers__image\"\n                        src=\"{{ product.featured_image | image_url: width: 1200 }}\"\n                        alt=\"{{ product.featured_image.alt | default: product.title | escape }}\"\n                        loading=\"lazy\"\n                        width=\"{{ product.featured_image.width }}\"\n                        height=\"{{ product.featured_image.height }}\"\n                        draggable=\"false\"\n                      >\n\n                    </div>\n\n                  {% endif %}\n\n                </div>\n\n              </a>\n\n\n              <!-- =================================================\n                   PREVIOUS IMAGE\n                   ================================================= -->\n\n              <button\n                type=\"button\"\n                class=\"\n                  custom-best-sellers__image-arrow\n                  custom-best-sellers__image-arrow--prev\n                \"\n                aria-label=\"Previous product image\"\n                data-image-prev\n              >\n\n                <svg viewBox=\"0 0 24 24\">\n\n                  <path\n                    d=\"M14.5 5L7.5 12L14.5 19\"\n                  ></path>\n\n                </svg>\n\n              </button>\n\n\n              <!-- =================================================\n                   NEXT IMAGE\n                   ================================================= -->\n\n              <button\n                type=\"button\"\n                class=\"\n                  custom-best-sellers__image-arrow\n                  custom-best-sellers__image-arrow--next\n                \"\n                aria-label=\"Next product image\"\n                data-image-next\n              >\n\n                <svg viewBox=\"0 0 24 24\">\n\n                  <path\n                    d=\"M9.5 5L16.5 12L9.5 19\"\n                  ></path>\n\n                </svg>\n\n              </button>\n\n\n              <!-- =================================================\n                   IMAGE DOTS\n                   ================================================= -->\n\n              {% if product.images.size > 1 %}\n\n                <div\n                  class=\"custom-best-sellers__image-dots\"\n                  data-image-dots\n                >\n\n                  {% for image in product.images limit: 8 %}\n\n                    <span\n                      class=\"\n                        custom-best-sellers__image-dot\n                        {% if forloop.first %}is-active{% endif %}\n                      \"\n                    ></span>\n\n                  {% endfor %}\n\n                </div>\n\n              {% endif %}\n\n\n            </div>\n\n\n            <!-- =================================================\n                 PRODUCT CONTENT\n                 ================================================= -->\n\n            <div class=\"custom-best-sellers__content\">\n\n\n              <!-- PRODUCT TITLE -->\n\n              <h3 class=\"custom-best-sellers__title\">\n\n                <a href=\"{{ product.url }}\">\n                  {{ product.title }}\n                </a>\n\n              </h3>\n\n\n              <!-- PRODUCT DESCRIPTION -->\n\n              <div class=\"custom-best-sellers__description\">\n\n                {{ product.description\n                  | strip_html\n                  | truncate: 72\n                }}\n\n              </div>\n\n\n              <!-- =================================================\n                   RATING\n                   ================================================= -->\n\n              <div\n                class=\"custom-best-sellers__rating\"\n                aria-label=\"4 out of 5 stars\"\n              >\n\n                <span class=\"custom-best-sellers__star\">\n                  ★\n                </span>\n\n                <span class=\"custom-best-sellers__star\">\n                  ★\n                </span>\n\n                <span class=\"custom-best-sellers__star\">\n                  ★\n                </span>\n\n                <span class=\"custom-best-sellers__star\">\n                  ★\n                </span>\n\n                <span class=\"custom-best-sellers__star empty\">\n                  ☆\n                </span>\n\n              </div>\n\n\n              <!-- =================================================\n                   PRICE\n                   ================================================= -->\n\n              <div class=\"custom-best-sellers__price-row\">\n\n                <span\n                  class=\"custom-best-sellers__price\"\n                  data-product-price\n                >\n                  {{ product.selected_or_first_available_variant.price | money }}\n                </span>\n\n\n                {% if product.selected_or_first_available_variant.compare_at_price\n                  > product.selected_or_first_available_variant.price\n                %}\n\n                  <span\n                    class=\"custom-best-sellers__compare\"\n                    data-product-compare\n                  >\n                    {{ product.selected_or_first_available_variant.compare_at_price | money }}\n                  </span>\n\n                {% else %}\n\n                  <span\n                    class=\"custom-best-sellers__compare\"\n                    data-product-compare\n                    style=\"display:none;\"\n                  ></span>\n\n                {% endif %}\n\n              </div>\n\n\n              <!-- =================================================\n                   VARIANTS\n                   REAL SHOPIFY VARIANTS\n                   ================================================= -->\n\n              {% assign available_variant = product.selected_or_first_available_variant %}\n\n\n              {% if product.variants.size > 1 %}\n\n                <div\n                  class=\"custom-best-sellers__variants\"\n                  data-variant-selector\n                >\n\n                  {% for variant in product.variants %}\n\n                    <button\n                      type=\"button\"\n                      class=\"\n                        custom-best-sellers__variant\n                        {% if variant.id == available_variant.id %}\n                          is-selected\n                        {% endif %}\n                      \"\n                      data-variant-id=\"{{ variant.id }}\"\n                      data-variant-price=\"{{ variant.price | money | escape }}\"\n                      data-variant-compare=\"{{ variant.compare_at_price | default: 0 | money | escape }}\"\n                      data-variant-available=\"{{ variant.available }}\"\n                      {% unless variant.available %}\n                        disabled\n                      {% endunless %}\n                    >\n\n                      {{ variant.title }}\n\n                    </button>\n\n                  {% endfor %}\n\n                </div>\n\n\n              {% elsif product.variants.first.title != 'Default Title' %}\n\n                <div\n                  class=\"custom-best-sellers__variants\"\n                  data-variant-selector\n                >\n\n                  <button\n                    type=\"button\"\n                    class=\"\n                      custom-best-sellers__variant\n                      is-selected\n                    \"\n                    data-variant-id=\"{{ product.variants.first.id }}\"\n                    data-variant-price=\"{{ product.variants.first.price | money | escape }}\"\n                    data-variant-compare=\"{{ product.variants.first.compare_at_price | default: 0 | money | escape }}\"\n                    data-variant-available=\"{{ product.variants.first.available }}\"\n                    {% unless product.variants.first.available %}\n                      disabled\n                    {% endunless %}\n                  >\n\n                    {{ product.variants.first.title }}\n\n                  </button>\n\n                </div>\n\n              {% endif %}\n\n\n              <!-- =================================================\n                   ADD TO CART\n                   ================================================= -->\n\n              <form\n                action=\"{{ routes.cart_add_url }}\"\n                method=\"post\"\n                class=\"custom-best-sellers__cart-form\"\n                data-cart-form\n              >\n\n                <input\n                  type=\"hidden\"\n                  name=\"id\"\n                  value=\"{{ available_variant.id }}\"\n                  data-selected-variant\n                >\n\n\n                <button\n                  type=\"submit\"\n                  class=\"custom-best-sellers__add\"\n                  {% unless available_variant.available %}\n                    disabled\n                  {% endunless %}\n                >\n\n                  {% if available_variant.available %}\n                    Add to cart\n                  {% else %}\n                    Sold out\n                  {% endif %}\n\n                </button>\n\n              </form>\n\n\n            </div>\n\n          </article>\n\n        {% endfor %}\n\n\n      {% else %}\n\n        <div\n          style=\"\n            width:100%;\n            padding:50px 20px;\n            text-align:center;\n            font-size:16px;\n          \"\n        >\n\n          Please create a Shopify collection with handle\n          <strong>new-arrivals</strong>.\n\n        </div>\n\n      {% endif %}\n\n    </div>\n\n  </div>\n\n\n  <!-- =====================================================\n       BOTTOM PRODUCT SLIDER DOTS\n       ===================================================== -->\n\n  <div class=\"custom-best-sellers__bottom\">\n\n    <div\n      class=\"custom-best-sellers__bottom-dots\"\n      data-product-slider-dots\n    ></div>\n\n  </div>\n\n\n  <!-- =====================================================\n       VIEW ALL\n       ===================================================== -->\n\n  {% if best_seller_collection != blank %}\n\n    <div class=\"custom-best-sellers__view-all-wrap\">\n\n      <a\n        href=\"{{ best_seller_collection.url }}\"\n        class=\"custom-best-sellers__view-all\"\n      >\n        View all products\n      </a>\n\n    </div>\n\n  {% endif %}\n\n\n</section>\n\n\n<script>\n\n(function () {\n\n  'use strict';\n\n\n  /* =========================================================\n     INITIALIZE\n     ========================================================= */\n\n  function initBestSellers() {\n\n    var sections =\n      document.querySelectorAll(\n        '.custom-best-sellers'\n      );\n\n\n    sections.forEach(function (section) {\n\n\n      if (\n        section.dataset.initialized === 'true'\n      ) {\n        return;\n      }\n\n\n      section.dataset.initialized = 'true';\n\n\n      /* =====================================================\n         PRODUCT SLIDER ELEMENTS\n         ===================================================== */\n\n      var viewport =\n        section.querySelector(\n          '.custom-best-sellers__viewport'\n        );\n\n\n      var track =\n        section.querySelector(\n          '.custom-best-sellers__track'\n        );\n\n\n      var cards =\n        Array.from(\n          section.querySelectorAll(\n            '.custom-best-sellers__card'\n          )\n        );\n\n\n      var dotsContainer =\n        section.querySelector(\n          '[data-product-slider-dots]'\n        );\n\n\n      if (\n        !viewport ||\n        !track ||\n        !cards.length\n      ) {\n        return;\n      }\n\n\n      /* =====================================================\n         CURRENT PRODUCT PAGE\n         ===================================================== */\n\n      var currentPage = 0;\n\n\n      /* =====================================================\n         GET VISIBLE PRODUCTS\n         ===================================================== */\n\n      function getVisibleProducts() {\n\n        if (\n          window.innerWidth <= 749\n        ) {\n\n          return 2;\n\n        }\n\n\n        return 4;\n\n      }\n\n\n      /* =====================================================\n         GET GAP\n         ===================================================== */\n\n      function getGap() {\n\n        if (\n          window.innerWidth <= 749\n        ) {\n\n          return window.innerWidth <= 380\n            ? 10\n            : 12;\n\n        }\n\n\n        if (\n          window.innerWidth <= 989\n        ) {\n\n          return 16;\n\n        }\n\n\n        return 24;\n\n      }\n\n\n      /* =====================================================\n         TOTAL PAGES\n         ===================================================== */\n\n      function getTotalPages() {\n\n        var visible =\n          getVisibleProducts();\n\n\n        return Math.max(\n          1,\n          Math.ceil(\n            cards.length / visible\n          )\n        );\n\n      }\n\n\n      /* =====================================================\n         BUILD BOTTOM DOTS\n         ===================================================== */\n\n      function buildBottomDots() {\n\n        if (!dotsContainer) {\n          return;\n        }\n\n\n        dotsContainer.innerHTML = '';\n\n\n        var totalPages =\n          getTotalPages();\n\n\n        for (\n          var i = 0;\n          i < totalPages;\n          i++\n        ) {\n\n          var button =\n            document.createElement(\n              'button'\n            );\n\n\n          button.type =\n            'button';\n\n\n          button.className =\n            'custom-best-sellers__bottom-dot';\n\n\n          button.setAttribute(\n            'aria-label',\n            'Show product group ' +\n            (i + 1)\n          );\n\n\n          button.dataset.page =\n            i;\n\n\n          if (\n            i === currentPage\n          ) {\n\n            button.classList.add(\n              'is-active'\n            );\n\n          }\n\n\n          button.addEventListener(\n            'click',\n            function () {\n\n              var page =\n                parseInt(\n                  this.dataset.page,\n                  10\n                );\n\n\n              if (\n                isNaN(page)\n              ) {\n                return;\n              }\n\n\n              currentPage =\n                Math.max(\n                  0,\n                  Math.min(\n                    page,\n                    getTotalPages() - 1\n                  )\n                );\n\n\n              updateProductSlider();\n\n            }\n          );\n\n\n          dotsContainer.appendChild(\n            button\n          );\n\n        }\n\n      }\n\n\n      /* =====================================================\n         PRODUCT SLIDER\n         IMPORTANT:\n         EXACT CARD-BASED CALCULATION\n         ===================================================== */\n\n      function updateProductSlider() {\n\n        var visible =\n          getVisibleProducts();\n\n\n        var gap =\n          getGap();\n\n\n        var totalPages =\n          getTotalPages();\n\n\n        if (\n          currentPage >= totalPages\n        ) {\n\n          currentPage =\n            totalPages - 1;\n\n        }\n\n\n        if (\n          currentPage < 0\n        ) {\n\n          currentPage = 0;\n\n        }\n\n\n        /*\n          Calculate actual card width\n          directly from DOM.\n        */\n\n        var cardWidth =\n          cards[0].getBoundingClientRect().width;\n\n\n        /*\n          Move exactly:\n          card width + gap\n          multiplied by visible cards.\n        */\n\n        var moveDistance =\n          currentPage *\n          visible *\n          (cardWidth + gap);\n\n\n        /*\n          For final page calculate actual\n          available movement so there is\n          no blank area.\n        */\n\n        var maxMove =\n          Math.max(\n            0,\n            track.scrollWidth -\n            viewport.clientWidth\n          );\n\n\n        moveDistance =\n          Math.min(\n            moveDistance,\n            maxMove\n          );\n\n\n        /*\n          Smooth product movement.\n        */\n\n        track.style.transform =\n          'translate3d(' +\n          (-moveDistance) +\n          'px, 0, 0)';\n\n\n        /*\n          Update dots.\n        */\n\n        if (dotsContainer) {\n\n          var dots =\n            dotsContainer.querySelectorAll(\n              '.custom-best-sellers__bottom-dot'\n            );\n\n\n          dots.forEach(\n            function (dot, index) {\n\n              dot.classList.toggle(\n                'is-active',\n                index === currentPage\n              );\n\n            }\n          );\n\n        }\n\n      }\n\n\n      /* =====================================================\n         PRODUCT IMAGE SLIDERS\n         ===================================================== */\n\n      cards.forEach(function (card) {\n\n\n        var imageBox =\n          card.querySelector(\n            '[data-image-slider]'\n          );\n\n\n        if (!imageBox) {\n          return;\n        }\n\n\n        var imageTrack =\n          imageBox.querySelector(\n            '[data-image-track]'\n          );\n\n\n        var slides =\n          Array.from(\n            imageBox.querySelectorAll(\n              '.custom-best-sellers__image-slide'\n            )\n          );\n\n\n        var prevButton =\n          imageBox.querySelector(\n            '[data-image-prev]'\n          );\n\n\n        var nextButton =\n          imageBox.querySelector(\n            '[data-image-next]'\n          );\n\n\n        var dots =\n          Array.from(\n            imageBox.querySelectorAll(\n              '.custom-best-sellers__image-dot'\n            )\n          );\n\n\n        /*\n          If only one image,\n          arrows and dots are hidden.\n        */\n\n        if (\n          slides.length <= 1\n        ) {\n\n          if (prevButton) {\n            prevButton.style.display =\n              'none';\n          }\n\n\n          if (nextButton) {\n            nextButton.style.display =\n              'none';\n          }\n\n\n          if (dots.length) {\n\n            dots.forEach(\n              function (dot) {\n\n                dot.style.display =\n                  'none';\n\n              }\n            );\n\n          }\n\n\n          return;\n\n        }\n\n\n        var currentImage = 0;\n\n\n        /* =================================================\n           UPDATE IMAGE SLIDER\n           ================================================= */\n\n        function updateImageSlider(\n          direction\n        ) {\n\n          /*\n            Calculate next index.\n          */\n\n          if (\n            direction === 'next'\n          ) {\n\n            currentImage++;\n\n\n            if (\n              currentImage >=\n              slides.length\n            ) {\n\n              currentImage = 0;\n\n            }\n\n          }\n\n\n          if (\n            direction === 'prev'\n          ) {\n\n            currentImage--;\n\n\n            if (\n              currentImage < 0\n            ) {\n\n              currentImage =\n                slides.length - 1;\n\n            }\n\n          }\n\n\n          /*\n            Actual horizontal movement.\n            Each slide = 100%.\n          */\n\n          var move =\n            currentImage * 100;\n\n\n          imageTrack.style.transform =\n            'translate3d(-' +\n            move +\n            '%, 0, 0)';\n\n\n          /*\n            Update dots.\n          */\n\n          dots.forEach(\n            function (\n              dot,\n              index\n            ) {\n\n              dot.classList.toggle(\n                'is-active',\n                index === currentImage\n              );\n\n            }\n          );\n\n        }\n\n\n        /* =================================================\n           NEXT IMAGE\n           ================================================= */\n\n        if (nextButton) {\n\n          nextButton.addEventListener(\n            'click',\n            function (event) {\n\n              event.preventDefault();\n\n              event.stopPropagation();\n\n\n              updateImageSlider(\n                'next'\n              );\n\n            }\n          );\n\n        }\n\n\n        /* =================================================\n           PREVIOUS IMAGE\n           ================================================= */\n\n        if (prevButton) {\n\n          prevButton.addEventListener(\n            'click',\n            function (event) {\n\n              event.preventDefault();\n\n              event.stopPropagation();\n\n\n              updateImageSlider(\n                'prev'\n              );\n\n            }\n          );\n\n        }\n\n\n        /*\n          Prevent arrow clicks from\n          following the image link.\n        */\n\n        [prevButton, nextButton].forEach(\n          function (button) {\n\n            if (!button) {\n              return;\n            }\n\n\n            button.addEventListener(\n              'mousedown',\n              function (event) {\n\n                event.preventDefault();\n\n              }\n            );\n\n          }\n        );\n\n\n      });\n\n\n      /* =====================================================\n         VARIANT SELECTOR\n         ===================================================== */\n\n      cards.forEach(function (card) {\n\n\n        var selector =\n          card.querySelector(\n            '[data-variant-selector]'\n          );\n\n\n        var hiddenInput =\n          card.querySelector(\n            '[data-selected-variant]'\n          );\n\n\n        var addButton =\n          card.querySelector(\n            '.custom-best-sellers__add'\n          );\n\n\n        var priceElement =\n          card.querySelector(\n            '[data-product-price]'\n          );\n\n\n        var compareElement =\n          card.querySelector(\n            '[data-product-compare]'\n          );\n\n\n        if (\n          !selector ||\n          !hiddenInput\n        ) {\n          return;\n        }\n\n\n        var variants =\n          Array.from(\n            selector.querySelectorAll(\n              '.custom-best-sellers__variant'\n            )\n          );\n\n\n        variants.forEach(\n          function (variant) {\n\n\n            variant.addEventListener(\n              'click',\n              function (event) {\n\n                event.preventDefault();\n\n\n                /*\n                  Don't select unavailable\n                  variants.\n                */\n\n                if (\n                  variant.disabled\n                ) {\n\n                  return;\n\n                }\n\n\n                /*\n                  Remove previous selection.\n                */\n\n                variants.forEach(\n                  function (item) {\n\n                    item.classList.remove(\n                      'is-selected'\n                    );\n\n                  }\n                );\n\n\n                /*\n                  Select clicked variant.\n                */\n\n                variant.classList.add(\n                  'is-selected'\n                );\n\n\n                /*\n                  Get REAL Shopify\n                  variant ID.\n                */\n\n                var variantId =\n                  variant.getAttribute(\n                    'data-variant-id'\n                  );\n\n\n                if (\n                  variantId\n                ) {\n\n                  hiddenInput.value =\n                    variantId;\n\n                }\n\n\n                /*\n                  Update price.\n                */\n\n                var variantPrice =\n                  variant.getAttribute(\n                    'data-variant-price'\n                  );\n\n\n                if (\n                  priceElement &&\n                  variantPrice\n                ) {\n\n                  priceElement.textContent =\n                    variantPrice;\n\n                }\n\n\n                /*\n                  Update compare price.\n                */\n\n                var variantCompare =\n                  variant.getAttribute(\n                    'data-variant-compare'\n                  );\n\n\n                if (\n                  compareElement\n                ) {\n\n                  if (\n                    variantCompare &&\n                    variantCompare !==\n                    'Rs. 0.00' &&\n                    variantCompare !==\n                    'Rs.0.00'\n                  ) {\n\n                    compareElement.textContent =\n                      variantCompare;\n\n                    compareElement.style.display =\n                      '';\n\n                  } else {\n\n                    compareElement.textContent =\n                      '';\n\n                    compareElement.style.display =\n                      'none';\n\n                  }\n\n                }\n\n\n                /*\n                  Update Add to Cart.\n                */\n\n                if (addButton) {\n\n                  addButton.disabled =\n                    false;\n\n                  addButton.textContent =\n                    'Add to cart';\n\n                }\n\n              }\n            );\n\n          }\n        );\n\n\n      });\n\n\n      /* =====================================================\n         CART FORM\n         ===================================================== */\n\n      var cartForms =\n        section.querySelectorAll(\n          '[data-cart-form]'\n        );\n\n\n      cartForms.forEach(\n        function (form) {\n\n          form.addEventListener(\n            'submit',\n            function (event) {\n\n              var selectedVariant =\n                form.querySelector(\n                  '[data-selected-variant]'\n                );\n\n\n              /*\n                Make sure an actual\n                variant ID exists.\n              */\n\n              if (\n                !selectedVariant ||\n                !selectedVariant.value\n              ) {\n\n                event.preventDefault();\n\n                return;\n\n              }\n\n            }\n          );\n\n        }\n      );\n\n\n      /* =====================================================\n         INITIAL PRODUCT SLIDER\n         ===================================================== */\n\n      buildBottomDots();\n\n\n      setTimeout(\n        function () {\n\n          updateProductSlider();\n\n        },\n        100\n      );\n\n\n      /* =====================================================\n         RESIZE\n         ===================================================== */\n\n      var resizeTimer = null;\n\n\n      window.addEventListener(\n        'resize',\n        function () {\n\n\n          clearTimeout(\n            resizeTimer\n          );\n\n\n          resizeTimer =\n            setTimeout(\n              function () {\n\n\n                var totalPages =\n                  getTotalPages();\n\n\n                if (\n                  currentPage >=\n                  totalPages\n                ) {\n\n                  currentPage =\n                    Math.max(\n                      0,\n                      totalPages - 1\n                    );\n\n                }\n\n\n                buildBottomDots();\n\n\n                updateProductSlider();\n\n\n              },\n              120\n            );\n\n        }\n      );\n\n\n    });\n\n  }\n\n\n  /* =========================================================\n     INITIAL LOAD\n     ========================================================= */\n\n  if (\n    document.readyState ===\n    'loading'\n  ) {\n\n    document.addEventListener(\n      'DOMContentLoaded',\n      initBestSellers\n    );\n\n  } else {\n\n    initBestSellers();\n\n  }\n\n\n  /* =========================================================\n     SHOPIFY THEME EDITOR\n     ========================================================= */\n\n  document.addEventListener(\n    'shopify:section:load',\n    function (event) {\n\n\n      var section =\n        event.target &&\n        event.target.querySelector\n          ? event.target.querySelector(\n              '.custom-best-sellers'\n            )\n          : null;\n\n\n      if (section) {\n\n        section.dataset.initialized =\n          'false';\n\n      }\n\n\n      initBestSellers();\n\n    }\n  );\n\n\n})();\n\n</script>",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "review_tUyjPU": {
+      "type": "review",
+      "name": "Customer Reviews Clone",
+      "settings": {}
+    },
+    "section_VUTVxT": {
+      "type": "section",
+      "blocks": {
+        "text_FFztgg": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h5><strong>The future of personal care is here</strong></h5>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-body--family)",
+            "font_size": "2rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_NkwAGw": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<p>Embrace Minimalist, where each element is chosen for its scientific merit, offering you authentic, effective skincare solutions.</p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_FFztgg",
+        "text_NkwAGw"
+      ],
+      "name": "t:names.rich_text_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 25,
+        "section_width": "page-width",
+        "section_height": "small",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "section_MicGRT": {
+      "type": "section",
+      "blocks": {
+        "group_RQBLCw": {
+          "type": "group",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 16,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "background_media": "none",
+            "background_color": "",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "icon_bKDUqg": {
+              "type": "icon",
+              "settings": {
+                "icon": "eye",
+                "image_upload": "shopify://shop_images/transparency.webp",
+                "width": 66,
+                "link": "",
+                "open_in_new_tab": false,
+                "icon_color": ""
+              },
+              "blocks": {}
+            },
+            "group_9z3AWR": {
+              "type": "group",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 4,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "background_media": "none",
+                "background_color": "",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "text_RxW6UE": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h5>Transparency</h5>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "center",
+                    "type_preset": "h4",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "text_QtetKd": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h4>Full disclosure of ingredients used & their concentration</h4>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "center",
+                    "type_preset": "custom",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1.25rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_RxW6UE",
+                "text_QtetKd"
+              ]
+            }
+          },
+          "block_order": [
+            "icon_bKDUqg",
+            "group_9z3AWR"
+          ]
+        },
+        "group_PbwpJA": {
+          "type": "group",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 16,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "background_media": "none",
+            "background_color": "",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "icon_9TbxzG": {
+              "type": "icon",
+              "settings": {
+                "icon": "heart",
+                "image_upload": "shopify://shop_images/medical-research-256_1.avif",
+                "width": 66,
+                "link": "",
+                "open_in_new_tab": false,
+                "icon_color": ""
+              },
+              "blocks": {}
+            },
+            "group_PdqiJr": {
+              "type": "group",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 4,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "background_media": "none",
+                "background_color": "",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "text_XUYibT": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h2>Efficacy</h2>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "center",
+                    "type_preset": "h4",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "text_VUL3cW": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Formulations developed in our in-house laboratories </p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "center",
+                    "type_preset": "custom",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1.25rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_XUYibT",
+                "text_VUL3cW"
+              ]
+            }
+          },
+          "block_order": [
+            "icon_9TbxzG",
+            "group_PdqiJr"
+          ]
+        },
+        "group_EqbHwb": {
+          "type": "group",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 16,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "background_media": "none",
+            "background_color": "",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "icon_wWafjR": {
+              "type": "icon",
+              "settings": {
+                "icon": "silhouette",
+                "image_upload": "shopify://shop_images/download.webp",
+                "width": 66,
+                "link": "",
+                "open_in_new_tab": false,
+                "icon_color": ""
+              },
+              "blocks": {}
+            },
+            "group_DzBc9e": {
+              "type": "group",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 4,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "background_media": "none",
+                "background_color": "",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "text_eeYXcD": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h2>Affordable</h2>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "center",
+                    "type_preset": "h4",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "text_GdCU6a": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Skincare, accessible to all</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "center",
+                    "type_preset": "custom",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1.25rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_eeYXcD",
+                "text_GdCU6a"
+              ]
+            }
+          },
+          "block_order": [
+            "icon_wWafjR",
+            "group_DzBc9e"
+          ]
+        },
+        "group_Jpck7q": {
+          "type": "group",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 16,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "background_media": "none",
+            "background_color": "",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "icon_wzXqGk": {
+              "type": "icon",
+              "settings": {
+                "icon": "silhouette",
+                "image_upload": "shopify://shop_images/globe.avif",
+                "width": 66,
+                "link": "",
+                "open_in_new_tab": false,
+                "icon_color": ""
+              },
+              "blocks": {}
+            },
+            "group_dBFGtk": {
+              "type": "group",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 4,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "background_media": "none",
+                "background_color": "",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "text_iyQWAa": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<h2>Only the best</h2>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "center",
+                    "type_preset": "h4",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "text_kxFJ3t": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Ingredients sourced from across the world</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "center",
+                    "type_preset": "custom",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1.25rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_iyQWAa",
+                "text_kxFJ3t"
+              ]
+            }
+          },
+          "block_order": [
+            "icon_wzXqGk",
+            "group_dBFGtk"
+          ]
+        }
+      },
+      "block_order": [
+        "group_RQBLCw",
+        "group_PbwpJA",
+        "group_EqbHwb",
+        "group_Jpck7q"
+      ],
+      "name": "t:names.icons_with_text",
+      "settings": {
+        "content_direction": "row",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 16,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 48
+      }
+    },
+    "section_WcmjUi": {
+      "type": "section",
+      "blocks": {
+        "text_jFgTPW": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h2><strong>Beware of Fake Products – Buy Only from the Official Sheene Shop</strong></h2>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-body--family)",
+            "font_size": "2rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_WdajUg": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<p>At Sheene, your trust and safety are our top priority. Due to the rising demand for our hair-care products, many unauthorized websites, online sellers, and local shops have started offering <strong>fake or counterfeit Sheene items</strong>. These imitations may look similar, but they <strong>do not contain our certified ingredients</strong>, fail to deliver results, and can even cause damage.</p><p>To protect our customers, we want to make it clear:</p>",
+            "width": "100%",
+            "max_width": "none",
+            "alignment": "center",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_jFgTPW",
+        "text_WdajUg"
+      ],
+      "name": "t:names.rich_text_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 25,
+        "section_width": "page-width",
+        "section_height": "small",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "section_c3KbYq": {
+      "type": "section",
+      "blocks": {
+        "text_NA9ayw": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h2><strong>This is the </strong><em><strong>only</strong></em><strong> official and original Sheene website.</strong></h2>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-body--family)",
+            "font_size": "2rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "text_jRMp6U": {
+          "type": "text",
+          "name": "t:names.text",
+          "settings": {
+            "text": "<p>We guarantee 100% authentic products, with proper quality checks, secure packaging, and verified batch tracking.</p><p>Our goal is to help you easily <strong>identify original Sheena products</strong> and avoid scams. Inside this website, you will find clear guidance on how to spot fake sellers, how to confirm authenticity, and how to ensure you always receive genuine Havelyn quality.</p><p>Choose wisely. Stay safe. Always buy <strong>Sheene</strong> from the <strong>original, authorized source.</strong></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p>",
+            "width": "100%",
+            "max_width": "none",
+            "alignment": "center",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_NA9ayw",
+        "text_jRMp6U"
+      ],
+      "name": "t:names.rich_text_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 25,
+        "section_width": "page-width",
+        "section_height": "small",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "marquee_7RwNm6": {
+      "type": "marquee",
+      "blocks": {
+        "text_mXTjiV": {
+          "type": "text",
+          "settings": {
+            "text": "<p><strong>The 56th GST Council has reduced the tax on Haircare (HSN-3305) from 18% to 5%. As a result, our shampoos now come with lower MRPs, effective 22nd September, 2025.</strong><a href=\"https://beminimalist.co/collections/shampoo-range\" title=\"Shampoo Range\"><strong>Know More!</strong></a></p>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-body--family)",
+            "font_size": "1.25rem",
+            "line_height": "tight",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "text_mXTjiV"
+      ],
+      "disabled": true,
+      "name": "t:names.marquee_section",
+      "settings": {
+        "movement_direction": "normal",
+        "background_color": "#f2efec",
+        "padding-block-start": 24,
+        "padding-block-end": 24,
+        "gap_between_elements": 24
+      }
+    },
+    "collection_list_aQAKed": {
+      "type": "collection-list",
+      "blocks": {
+        "group_zdHpcV": {
+          "type": "group",
+          "name": "t:names.header",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 12,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "background_media": "none",
+            "background_color": "",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "text_KUjfr8": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "<h3>Shop By Category</h3>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 16,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "text_KUjfr8"
+          ]
+        },
+        "static-collection-card": {
+          "type": "_collection-card",
+          "name": "t:names.collection_card",
+          "static": true,
+          "settings": {
+            "placement": "on_image",
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "flex-start",
+            "collection_card_gap": 8,
+            "background_color": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0
+          },
+          "blocks": {
+            "collection_title_LQmh9E": {
+              "type": "collection-title",
+              "name": "t:names.collection_title",
+              "settings": {
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "background": true,
+                "background_color": "#ffffff",
+                "text_color": "{{ settings.color_palette.foreground }}",
+                "corner_radius": 0,
+                "padding-block-start": 4,
+                "padding-block-end": 4,
+                "padding-inline-start": 8,
+                "padding-inline-end": 8
+              },
+              "blocks": {}
+            },
+            "collection-card-image": {
+              "type": "_collection-card-image",
+              "name": "t:names.collection_card_image",
+              "static": true,
+              "settings": {
+                "image_ratio": "adapt",
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "collection_title_LQmh9E"
+          ]
+        }
+      },
+      "block_order": [
+        "group_zdHpcV"
+      ],
+      "disabled": true,
+      "name": "t:names.collections_grid",
+      "settings": {
+        "collection_list": [
+          "cleanser",
+          "mask",
+          "moisturizer",
+          "serum",
+          "sunscreen",
+          "toner"
+        ],
+        "layout_type": "grid",
+        "carousel_on_mobile": false,
+        "columns": 3,
+        "mobile_columns": "2",
+        "mobile_card_size": "60cqw",
+        "columns_gap": 8,
+        "bento_gap": 8,
+        "rows_gap": 8,
+        "max_collections": 4,
+        "icons_style": "arrow",
+        "icons_shape": "none",
+        "section_width": "page-width",
+        "gap": 12,
+        "background_color": "",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "collection_list_qamaz9": {
+      "type": "collection-list",
+      "blocks": {
+        "group_77JQJ9": {
+          "type": "group",
+          "name": "t:names.header",
+          "settings": {
+            "content_direction": "column",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 12,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "background_media": "none",
+            "background_color": "",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "link": "",
+            "open_in_new_tab": false,
+            "placeholder": "",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "text_tQWdJA": {
+              "type": "text",
+              "name": "t:names.text",
+              "settings": {
+                "text": "<h3>Shop By Concern</h3>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 16,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "text_tQWdJA"
+          ]
+        },
+        "static-collection-card": {
+          "type": "_collection-card",
+          "name": "t:names.collection_card",
+          "static": true,
+          "settings": {
+            "placement": "below_image",
+            "horizontal_alignment": "flex-start",
+            "vertical_alignment": "center",
+            "collection_card_gap": 8,
+            "background_color": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0
+          },
+          "blocks": {
+            "collection_title_fyQaib": {
+              "type": "collection-title",
+              "name": "t:names.collection_title",
+              "settings": {
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "background": false,
+                "background_color": "{{ settings.color_palette.background }}",
+                "text_color": "{{ settings.color_palette.foreground }}",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "collection-card-image": {
+              "type": "_collection-card-image",
+              "name": "t:names.collection_card_image",
+              "static": true,
+              "settings": {
+                "image_ratio": "adapt",
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "collection_title_fyQaib"
+          ]
+        }
+      },
+      "block_order": [
+        "group_77JQJ9"
+      ],
+      "disabled": true,
+      "name": "t:names.collections_carousel",
+      "settings": {
+        "collection_list": [
+          "acne",
+          "dryness",
+          "oily-skin-pores",
+          "pigmentation",
+          "sensitive-skin",
+          "texture"
+        ],
+        "layout_type": "carousel",
+        "carousel_on_mobile": false,
+        "columns": 3,
+        "mobile_columns": "2",
+        "mobile_card_size": "60cqw",
+        "columns_gap": 8,
+        "bento_gap": 8,
+        "rows_gap": 8,
+        "max_collections": 4,
+        "icons_style": "arrow",
+        "icons_shape": "circle",
+        "section_width": "page-width",
+        "gap": 12,
+        "background_color": "",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "product_list_WE4T79": {
+      "type": "product-list",
+      "blocks": {
+        "static-header": {
+          "type": "_product-list-content",
+          "name": "t:names.header",
+          "static": true,
+          "settings": {
+            "content_direction": "row",
+            "vertical_on_mobile": false,
+            "horizontal_alignment": "space-between",
+            "vertical_alignment": "flex-end",
+            "align_baseline": true,
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 12,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "background_media": "none",
+            "background_color": "",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "product_list_text_LtreUb": {
+              "type": "_product-list-text",
+              "name": "t:names.collection_title",
+              "settings": {
+                "text": "<h2>New Launches</h2>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "h3",
+                "font": "var(--font-body--family)",
+                "font_size": "",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "product_list_button_4AtNMb": {
+              "type": "_product-list-button",
+              "name": "t:names.product_list_button",
+              "settings": {
+                "label": "View all",
+                "open_in_new_tab": false,
+                "style_class": "button-unstyled",
+                "custom_button_background": "{{ settings.color_palette.foreground }}",
+                "custom_button_text": "{{ settings.color_palette.background }}",
+                "custom_button_border": "{{ settings.color_palette.background }}",
+                "link_text_color": "",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "product_list_text_LtreUb",
+            "product_list_button_4AtNMb"
+          ]
+        },
+        "static-product-card": {
+          "type": "_product-card",
+          "name": "t:names.product_card",
+          "static": true,
+          "settings": {
+            "product_card_gap": 4,
+            "background_color": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "product_card_gallery_xzXTzk": {
+              "type": "_product-card-gallery",
+              "name": "t:names.product_card_media",
+              "settings": {
+                "image_ratio": "adapt",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "product_title_W8fyyy": {
+              "type": "product-title",
+              "name": "t:names.product_title",
+              "settings": {
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "paragraph",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 4,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "price_dDQHGk": {
+              "type": "price",
+              "name": "t:names.product_price",
+              "settings": {
+                "show_sale_price_first": true,
+                "show_installments": false,
+                "show_tax_info": false,
+                "type_preset": "h6",
+                "width": "100%",
+                "alignment": "left",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "text_color": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "product_card_gallery_xzXTzk",
+            "product_title_W8fyyy",
+            "price_dDQHGk"
+          ]
+        }
+      },
+      "disabled": true,
+      "name": "t:names.products_carousel",
+      "settings": {
+        "collection": "shop-all",
+        "layout_type": "carousel",
+        "carousel_on_mobile": false,
+        "max_products": 8,
+        "columns": 4,
+        "mobile_columns": "2",
+        "mobile_card_size": "60cqw",
+        "columns_gap": 8,
+        "rows_gap": 24,
+        "icons_style": "arrow",
+        "icons_shape": "circle",
+        "section_width": "page-width",
+        "horizontal_alignment": "flex-start",
+        "gap": 28,
+        "background_color": "",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "media_with_content_ekjjdF": {
+      "type": "media-with-content",
+      "blocks": {
+        "media": {
+          "type": "_media-without-appearance",
+          "disabled": true,
+          "static": true,
+          "settings": {
+            "media_type": "image",
+            "link": "",
+            "video_loop": true,
+            "video_autoplay": false,
+            "image_position": "cover",
+            "video_position": "cover"
+          },
+          "blocks": {}
+        },
+        "content": {
+          "type": "_content-without-appearance",
+          "disabled": true,
+          "static": true,
+          "settings": {
+            "horizontal_alignment_flex_direction_column": "flex-start",
+            "vertical_alignment_flex_direction_column": "space-between",
+            "gap": 24
+          },
+          "blocks": {
+            "text_M4TTVj": {
+              "type": "text",
+              "name": "t:names.caption",
+              "settings": {
+                "text": "<p>WHY SHEENE</p>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "h6",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "group_LVHj7N": {
+              "type": "group",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 12,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "background_media": "none",
+                "background_color": "",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "text_aAbAcK": {
+                  "type": "text",
+                  "name": "t:names.heading",
+                  "settings": {
+                    "text": "<h2>Simple formulas. Honest labels.</h2>",
+                    "width": "fit-content",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "h3",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "text_nnLUUb": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Every Sheene product lists its active ingredients and their exact percentage on the front of the pack, so you always know what you are putting on your skin. No hype, no filler claims - just active ingredients at the percentage EJ confirms, at fair prices.</p>",
+                    "width": "fit-content",
+                    "max_width": "narrow",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "1rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_aAbAcK",
+                "text_nnLUUb"
+              ]
+            },
+            "button_3QVFAn": {
+              "type": "button",
+              "settings": {
+                "label": "Shop now",
+                "link": "shopify://collections/all",
+                "open_in_new_tab": false,
+                "style_class": "button-unstyled",
+                "custom_button_background": "{{ settings.color_palette.foreground }}",
+                "custom_button_text": "{{ settings.color_palette.background }}",
+                "custom_button_border": "{{ settings.color_palette.background }}",
+                "link_text_color": "",
+                "width": "fit-content",
+                "custom_width": 100,
+                "width_mobile": "fit-content",
+                "custom_width_mobile": 100
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "text_M4TTVj",
+            "group_LVHj7N",
+            "button_3QVFAn"
+          ]
+        }
+      },
+      "name": "t:names.editorial",
+      "settings": {
+        "media_position": "left",
+        "media_width": "medium",
+        "media_height": "60svh",
+        "section_width": "full-width",
+        "extend_media": true,
+        "background_color": "",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "featured_blog_posts_cwhnPB": {
+      "type": "featured-blog-posts",
+      "blocks": {
+        "static-blog-title": {
+          "type": "_featured-blog-posts-title",
+          "name": "t:names.title",
+          "static": true,
+          "settings": {
+            "text": "<h3>Skincare Guides</h3>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "rte",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "static-blog-post-card": {
+          "type": "_featured-blog-posts-card",
+          "name": "t:names.blog_card",
+          "static": true,
+          "settings": {
+            "alignment": "left",
+            "gap": 8,
+            "background_color": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "image": {
+              "type": "_featured-blog-posts-image",
+              "static": true,
+              "settings": {
+                "image_ratio": "square",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0
+              },
+              "blocks": {}
+            },
+            "title": {
+              "type": "_heading",
+              "name": "t:names.title",
+              "static": true,
+              "settings": {
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text": "<h4>{{ closest.article.title }}</h4>",
+                "read_only": false,
+                "alignment": "left",
+                "show_alignment": false,
+                "text_color": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "blog-post-info-text": {
+              "type": "_blog-post-info-text",
+              "name": "t:names.details",
+              "static": true,
+              "settings": {
+                "show_date": true,
+                "show_author": true,
+                "type_preset": "",
+                "alignment": "left",
+                "text_color": "",
+                "show_alignment": false,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "blog-post-description": {
+              "type": "_blog-post-description",
+              "name": "t:names.excerpt",
+              "static": true,
+              "settings": {
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "",
+                "padding-block-start": 8,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": []
+        }
+      },
+      "disabled": true,
+      "name": "t:names.blog_posts_grid",
+      "settings": {
+        "blog": "news",
+        "layout_type": "grid",
+        "carousel_on_mobile": true,
+        "post_limit": 3,
+        "columns": 3,
+        "mobile_columns": "2",
+        "mobile_card_size": "60cqw",
+        "columns_gap": 8,
+        "rows_gap": 8,
+        "icons_style": "arrow",
+        "icons_shape": "none",
+        "section_width": "page-width",
+        "gap": 12,
+        "background_color": "",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    }
+  },
+  "order": [
+    "custom_liquid_HChwgB",
+    "custom_liquid_8DNTAz",
+    "custom_liquid_z7Rkbn",
+    "custom_liquid_Hft4Gx",
+    "custom_liquid_YrKN6a",
+    "shop_by_category_bU8Mkd",
+    "shop_by_concerns_KcpE9K",
+    "custom_liquid_PX7KKm",
+    "review_tUyjPU",
+    "section_VUTVxT",
+    "section_MicGRT",
+    "section_WcmjUi",
+    "section_c3KbYq",
+    "marquee_7RwNm6",
+    "collection_list_aQAKed",
+    "collection_list_qamaz9",
+    "product_list_WE4T79",
+    "media_with_content_ekjjdF",
+    "featured_blog_posts_cwhnPB"
+  ]
+}

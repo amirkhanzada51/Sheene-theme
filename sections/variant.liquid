@@ -1,0 +1,138 @@
+<div class="custom-variant-container">
+  <div class="field-border">
+    <legend class="field-title">CHOOSE VARIANTS</legend>
+    <div class="variant-content">
+      <label class="section-label">Select Size</label>
+      
+      <div class="variant-options">
+        {% assign size_option = product.options_with_values | where: "name", "Size" | first %}
+        
+        {% if size_option %}
+          {% for value in size_option.values %}
+            <input 
+              type="radio" 
+              id="Option-{{ section.id }}-{{ forloop.index }}" 
+              name="options[{{ size_option.name | escape }}]" 
+              value="{{ value | escape }}"
+              class="variant-radio"
+              {% if size_option.selected_value == value %}checked{% endif %}
+            >
+            <label for="Option-{{ section.id }}-{{ forloop.index }}" class="variant-box">
+              {{ value }}
+            </label>
+          {% endfor %}
+        {% else %}
+          <!-- Static preview if product data is not loaded -->
+          <input type="radio" id="static-50g" name="size" class="variant-radio" checked>
+          <label for="static-50g" class="variant-box">50g</label>
+
+          <input type="radio" id="static-100g" name="size" class="variant-radio">
+          <label for="static-100g" class="variant-box">100g</label>
+
+          <input type="radio" id="static-30g" name="size" class="variant-radio">
+          <label for="static-30g" class="variant-box">30g</label>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .custom-variant-container {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    width: 100%;
+    max-width: 650px;
+    margin: 20px 0;
+    box-sizing: border-box;
+  }
+
+  /* Fieldset-style outer border */
+  .field-border {
+    position: relative;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    padding: 16px 20px 20px 20px;
+    background-color: #ffffff;
+  }
+
+  /* Top text overlapping the top border */
+  .field-title {
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    background: #ffffff;
+    padding: 0 8px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    color: #111111;
+    text-transform: uppercase;
+  }
+
+  .variant-content {
+    margin-top: 4px;
+  }
+
+  /* "Select Size" Label */
+  .section-label {
+    display: block;
+    font-size: 15px;
+    font-weight: 700;
+    color: #000000;
+    margin-bottom: 12px;
+  }
+
+  /* Variant Buttons Container */
+  .variant-options {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+
+  /* Hide raw radio input */
+  .variant-radio {
+    display: none;
+  }
+
+  /* Box Styles */
+  .variant-box {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 65px;
+    height: 42px;
+    padding: 0 16px;
+    border: 1px solid #dcdcdc;
+    background-color: #ffffff;
+    color: #111111;
+    font-size: 14px;
+    font-weight: 400;
+    border-radius: 0px;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.15s ease, border-width 0.15s ease;
+  }
+
+  /* Hover State */
+  .variant-box:hover {
+    border-color: #999999;
+  }
+
+  /* Active / Selected State (Exact 2px black border) */
+  .variant-radio:checked + .variant-box {
+    border: 2px solid #000000;
+    font-weight: 500;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Custom Variant Selector",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Custom Variant Selector"
+    }
+  ]
+}
+{% endschema %}

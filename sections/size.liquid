@@ -1,0 +1,387 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&display=swap');
+
+  .cv-wrapper {
+    width: 100%;
+    font-family: 'Jost', sans-serif;
+    box-sizing: border-box;
+  }
+
+  .cv-wrapper *,
+  .cv-wrapper *::before,
+  .cv-wrapper *::after {
+    box-sizing: border-box;
+  }
+
+  .cv-box {
+    position: relative;
+    width: 100%;
+    min-height: 170px;
+    border: 1px solid #e5e5e5;
+    border-radius: 15px;
+    padding: 30px 29px;
+    background: #fff;
+  }
+
+  .cv-title {
+    position: absolute;
+    top: -16px;
+    left: 28px;
+    margin: 0;
+    padding: 0 12px;
+    background: #fff;
+    color: #111;
+    font-family: 'Jost', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 32px;
+    letter-spacing: 0;
+    white-space: nowrap;
+  }
+
+  .cv-option-title {
+    margin: 0 0 16px 0;
+    color: #111;
+    font-family: 'Jost', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 24px;
+  }
+
+  .cv-values {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cv-value {
+    position: relative;
+    min-width: 120px;
+    height: 62px;
+    padding: 0 18px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #fff;
+    border: 1px solid #bdbdbd;
+
+    color: #111;
+    font-family: 'Jost', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1;
+
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.15s ease;
+  }
+
+  .cv-value:hover {
+    border-color: #111;
+  }
+
+  .cv-value.is-selected {
+    border: 2px solid #111;
+  }
+
+  .cv-value input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+    width: 1px;
+    height: 1px;
+  }
+
+  @media screen and (max-width: 749px) {
+    .cv-box {
+      min-height: auto;
+      padding: 29px 20px 24px;
+      border-radius: 14px;
+    }
+
+    .cv-title {
+      left: 20px;
+      font-size: 18px;
+      line-height: 30px;
+      padding: 0 10px;
+    }
+
+    .cv-option-title {
+      font-size: 18px;
+      line-height: 23px;
+      margin-bottom: 14px;
+    }
+
+    .cv-values {
+      gap: 10px;
+    }
+
+    .cv-value {
+      min-width: 105px;
+      height: 56px;
+      font-size: 16px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .cv-box {
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+
+    .cv-title {
+      left: 16px;
+    }
+
+    .cv-value {
+      min-width: 100px;
+      height: 54px;
+    }
+  }
+</style>
+
+{% assign size_option_index = nil %}
+{% assign size_option_name = '' %}
+
+{% for option in product.options_with_values %}
+  {% assign option_name_downcase = option.name | downcase %}
+
+  {% if option_name_downcase == 'size'
+    or option_name_downcase == 'sizes'
+    or option_name_downcase == 'volume'
+    or option_name_downcase == 'weight'
+  %}
+    {% assign size_option_index = forloop.index0 %}
+    {% assign size_option_name = option.name %}
+  {% endif %}
+{% endfor %}
+
+{% if size_option_index != nil %}
+
+  {% assign selected_variant = product.selected_or_first_available_variant %}
+
+  <div
+    class="cv-wrapper"
+    data-cv-variant-picker
+    data-product-id="{{ product.id }}"
+    data-option-index="{{ size_option_index }}"
+  >
+
+    <div class="cv-box">
+
+      <div class="cv-title">
+        CHOOSE VARIANTS
+      </div>
+
+      <div class="cv-option-title">
+        {{ size_option_name }}
+      </div>
+
+      <div class="cv-values">
+
+        {% assign option_values = product.options_with_values[size_option_index].values %}
+
+        {% for value in option_values %}
+
+          {% assign is_selected = false %}
+
+          {% if selected_variant.options[size_option_index] == value %}
+            {% assign is_selected = true %}
+          {% endif %}
+
+          <label
+            class="cv-value{% if is_selected %} is-selected{% endif %}"
+            data-value="{{ value | escape }}"
+          >
+
+            <input
+              type="radio"
+              name="cv-size-option-{{ product.id }}"
+              value="{{ value | escape }}"
+              {% if is_selected %}checked{% endif %}
+            >
+
+            <span>
+              {{ value }}
+            </span>
+
+          </label>
+
+        {% endfor %}
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+      const picker = document.querySelector('[data-cv-variant-picker]');
+
+      if (!picker) return;
+
+      const optionIndex = Number(
+        picker.dataset.optionIndex
+      );
+
+      const productId = picker.dataset.productId;
+
+      const productVariants = {{ product.variants | json }};
+
+      const buttons = picker.querySelectorAll('.cv-value');
+
+      function getCurrentVariant() {
+
+        const form = document.querySelector(
+          'form[action*="/cart/add"]'
+        );
+
+        if (!form) return null;
+
+        const variantInput = form.querySelector(
+          'input[name="id"], select[name="id"]'
+        );
+
+        if (!variantInput) return null;
+
+        const variantId = String(variantInput.value);
+
+        return productVariants.find(function (variant) {
+          return String(variant.id) === variantId;
+        }) || null;
+      }
+
+      function updateSelectedUI(value) {
+
+        buttons.forEach(function (button) {
+
+          const buttonValue = button.dataset.value;
+
+          button.classList.toggle(
+            'is-selected',
+            buttonValue === value
+          );
+
+          const input = button.querySelector('input');
+
+          if (input) {
+            input.checked = buttonValue === value;
+          }
+
+        });
+      }
+
+      function findMatchingVariant(value) {
+
+        const currentVariant = getCurrentVariant();
+
+        if (!currentVariant) {
+          return productVariants.find(function (variant) {
+            return variant.options[optionIndex] === value;
+          });
+        }
+
+        return productVariants.find(function (variant) {
+
+          if (variant.options[optionIndex] !== value) {
+            return false;
+          }
+
+          return currentVariant.options.every(function (
+            currentOption,
+            index
+          ) {
+
+            if (index === optionIndex) {
+              return true;
+            }
+
+            return variant.options[index] === currentOption;
+          });
+
+        }) || productVariants.find(function (variant) {
+          return variant.options[optionIndex] === value;
+        });
+      }
+
+      function updateShopifyVariant(variant) {
+
+        if (!variant) return;
+
+        const forms = document.querySelectorAll(
+          'form[action*="/cart/add"]'
+        );
+
+        forms.forEach(function (form) {
+
+          const variantInput = form.querySelector(
+            'input[name="id"], select[name="id"]'
+          );
+
+          if (!variantInput) return;
+
+          variantInput.value = variant.id;
+
+          variantInput.dispatchEvent(
+            new Event('change', {
+              bubbles: true
+            })
+          );
+
+        });
+
+        /*
+         * Shopify's standard product-form custom event.
+         */
+        document.dispatchEvent(
+          new CustomEvent('variant:change', {
+            bubbles: true,
+            detail: {
+              variant: variant
+            }
+          })
+        );
+
+        /*
+         * Update URL without reloading the page.
+         */
+        const url = new URL(window.location.href);
+
+        url.searchParams.set(
+          'variant',
+          variant.id
+        );
+
+        window.history.replaceState(
+          {},
+          '',
+          url.toString()
+        );
+      }
+
+      buttons.forEach(function (button) {
+
+        button.addEventListener('click', function () {
+
+          const value = button.dataset.value;
+
+          const variant = findMatchingVariant(value);
+
+          if (!variant) return;
+
+          updateSelectedUI(value);
+
+          updateShopifyVariant(variant);
+
+        });
+
+      });
+
+    });
+  </script>
+
+{% endif %}

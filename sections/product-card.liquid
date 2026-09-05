@@ -1,0 +1,2614 @@
+{% liquid
+  assign selected_collection = section.settings.collection
+
+  if selected_collection == blank
+    assign selected_collection = collection
+  endif
+%}
+
+<section
+  id="rpf-section-{{ section.id }}"
+  class="rpf-section"
+>
+
+  <div class="rpf-layout">
+
+    <!-- =====================================================
+         FILTER SIDEBAR
+    ====================================================== -->
+
+    <aside class="rpf-sidebar">
+
+      <div class="rpf-filter-header">
+
+        <span class="rpf-filter-heading">
+          Filter
+        </span>
+
+        {% if selected_collection %}
+          <a
+            href="{{ selected_collection.url }}"
+            class="rpf-clear-all"
+          >
+            Clear All
+          </a>
+        {% endif %}
+
+      </div>
+
+
+      {% if selected_collection %}
+
+        <form
+          class="rpf-filter-form"
+          method="get"
+          action="{{ selected_collection.url }}"
+        >
+
+          {% for filter in selected_collection.filters %}
+
+            {% if filter.type == 'price_range' %}
+
+              <!-- =================================================
+                   PRICE FILTER
+              ================================================== -->
+
+              <div class="rpf-filter-group">
+
+                <button
+                  type="button"
+                  class="rpf-filter-title"
+                  aria-expanded="true"
+                  data-filter-toggle
+                >
+
+                  <span>
+                    {{ filter.label }}
+                  </span>
+
+                  <svg viewBox="0 0 24 24">
+                    <path d="M6 9L12 15L18 9"></path>
+                  </svg>
+
+                </button>
+
+
+                <div class="rpf-filter-content">
+
+                  <div class="rpf-price-range">
+
+                    <!-- MIN -->
+
+                    <div class="rpf-price-box">
+
+                      <span class="rpf-currency">
+                        Rs.
+                      </span>
+
+                      <input
+                        type="number"
+                        class="rpf-price-input"
+                        data-price-input="min"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="From"
+                        value="{% if filter.min_value.value %}{{ filter.min_value.value | divided_by: 100.0 | round }}{% endif %}"
+                      >
+
+                    </div>
+
+
+                    <span class="rpf-price-dash">
+                      —
+                    </span>
+
+
+                    <!-- MAX -->
+
+                    <div class="rpf-price-box">
+
+                      <span class="rpf-currency">
+                        Rs.
+                      </span>
+
+                      <input
+                        type="number"
+                        class="rpf-price-input"
+                        data-price-input="max"
+                        min="0"
+                        step="1"
+                        inputmode="numeric"
+                        placeholder="To"
+                        value="{% if filter.max_value.value %}{{ filter.max_value.value | divided_by: 100.0 | round }}{% endif %}"
+                      >
+
+                    </div>
+
+                  </div>
+
+
+                  <!-- Shopify expects smallest currency unit -->
+
+                  <input
+                    type="hidden"
+                    name="{{ filter.min_value.param_name }}"
+                    value="{% if filter.min_value.value %}{{ filter.min_value.value }}{% endif %}"
+                    data-price-hidden="min"
+                  >
+
+                  <input
+                    type="hidden"
+                    name="{{ filter.max_value.param_name }}"
+                    value="{% if filter.max_value.value %}{{ filter.max_value.value }}{% endif %}"
+                    data-price-hidden="max"
+                  >
+
+                </div>
+
+              </div>
+
+
+            {% elsif filter.type == 'list' %}
+
+              {% if filter.values.size > 0 %}
+
+                <!-- =================================================
+                     LIST FILTER
+                ================================================== -->
+
+                <div class="rpf-filter-group">
+
+                  <button
+                    type="button"
+                    class="rpf-filter-title"
+                    aria-expanded="true"
+                    data-filter-toggle
+                  >
+
+                    <span>
+                      {{ filter.label }}
+                    </span>
+
+                    <svg viewBox="0 0 24 24">
+                      <path d="M6 9L12 15L18 9"></path>
+                    </svg>
+
+                  </button>
+
+
+                  <div class="rpf-filter-content">
+
+                    {% for value in filter.values %}
+
+                      <label
+                        class="
+                          rpf-check-row
+                          {% if value.count == 0 and value.active == false %}
+                            rpf-disabled
+                          {% endif %}
+                        "
+                      >
+
+                        <input
+                          type="checkbox"
+                          name="{{ value.param_name }}"
+                          value="{{ value.value }}"
+                          {% if value.active %}
+                            checked
+                          {% endif %}
+                          {% if value.count == 0 and value.active == false %}
+                            disabled
+                          {% endif %}
+                        >
+
+                        <span class="rpf-checkbox"></span>
+
+                        <span class="rpf-option-label">
+                          {{ value.label }}
+                        </span>
+
+                        <span class="rpf-count">
+                          {{ value.count }}
+                        </span>
+
+                      </label>
+
+                    {% endfor %}
+
+                  </div>
+
+                </div>
+
+              {% endif %}
+
+
+            {% elsif filter.type == 'boolean' %}
+
+              {% if filter.values.size > 0 %}
+
+                <!-- =================================================
+                     BOOLEAN FILTER
+                ================================================== -->
+
+                <div class="rpf-filter-group">
+
+                  <button
+                    type="button"
+                    class="rpf-filter-title"
+                    aria-expanded="true"
+                    data-filter-toggle
+                  >
+
+                    <span>
+                      {{ filter.label }}
+                    </span>
+
+                    <svg viewBox="0 0 24 24">
+                      <path d="M6 9L12 15L18 9"></path>
+                    </svg>
+
+                  </button>
+
+
+                  <div class="rpf-filter-content">
+
+                    {% for value in filter.values %}
+
+                      <label
+                        class="
+                          rpf-check-row
+                          {% if value.count == 0 and value.active == false %}
+                            rpf-disabled
+                          {% endif %}
+                        "
+                      >
+
+                        <input
+                          type="checkbox"
+                          name="{{ value.param_name }}"
+                          value="{{ value.value }}"
+                          {% if value.active %}
+                            checked
+                          {% endif %}
+                          {% if value.count == 0 and value.active == false %}
+                            disabled
+                          {% endif %}
+                        >
+
+                        <span class="rpf-checkbox"></span>
+
+                        <span class="rpf-option-label">
+                          {{ value.label }}
+                        </span>
+
+                        <span class="rpf-count">
+                          {{ value.count }}
+                        </span>
+
+                      </label>
+
+                    {% endfor %}
+
+                  </div>
+
+                </div>
+
+              {% endif %}
+
+            {% endif %}
+
+          {% endfor %}
+
+
+          <button
+            type="submit"
+            class="rpf-apply-filter"
+          >
+            Apply Filters
+          </button>
+
+        </form>
+
+      {% else %}
+
+        <div class="rpf-no-collection">
+          Please select a collection.
+        </div>
+
+      {% endif %}
+
+    </aside>
+
+
+    <!-- =====================================================
+         PRODUCT AREA
+    ====================================================== -->
+
+    <main class="rpf-products-area">
+
+      {% if selected_collection %}
+
+        {% paginate selected_collection.products by section.settings.products_per_page %}
+
+          <div class="rpf-products-top">
+
+            <span class="rpf-results-count">
+
+              {{ selected_collection.products_count }}
+
+              {% if selected_collection.products_count == 1 %}
+                Product
+              {% else %}
+                Products
+              {% endif %}
+
+            </span>
+
+          </div>
+
+
+          {% if selected_collection.products.size > 0 %}
+
+            <div class="rpf-product-grid">
+
+              {% for product in selected_collection.products %}
+
+                {% assign first_variant = product.selected_or_first_available_variant %}
+
+                {% assign is_trending = false %}
+
+                {% for tag in product.tags %}
+
+                  {% assign tag_downcase = tag | downcase %}
+
+                  {% if tag_downcase == 'trending' %}
+
+                    {% assign is_trending = true %}
+
+                  {% endif %}
+
+                {% endfor %}
+
+
+                <!-- =================================================
+                     PRODUCT CARD
+                ================================================== -->
+
+                <article
+                  class="rpf-product-card"
+                  data-product-card
+                >
+
+                  <!-- =================================================
+                       IMAGE
+                  ================================================= -->
+
+                  <div class="rpf-media">
+
+                    <!-- PRODUCT IMAGE LINK -->
+
+                    <a
+                      href="{{ product.url }}"
+                      class="rpf-product-image-link"
+                      aria-label="{{ product.title | escape }}"
+                    >
+
+                      <div
+                        class="rpf-slides"
+                        data-rpf-slides
+                      >
+
+                        {% if product.images.size > 0 %}
+
+                          {% for image in product.images limit: 8 %}
+
+                            <div class="rpf-slide">
+
+                              <img
+                                src="{{ image | image_url: width: 1000 }}"
+                                alt="{{ image.alt | default: product.title | escape }}"
+                                width="420"
+                                height="630"
+                                loading="lazy"
+                              >
+
+                            </div>
+
+                          {% endfor %}
+
+                        {% else %}
+
+                          <div class="rpf-slide">
+
+                            {{ 'product-1' | placeholder_svg_tag }}
+
+                          </div>
+
+                        {% endif %}
+
+                      </div>
+
+                    </a>
+
+
+                    {% if is_trending %}
+
+                      <span class="rpf-trending">
+                        Trending
+                      </span>
+
+                    {% endif %}
+
+
+                    <!-- IMAGE ARROWS -->
+
+                    {% if product.images.size > 1 %}
+
+                      <button
+                        type="button"
+                        class="rpf-image-arrow rpf-prev"
+                        data-rpf-prev
+                        aria-label="Previous image"
+                      >
+
+                        <svg viewBox="0 0 24 24">
+                          <path d="M15 18L9 12L15 6"></path>
+                        </svg>
+
+                      </button>
+
+
+                      <button
+                        type="button"
+                        class="rpf-image-arrow rpf-next"
+                        data-rpf-next
+                        aria-label="Next image"
+                      >
+
+                        <svg viewBox="0 0 24 24">
+                          <path d="M9 18L15 12L9 6"></path>
+                        </svg>
+
+                      </button>
+
+                    {% endif %}
+
+
+                    <!-- IMAGE DOTS -->
+
+                    {% if product.images.size > 1 %}
+
+                      <div class="rpf-dots">
+
+                        {% for image in product.images limit: 8 %}
+
+                          <span
+                            class="
+                              rpf-dot
+                              {% if forloop.first %}
+                                active
+                              {% endif %}
+                            "
+                            data-rpf-dot="{{ forloop.index0 }}"
+                          ></span>
+
+                        {% endfor %}
+
+                      </div>
+
+                    {% endif %}
+
+                  </div>
+
+
+                  <!-- =================================================
+                       PRODUCT INFORMATION
+                  ================================================== -->
+
+                  <div class="rpf-info">
+
+                    <!-- PRODUCT TITLE LINK -->
+
+                    <h3 class="rpf-title">
+
+                      <a
+                        href="{{ product.url }}"
+                        class="rpf-title-link"
+                      >
+
+                        {{ product.title }}
+
+                      </a>
+
+                    </h3>
+
+
+                    <!-- PRICE -->
+
+                    <div class="rpf-price-row">
+
+                      <span class="rpf-price">
+
+                        {{ first_variant.price | money }}
+
+                      </span>
+
+
+                      {% if first_variant.compare_at_price > first_variant.price %}
+
+                        <span class="rpf-compare">
+
+                          {{ first_variant.compare_at_price | money }}
+
+                        </span>
+
+                      {% endif %}
+
+                    </div>
+
+
+                    <!-- VARIANTS -->
+
+                    {% if product.has_only_default_variant == false %}
+
+                      <div class="rpf-variants">
+
+                        {% for variant in product.variants limit: 8 %}
+
+                          <button
+                            type="button"
+                            class="
+                              rpf-variant
+                              {% if variant.id == first_variant.id %}
+                                active
+                              {% endif %}
+                            "
+                            data-variant-id="{{ variant.id }}"
+                            data-variant-price="{{ variant.price | money }}"
+                            data-variant-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money }}{% endif %}"
+                            data-variant-available="{{ variant.available }}"
+                          >
+
+                            {{ variant.title }}
+
+                          </button>
+
+                        {% endfor %}
+
+                      </div>
+
+                    {% endif %}
+
+
+                    <!-- ADD TO CART -->
+
+                    <button
+                      type="button"
+                      class="rpf-add"
+                      data-rpf-add
+                      data-variant-id="{{ first_variant.id }}"
+                      {% unless first_variant.available %}
+                        disabled
+                      {% endunless %}
+                    >
+
+                      {% if first_variant.available %}
+                        Add to Cart
+                      {% else %}
+                        Sold Out
+                      {% endif %}
+
+                    </button>
+
+                  </div>
+
+                </article>
+
+              {% endfor %}
+
+            </div>
+
+
+            <!-- =================================================
+                 PAGINATION
+            ================================================== -->
+
+            {% if paginate.pages > 1 %}
+
+              <nav class="rpf-pagination">
+
+                {% if paginate.previous %}
+
+                  <a
+                    href="{{ paginate.previous.url }}"
+                    class="rpf-page-arrow"
+                  >
+                    ←
+                  </a>
+
+                {% endif %}
+
+
+                {% for part in paginate.parts %}
+
+                  {% if part.is_link %}
+
+                    <a
+                      href="{{ part.url }}"
+                      class="rpf-page-number"
+                    >
+                      {{ part.title }}
+                    </a>
+
+                  {% else %}
+
+                    <span
+                      class="
+                        rpf-page-number
+                        {% if part.title == paginate.current_page %}
+                          active
+                        {% endif %}
+                      "
+                    >
+                      {{ part.title }}
+                    </span>
+
+                  {% endif %}
+
+                {% endfor %}
+
+
+                {% if paginate.next %}
+
+                  <a
+                    href="{{ paginate.next.url }}"
+                    class="rpf-page-arrow"
+                  >
+                    →
+                  </a>
+
+                {% endif %}
+
+              </nav>
+
+            {% endif %}
+
+
+          {% else %}
+
+            <div class="rpf-empty">
+
+              No products found.
+
+            </div>
+
+          {% endif %}
+
+        {% endpaginate %}
+
+      {% endif %}
+
+    </main>
+
+  </div>
+
+</section>
+
+
+<!-- =====================================================
+     TOAST
+====================================================== -->
+
+<div
+  id="rpf-toast-{{ section.id }}"
+  class="rpf-toast"
+>
+  Added to cart
+</div>
+
+
+<style>
+
+/* =====================================================
+   GLOBAL
+===================================================== */
+
+#rpf-section-{{ section.id }},
+#rpf-section-{{ section.id }} * {
+  box-sizing: border-box;
+}
+
+#rpf-section-{{ section.id }} {
+
+  width: 100%;
+
+  background: #fff;
+
+  color: #080808;
+
+  font-family: "Jost", sans-serif;
+
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   MAIN LAYOUT
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-layout {
+
+  width: calc(100% - 76px);
+
+  margin: 0 auto;
+
+  display: grid;
+
+  grid-template-columns: 235px minmax(0, 1fr);
+
+  gap: 38px;
+
+  align-items: start;
+}
+
+
+/* =====================================================
+   SIDEBAR
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-sidebar {
+
+  width: 100%;
+
+  position: sticky;
+
+  top: 25px;
+}
+
+
+/* =====================================================
+   FILTER HEADER
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-filter-header {
+
+  min-height: 48px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  border-bottom: 1px solid #dedede;
+}
+
+#rpf-section-{{ section.id }} .rpf-filter-heading {
+
+  font-size: 18px;
+
+  line-height: 1;
+
+  font-weight: 500;
+}
+
+#rpf-section-{{ section.id }} .rpf-clear-all {
+
+  color: #777;
+
+  font-size: 13px;
+
+  line-height: 1;
+
+  text-decoration: underline;
+
+  text-underline-offset: 3px;
+
+  transition: color .2s ease;
+}
+
+#rpf-section-{{ section.id }} .rpf-clear-all:hover {
+
+  color: #111;
+}
+
+
+/* =====================================================
+   FILTER GROUP
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-filter-group {
+
+  border-bottom: 1px solid #dedede;
+}
+
+#rpf-section-{{ section.id }} .rpf-filter-title {
+
+  width: 100%;
+
+  min-height: 57px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  color: #111;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 15px;
+
+  font-weight: 500;
+
+  cursor: pointer;
+}
+
+#rpf-section-{{ section.id }} .rpf-filter-title svg {
+
+  width: 16px;
+
+  height: 16px;
+
+  fill: none;
+
+  stroke: #111;
+
+  stroke-width: 1.5;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+
+  transition: transform .25s ease;
+}
+
+#rpf-section-{{ section.id }}
+.rpf-filter-title[aria-expanded="false"] svg {
+
+  transform: rotate(-90deg);
+}
+
+#rpf-section-{{ section.id }} .rpf-filter-content {
+
+  padding: 0 0 18px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 12px;
+}
+
+#rpf-section-{{ section.id }}
+.rpf-filter-title[aria-expanded="false"]
++ .rpf-filter-content {
+
+  display: none;
+}
+
+
+/* =====================================================
+   CHECKBOX FILTER
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-check-row {
+
+  min-height: 18px;
+
+  position: relative;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 9px;
+
+  cursor: pointer;
+}
+
+#rpf-section-{{ section.id }} .rpf-check-row input {
+
+  position: absolute;
+
+  width: 1px;
+
+  height: 1px;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+#rpf-section-{{ section.id }} .rpf-checkbox {
+
+  width: 16px;
+
+  height: 16px;
+
+  flex: 0 0 16px;
+
+  border: 1px solid #999;
+
+  background: #fff;
+
+  transition:
+    background .15s ease,
+    border-color .15s ease;
+}
+
+#rpf-section-{{ section.id }}
+.rpf-check-row input:checked
++ .rpf-checkbox {
+
+  background: #050505;
+
+  border-color: #050505;
+}
+
+#rpf-section-{{ section.id }}
+.rpf-check-row input:checked
++ .rpf-checkbox::after {
+
+  content: "";
+
+  display: block;
+
+  width: 7px;
+
+  height: 4px;
+
+  margin: 3px;
+
+  border-left: 1.5px solid #fff;
+
+  border-bottom: 1.5px solid #fff;
+
+  transform: rotate(-45deg);
+}
+
+#rpf-section-{{ section.id }} .rpf-option-label {
+
+  flex: 1;
+
+  color: #444;
+
+  font-size: 13px;
+
+  line-height: 1.3;
+}
+
+#rpf-section-{{ section.id }} .rpf-count {
+
+  color: #999;
+
+  font-size: 11px;
+}
+
+#rpf-section-{{ section.id }} .rpf-disabled {
+
+  opacity: .45;
+
+  cursor: not-allowed;
+}
+
+
+/* =====================================================
+   PRICE RANGE
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-price-range {
+
+  width: 100%;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+#rpf-section-{{ section.id }} .rpf-price-box {
+
+  width: 100%;
+
+  height: 40px;
+
+  padding: 0 8px;
+
+  border: 1px solid #d2d2d2;
+
+  background: #fff;
+
+  display: flex;
+
+  align-items: center;
+}
+
+#rpf-section-{{ section.id }} .rpf-currency {
+
+  flex: 0 0 auto;
+
+  margin-right: 4px;
+
+  color: #555;
+
+  font-size: 12px;
+}
+
+#rpf-section-{{ section.id }} .rpf-price-input {
+
+  width: 100%;
+
+  height: 100%;
+
+  min-width: 0;
+
+  padding: 0;
+
+  border: 0;
+
+  outline: 0;
+
+  background: transparent;
+
+  color: #111;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 12px;
+}
+
+#rpf-section-{{ section.id }} .rpf-price-input::-webkit-outer-spin-button,
+#rpf-section-{{ section.id }} .rpf-price-input::-webkit-inner-spin-button {
+
+  -webkit-appearance: none;
+
+  margin: 0;
+}
+
+#rpf-section-{{ section.id }} .rpf-price-input {
+
+  -moz-appearance: textfield;
+}
+
+#rpf-section-{{ section.id }} .rpf-price-dash {
+
+  flex: 0 0 auto;
+
+  color: #888;
+
+  font-size: 12px;
+}
+
+
+/* =====================================================
+   APPLY FILTER
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-apply-filter {
+
+  width: 100%;
+
+  height: 45px;
+
+  margin-top: 20px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: #050505;
+
+  color: #fff;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 14px;
+
+  cursor: pointer;
+
+  transition: opacity .2s ease;
+}
+
+#rpf-section-{{ section.id }} .rpf-apply-filter:hover {
+
+  opacity: .84;
+}
+
+
+/* =====================================================
+   PRODUCTS TOP
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-products-top {
+
+  min-height: 48px;
+
+  margin-bottom: 26px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: flex-end;
+}
+
+#rpf-section-{{ section.id }} .rpf-results-count {
+
+  color: #777;
+
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   PRODUCT GRID
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-product-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat({{ section.settings.columns_desktop }}, minmax(0, 1fr));
+
+  column-gap: 18px;
+
+  row-gap: 50px;
+}
+
+
+/* =====================================================
+   PRODUCT CARD
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-product-card {
+
+  width: 100%;
+
+  min-width: 0;
+}
+
+
+/* =====================================================
+   IMAGE CONTAINER
+   EXACT 420 x 630
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-media {
+
+  width: 420px;
+
+  height: 630px;
+
+  max-width: 100%;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: #eeeeee;
+}
+
+
+/* =====================================================
+   IMAGE PRODUCT LINK
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-product-image-link {
+
+  width: 100%;
+
+  height: 100%;
+
+  display: block;
+
+  overflow: hidden;
+
+  color: inherit;
+
+  text-decoration: none;
+}
+
+
+/* =====================================================
+   IMAGE SLIDES
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-slides {
+
+  width: 100%;
+
+  height: 100%;
+
+  display: flex;
+
+  transition:
+    transform .35s cubic-bezier(.2,.65,.3,1);
+}
+
+#rpf-section-{{ section.id }} .rpf-slide {
+
+  width: 100%;
+
+  height: 100%;
+
+  flex: 0 0 100%;
+
+  overflow: hidden;
+}
+
+#rpf-section-{{ section.id }} .rpf-slide img {
+
+  width: 100%;
+
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transform: scale(1);
+
+  transition:
+    transform .45s cubic-bezier(.2,.65,.3,1);
+}
+
+
+/* =====================================================
+   IMAGE HOVER
+   SUBTLE SCALE
+===================================================== */
+
+#rpf-section-{{ section.id }}
+.rpf-product-image-link:hover
+.rpf-slide img {
+
+  transform: scale(1.025);
+}
+
+
+/* =====================================================
+   TRENDING
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-trending {
+
+  position: absolute;
+
+  top: 15px;
+
+  right: 15px;
+
+  z-index: 5;
+
+  padding: 5px 11px;
+
+  border-radius: 14px;
+
+  background: #050505;
+
+  color: #fff;
+
+  font-size: 12px;
+
+  line-height: 1;
+}
+
+
+/* =====================================================
+   IMAGE ARROWS
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-image-arrow {
+
+  position: absolute;
+
+  top: 50%;
+
+  z-index: 30;
+
+  width: 25px;
+
+  height: 25px;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: rgba(255,255,255,.94);
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  transform: translateY(-50%);
+
+  cursor: pointer;
+}
+
+#rpf-section-{{ section.id }} .rpf-image-arrow svg {
+
+  width: 15px;
+
+  height: 15px;
+
+  fill: none;
+
+  stroke: #555;
+
+  stroke-width: 1.7;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+}
+
+#rpf-section-{{ section.id }} .rpf-prev {
+
+  left: 9px;
+}
+
+#rpf-section-{{ section.id }} .rpf-next {
+
+  right: 9px;
+}
+
+
+/* =====================================================
+   IMAGE DOTS
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-dots {
+
+  position: absolute;
+
+  left: 0;
+
+  right: 0;
+
+  bottom: 10px;
+
+  z-index: 30;
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 4px;
+
+  pointer-events: none;
+}
+
+#rpf-section-{{ section.id }} .rpf-dot {
+
+  width: 6px;
+
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #c5c5c5;
+}
+
+#rpf-section-{{ section.id }} .rpf-dot.active {
+
+  background: #050505;
+}
+
+
+/* =====================================================
+   PRODUCT INFO
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-info {
+
+  padding-top: 25px;
+}
+
+
+/* =====================================================
+   PRODUCT TITLE
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-title {
+
+  margin: 0;
+
+  padding: 0;
+
+  color: #111;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 18px;
+
+  line-height: 1.38;
+
+  font-weight: 500;
+}
+
+#rpf-section-{{ section.id }} .rpf-title-link {
+
+  position: relative;
+
+  display: inline-block;
+
+  color: inherit;
+
+  text-decoration: none;
+}
+
+
+/* =====================================================
+   TITLE UNDERLINE
+   LEFT → RIGHT
+===================================================== */
+
+#rpf-section-{{ section.id }}
+.rpf-title-link::after {
+
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+
+  bottom: -2px;
+
+  width: 100%;
+
+  height: 1px;
+
+  background: currentColor;
+
+  transform: scaleX(0);
+
+  transform-origin: left center;
+
+  transition:
+    transform .35s cubic-bezier(.2,.65,.3,1);
+}
+
+#rpf-section-{{ section.id }}
+.rpf-title-link:hover::after {
+
+  transform: scaleX(1);
+}
+
+
+/* =====================================================
+   PRICE
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-price-row {
+
+  margin-top: 6px;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+}
+
+#rpf-section-{{ section.id }} .rpf-price {
+
+  color: #111;
+
+  font-size: 15px;
+}
+
+#rpf-section-{{ section.id }} .rpf-compare {
+
+  color: #777;
+
+  font-size: 14px;
+
+  text-decoration: line-through;
+}
+
+
+/* =====================================================
+   VARIANTS
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-variants {
+
+  margin-top: 18px;
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 8px;
+}
+
+#rpf-section-{{ section.id }} .rpf-variant {
+
+  min-width: 60px;
+
+  height: 30px;
+
+  padding: 0 15px;
+
+  border: 1px solid #bdbdbd;
+
+  border-radius: 17px;
+
+  background: #fff;
+
+  color: #111;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 13px;
+
+  cursor: pointer;
+}
+
+#rpf-section-{{ section.id }}
+.rpf-variant.active {
+
+  border-color: #050505;
+
+  background: #050505;
+
+  color: #fff;
+}
+
+
+/* =====================================================
+   ADD TO CART
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-add {
+
+  width: 100%;
+
+  height: 51px;
+
+  margin-top: 12px;
+
+  border: 0;
+
+  background: #050505;
+
+  color: #fff;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 15px;
+
+  cursor: pointer;
+
+  transition: opacity .2s ease;
+}
+
+#rpf-section-{{ section.id }} .rpf-add:hover {
+
+  opacity: .85;
+}
+
+#rpf-section-{{ section.id }} .rpf-add:disabled {
+
+  opacity: .5;
+
+  cursor: not-allowed;
+}
+
+
+/* =====================================================
+   PAGINATION
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-pagination {
+
+  margin-top: 55px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  gap: 8px;
+}
+
+#rpf-section-{{ section.id }}
+.rpf-page-number,
+#rpf-section-{{ section.id }}
+.rpf-page-arrow {
+
+  min-width: 35px;
+
+  height: 35px;
+
+  padding: 0 8px;
+
+  border: 1px solid #ddd;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  color: #111;
+
+  text-decoration: none;
+
+  font-size: 13px;
+}
+
+#rpf-section-{{ section.id }}
+.rpf-page-number.active {
+
+  border-color: #050505;
+
+  background: #050505;
+
+  color: #fff;
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+#rpf-section-{{ section.id }} .rpf-empty {
+
+  padding: 80px 0;
+
+  text-align: center;
+
+  color: #777;
+
+  font-size: 15px;
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+#rpf-toast-{{ section.id }} {
+
+  position: fixed;
+
+  left: 50%;
+
+  bottom: 25px;
+
+  z-index: 999999;
+
+  padding: 12px 18px;
+
+  background: #050505;
+
+  color: #fff;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 14px;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transform: translate(-50%, 20px);
+
+  transition:
+    opacity .25s ease,
+    transform .25s ease;
+}
+
+#rpf-toast-{{ section.id }}.show {
+
+  opacity: 1;
+
+  transform: translate(-50%, 0);
+}
+
+
+/* =====================================================
+   TABLET
+===================================================== */
+
+@media screen and (max-width: 1300px) {
+
+  #rpf-section-{{ section.id }} .rpf-layout {
+
+    width: calc(100% - 50px);
+
+    grid-template-columns: 210px minmax(0, 1fr);
+
+    gap: 30px;
+  }
+
+  #rpf-section-{{ section.id }} .rpf-product-grid {
+
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+  }
+
+  #rpf-section-{{ section.id }} .rpf-media {
+
+    width: 100%;
+
+    height: auto;
+
+    aspect-ratio: 420 / 630;
+  }
+
+}
+
+
+/* =====================================================
+   SMALL TABLET
+===================================================== */
+
+@media screen and (max-width: 1000px) {
+
+  #rpf-section-{{ section.id }} .rpf-layout {
+
+    width: calc(100% - 40px);
+
+    grid-template-columns: 190px minmax(0, 1fr);
+
+    gap: 25px;
+  }
+
+  #rpf-section-{{ section.id }} .rpf-product-grid {
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media screen and (max-width: 749px) {
+
+  #rpf-section-{{ section.id }} .rpf-layout {
+
+    width: calc(100% - 32px);
+
+    display: block;
+  }
+
+  #rpf-section-{{ section.id }} .rpf-sidebar {
+
+    position: relative;
+
+    top: auto;
+
+    margin-bottom: 25px;
+  }
+
+  #rpf-section-{{ section.id }} .rpf-product-grid {
+
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    column-gap: 10px;
+
+    row-gap: 35px;
+  }
+
+  #rpf-section-{{ section.id }} .rpf-media {
+
+    width: 100%;
+
+    height: auto;
+
+    aspect-ratio: 420 / 630;
+  }
+
+  #rpf-section-{{ section.id }} .rpf-info {
+
+    padding-top: 16px;
+  }
+
+  #rpf-section-{{ section.id }} .rpf-title {
+
+    font-size: 16px;
+  }
+
+  #rpf-section-{{ section.id }} .rpf-add {
+
+    height: 46px;
+
+    font-size: 14px;
+  }
+
+}
+
+
+/* =====================================================
+   REDUCE MOTION
+===================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+
+  #rpf-section-{{ section.id }} .rpf-slide img,
+  #rpf-section-{{ section.id }} .rpf-title-link::after,
+  #rpf-section-{{ section.id }} .rpf-slides {
+
+    transition: none;
+  }
+
+}
+
+</style>
+
+
+<script>
+(function () {
+
+  'use strict';
+
+
+  const section =
+    document.getElementById(
+      'rpf-section-{{ section.id }}'
+    );
+
+  if (!section) return;
+
+
+  /* =====================================================
+     FILTER ACCORDIONS
+  ====================================================== */
+
+  section
+    .querySelectorAll('[data-filter-toggle]')
+    .forEach(function (toggle) {
+
+      toggle.addEventListener(
+        'click',
+        function () {
+
+          const open =
+            toggle.getAttribute(
+              'aria-expanded'
+            ) === 'true';
+
+          toggle.setAttribute(
+            'aria-expanded',
+            open ? 'false' : 'true'
+          );
+
+        }
+      );
+
+    });
+
+
+  /* =====================================================
+     PRICE FILTER
+     
+     Customer:
+     Rs. 1000
+
+     Shopify:
+     100000
+
+     Because Shopify price filters use
+     the smallest currency unit.
+  ====================================================== */
+
+  const form =
+    section.querySelector(
+      '.rpf-filter-form'
+    );
+
+
+  if (form) {
+
+    const minInput =
+      form.querySelector(
+        '[data-price-input="min"]'
+      );
+
+    const maxInput =
+      form.querySelector(
+        '[data-price-input="max"]'
+      );
+
+    const minHidden =
+      form.querySelector(
+        '[data-price-hidden="min"]'
+      );
+
+    const maxHidden =
+      form.querySelector(
+        '[data-price-hidden="max"]'
+      );
+
+
+    function convertPrice(
+      input,
+      hidden
+    ) {
+
+      if (!input || !hidden) {
+        return;
+      }
+
+
+      let value =
+        parseFloat(
+          input.value
+        );
+
+
+      if (
+        Number.isNaN(value) ||
+        value < 0
+      ) {
+
+        hidden.value = '';
+
+        return;
+
+      }
+
+
+      hidden.value =
+        Math.round(
+          value * 100
+        );
+
+    }
+
+
+    form.addEventListener(
+      'submit',
+      function () {
+
+        convertPrice(
+          minInput,
+          minHidden
+        );
+
+        convertPrice(
+          maxInput,
+          maxHidden
+        );
+
+
+        /* Prevent invalid range */
+
+        if (
+          minInput &&
+          maxInput &&
+          minInput.value !== '' &&
+          maxInput.value !== ''
+        ) {
+
+          const min =
+            parseFloat(
+              minInput.value
+            );
+
+          const max =
+            parseFloat(
+              maxInput.value
+            );
+
+
+          if (
+            !Number.isNaN(min) &&
+            !Number.isNaN(max) &&
+            min > max
+          ) {
+
+            /* Swap values automatically */
+
+            minInput.value = max;
+
+            maxInput.value = min;
+
+
+            convertPrice(
+              minInput,
+              minHidden
+            );
+
+            convertPrice(
+              maxInput,
+              maxHidden
+            );
+
+          }
+
+        }
+
+      }
+    );
+
+  }
+
+
+  /* =====================================================
+     PRODUCT IMAGE CAROUSEL
+  ====================================================== */
+
+  section
+    .querySelectorAll(
+      '[data-product-card]'
+    )
+    .forEach(function (card) {
+
+      const slides =
+        card.querySelector(
+          '[data-rpf-slides]'
+        );
+
+      const dots =
+        card.querySelectorAll(
+          '[data-rpf-dot]'
+        );
+
+      const previous =
+        card.querySelector(
+          '[data-rpf-prev]'
+        );
+
+      const next =
+        card.querySelector(
+          '[data-rpf-next]'
+        );
+
+
+      if (
+        !slides ||
+        dots.length < 2
+      ) {
+
+        return;
+
+      }
+
+
+      let current = 0;
+
+
+      function goTo(index) {
+
+        if (
+          index < 0
+        ) {
+
+          index =
+            dots.length - 1;
+
+        }
+
+
+        if (
+          index >= dots.length
+        ) {
+
+          index = 0;
+
+        }
+
+
+        current = index;
+
+
+        slides.style.transform =
+          'translate3d(-' +
+          (current * 100) +
+          '%,0,0)';
+
+
+        dots.forEach(
+          function (dot, i) {
+
+            dot.classList.toggle(
+              'active',
+              i === current
+            );
+
+          }
+        );
+
+      }
+
+
+      if (previous) {
+
+        previous.addEventListener(
+          'click',
+          function (event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            goTo(
+              current - 1
+            );
+
+          }
+        );
+
+      }
+
+
+      if (next) {
+
+        next.addEventListener(
+          'click',
+          function (event) {
+
+            event.preventDefault();
+
+            event.stopPropagation();
+
+            goTo(
+              current + 1
+            );
+
+          }
+        );
+
+      }
+
+
+      /* =================================================
+         TOUCH SWIPE
+      ================================================= */
+
+      let startX = 0;
+
+      let startY = 0;
+
+
+      slides.addEventListener(
+        'touchstart',
+        function (event) {
+
+          const touch =
+            event.touches[0];
+
+          startX =
+            touch.clientX;
+
+          startY =
+            touch.clientY;
+
+        },
+        {
+          passive: true
+        }
+      );
+
+
+      slides.addEventListener(
+        'touchend',
+        function (event) {
+
+          const touch =
+            event.changedTouches[0];
+
+          const deltaX =
+            startX -
+            touch.clientX;
+
+          const deltaY =
+            startY -
+            touch.clientY;
+
+
+          if (
+            Math.abs(deltaX) <=
+            Math.abs(deltaY)
+          ) {
+
+            return;
+
+          }
+
+
+          if (
+            Math.abs(deltaX) < 35
+          ) {
+
+            return;
+
+          }
+
+
+          if (
+            deltaX > 0
+          ) {
+
+            goTo(
+              current + 1
+            );
+
+          } else {
+
+            goTo(
+              current - 1
+            );
+
+          }
+
+        },
+        {
+          passive: true
+        }
+      );
+
+    });
+
+
+  /* =====================================================
+     VARIANT SELECTION
+  ====================================================== */
+
+  section
+    .querySelectorAll(
+      '[data-product-card]'
+    )
+    .forEach(function (card) {
+
+      const variantButtons =
+        card.querySelectorAll(
+          '.rpf-variant'
+        );
+
+      const addButton =
+        card.querySelector(
+          '[data-rpf-add]'
+        );
+
+      const price =
+        card.querySelector(
+          '.rpf-price'
+        );
+
+      const compare =
+        card.querySelector(
+          '.rpf-compare'
+        );
+
+
+      variantButtons.forEach(
+        function (button) {
+
+          button.addEventListener(
+            'click',
+            function () {
+
+              variantButtons.forEach(
+                function (item) {
+
+                  item.classList.remove(
+                    'active'
+                  );
+
+                }
+              );
+
+
+              button.classList.add(
+                'active'
+              );
+
+
+              if (addButton) {
+
+                const available =
+                  button.dataset
+                    .variantAvailable ===
+                  'true';
+
+
+                addButton.dataset
+                  .variantId =
+                  button.dataset
+                    .variantId;
+
+
+                addButton.disabled =
+                  !available;
+
+
+                addButton.textContent =
+                  available
+                    ? 'Add to Cart'
+                    : 'Sold Out';
+
+              }
+
+
+              if (price) {
+
+                price.textContent =
+                  button.dataset
+                    .variantPrice;
+
+              }
+
+
+              if (compare) {
+
+                const comparePrice =
+                  button.dataset
+                    .variantCompare;
+
+
+                if (comparePrice) {
+
+                  compare.textContent =
+                    comparePrice;
+
+                  compare.style.display =
+                    '';
+
+                } else {
+
+                  compare.textContent =
+                    '';
+
+                  compare.style.display =
+                    'none';
+
+                }
+
+              }
+
+            }
+          );
+
+        }
+      );
+
+    });
+
+
+  /* =====================================================
+     ADD TO CART
+  ====================================================== */
+
+  section
+    .querySelectorAll(
+      '[data-rpf-add]'
+    )
+    .forEach(function (button) {
+
+      button.addEventListener(
+        'click',
+        async function () {
+
+          const variantId =
+            button.dataset.variantId;
+
+
+          if (!variantId) {
+            return;
+          }
+
+
+          const originalText =
+            button.textContent;
+
+
+          button.disabled = true;
+
+          button.textContent =
+            'Adding...';
+
+
+          try {
+
+            const response =
+              await fetch(
+                '/cart/add.js',
+                {
+                  method: 'POST',
+
+                  headers: {
+                    'Content-Type':
+                      'application/json',
+
+                    'Accept':
+                      'application/json'
+                  },
+
+                  body:
+                    JSON.stringify({
+                      items: [
+                        {
+                          id:
+                            Number(
+                              variantId
+                            ),
+
+                          quantity: 1
+                        }
+                      ]
+                    })
+                }
+              );
+
+
+            if (!response.ok) {
+
+              throw new Error(
+                'Unable to add product'
+              );
+
+            }
+
+
+            await response.json();
+
+
+            showToast(
+              'Added to cart'
+            );
+
+
+            document.dispatchEvent(
+              new CustomEvent(
+                'cart:refresh'
+              )
+            );
+
+
+            document.dispatchEvent(
+              new CustomEvent(
+                'cart:updated'
+              )
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              error
+            );
+
+
+            showToast(
+              'Unable to add to cart'
+            );
+
+          }
+
+
+          button.disabled = false;
+
+          button.textContent =
+            originalText;
+
+        }
+      );
+
+    });
+
+
+  /* =====================================================
+     TOAST
+  ====================================================== */
+
+  const toast =
+    document.getElementById(
+      'rpf-toast-{{ section.id }}'
+    );
+
+
+  let toastTimer;
+
+
+  function showToast(
+    message
+  ) {
+
+    if (!toast) {
+      return;
+    }
+
+
+    toast.textContent =
+      message;
+
+
+    toast.classList.add(
+      'show'
+    );
+
+
+    clearTimeout(
+      toastTimer
+    );
+
+
+    toastTimer =
+      setTimeout(
+        function () {
+
+          toast.classList.remove(
+            'show'
+          );
+
+        },
+        2200
+      );
+
+  }
+
+
+})();
+</script>
+
+
+{% schema %}
+{
+  "name": "Filtered Product Grid",
+
+  "tag": "section",
+
+  "class": "filtered-product-grid-section",
+
+  "settings": [
+
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Product collection"
+    },
+
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 4,
+      "max": 48,
+      "step": 4,
+      "default": 16
+    },
+
+    {
+      "type": "range",
+      "id": "columns_desktop",
+      "label": "Products per row",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    }
+
+  ],
+
+  "presets": [
+    {
+      "name": "Filtered Product Grid"
+    }
+  ]
+}
+{% endschema %}

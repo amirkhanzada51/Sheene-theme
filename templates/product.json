@@ -1,0 +1,1160 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "product-information",
+      "blocks": {
+        "media-gallery": {
+          "type": "_product-media-gallery",
+          "static": true,
+          "settings": {
+            "media_presentation": "carousel",
+            "media_columns": "two",
+            "image_gap": 4,
+            "large_first_image": false,
+            "icons_style": "arrow",
+            "slideshow_controls_style": "thumbnails",
+            "slideshow_mobile_controls_style": "dots",
+            "thumbnail_position": "bottom",
+            "thumbnail_width": 44,
+            "thumbnail_radius": 0,
+            "aspect_ratio": "adapt",
+            "constrain_to_viewport": true,
+            "media_fit": "contain",
+            "media_radius": 0,
+            "extend_media": false,
+            "zoom": true,
+            "video_loop": false,
+            "hide_variants": true,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "product-details": {
+          "type": "_product-details",
+          "static": true,
+          "settings": {
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "details_position": "flex-start",
+            "gap": 28,
+            "sticky_details_desktop": true,
+            "background_media": "none",
+            "background_color": "",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "padding-block-start": 24,
+            "padding-block-end": 24,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "group_icgrde": {
+              "type": "group",
+              "name": "t:names.header",
+              "settings": {
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "flex-start",
+                "vertical_alignment": "center",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "center",
+                "gap": 12,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "background_media": "none",
+                "background_color": "",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "link": "",
+                "open_in_new_tab": false,
+                "placeholder": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "custom_liquid_4zNNiH": {
+                  "type": "custom-liquid",
+                  "name": "Product Title",
+                  "settings": {
+                    "custom_liquid": "{% comment %}\n  SHEENE — Custom Liquid block 1 of 6: Product Title\n  Paste this whole file into a \"Custom Liquid\" block on the Product page,\n  first in the order (Title → Price → Shipping → Quantity → Add to cart → Buy it now).\n  Dynamic: pulls product.title automatically, works on every product.\n{% endcomment %}\n\n<h1 class=\"sh-product-title\">{{ product.title }}</h1>\n\n<style>\n  .sh-product-title {\n    font-family: var(--font-heading-family, 'Inter', system-ui, sans-serif);\n    font-weight: 700;\n    letter-spacing: -0.02em;\n    line-height: 1.15;\n    color: var(--color-foreground, #111111);\n    /* Fluid size: scales smoothly between mobile and desktop, no fixed breakpoints */\n    font-size: clamp(1.75rem, 1.35rem + 1.6vw, 2.75rem);\n    margin: 0 0 clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem) 0;\n  }\n</style>"
+                  },
+                  "blocks": {}
+                },
+                "custom_liquid_c7bPAB": {
+                  "type": "custom-liquid",
+                  "name": "Product Price",
+                  "settings": {
+                    "custom_liquid": "{% comment %}\n  SHEENE — Custom Liquid block 2 of 6: Price row\n  Shows compare-at price (struck through) + current price + \"Sale\" badge,\n  but ONLY when the product is genuinely marked down (compare_at_price > price).\n  If there's no discount, only the plain price shows — no fake strike-through.\n  Uses Shopify's `money` filter, so currency formatting follows your shop\n  settings automatically — never hardcoded as \"Rs.\"\n\n  v2: added a negative top margin to close the extra gap that Shopify's\n  block-to-block spacing was adding above this block, on top of the\n  title's own margin. If this ever looks too tight or too loose after\n  a theme update, adjust the -2.25rem value below — nothing else here\n  depends on it.\n{% endcomment %}\n\n{% liquid\n  assign variant = product.selected_or_first_available_variant\n  assign on_sale = false\n  if variant.compare_at_price > variant.price\n    assign on_sale = true\n  endif\n%}\n\n<div class=\"sh-price-row\" data-variant-id=\"{{ variant.id }}\">\n  {% if on_sale %}\n    <span class=\"sh-price-compare\">{{ variant.compare_at_price | money }}</span>\n  {% endif %}\n  <span class=\"sh-price-current\">{{ variant.price | money }}</span>\n  {% if on_sale %}\n    <span class=\"sh-price-badge\">Sale</span>\n  {% endif %}\n</div>\n\n<style>\n  .sh-price-row {\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    gap: clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem);\n    font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n    margin: 0 0 clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem) 0;\n  }\n  .sh-price-compare {\n    color: var(--color-foreground-75, #9A9A9A);\n    text-decoration: line-through;\n    font-size: clamp(0.95rem, 0.88rem + 0.3vw, 1.1rem);\n  }\n  .sh-price-current {\n    color: var(--color-foreground, #111111);\n    font-weight: 600;\n    font-size: clamp(1.1rem, 1rem + 0.45vw, 1.4rem);\n  }\n  .sh-price-badge {\n    background: var(--color-foreground, #111111);\n    color: #FFFFFF;\n    font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n    font-size: clamp(0.7rem, 0.66rem + 0.1vw, 0.8rem);\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n    padding: 0.3em 0.65em;\n    border-radius: 0;\n  }\n</style>"
+                  },
+                  "blocks": {}
+                },
+                "text_xrnftG": {
+                  "type": "text",
+                  "name": "Product title - old",
+                  "disabled": true,
+                  "settings": {
+                    "text": "<h1>{{ closest.product.title }}</h1>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "custom",
+                    "font": "var(--font-body--family)",
+                    "font_size": "3rem",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                },
+                "review_Jkeaj3": {
+                  "type": "review",
+                  "name": "t:names.product_review_stars",
+                  "settings": {
+                    "stars_style": "shaded",
+                    "show_number": true,
+                    "text_color": "",
+                    "type_preset": "paragraph",
+                    "width": "100%",
+                    "alignment": "left"
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "custom_liquid_4zNNiH",
+                "custom_liquid_c7bPAB",
+                "text_xrnftG",
+                "review_Jkeaj3"
+              ]
+            },
+            "text_4mwimm": {
+              "type": "text",
+              "name": "t:names.heading",
+              "disabled": true,
+              "settings": {
+                "text": "<p>✨Earn 5% MCash on every order, post-delivery. ⓘ</p>",
+                "width": "fit-content",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "custom",
+                "font": "var(--font-body--family)",
+                "font_size": "1.125rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "#ffffff",
+                "background": true,
+                "background_color": "#000000",
+                "corner_radius": 5,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "buy_buttons_eYQEYi": {
+              "type": "buy-buttons",
+              "settings": {
+                "stacking": true,
+                "text_color": "",
+                "show_pickup_availability": false,
+                "gift_card_form": true,
+                "recipient_button_style": "default",
+                "recipient_button_background": "{{ settings.color_palette.background }}",
+                "recipient_button_text": "{{ settings.color_palette.foreground }}",
+                "recipient_button_border": "{{ settings.color_palette.foreground }}",
+                "selected_recipient_button_style": "default",
+                "selected_recipient_button_background": "{{ settings.color_palette.foreground }}",
+                "selected_recipient_button_text": "{{ settings.color_palette.background }}",
+                "selected_recipient_button_border": "{{ settings.color_palette.foreground }}",
+                "input_style": "default",
+                "input_background_color": "{{ settings.color_palette.background }}",
+                "input_text_color": "{{ settings.color_palette.foreground }}",
+                "input_border_color": "{{ settings.color_palette.foreground }}",
+                "border_width": 1,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "quantity": {
+                  "type": "quantity",
+                  "static": true,
+                  "settings": {
+                    "input_style": "default",
+                    "input_background_color": "{{ settings.color_palette.background }}",
+                    "input_text_color": "{{ settings.color_palette.foreground }}",
+                    "input_border_color": "{{ settings.color_palette.foreground }}",
+                    "border_width": 1,
+                    "border_radius": 0
+                  },
+                  "blocks": {}
+                },
+                "add-to-cart": {
+                  "type": "add-to-cart",
+                  "static": true,
+                  "settings": {
+                    "style_class": "button",
+                    "custom_button_background": "{{ settings.color_palette.foreground }}",
+                    "custom_button_text": "{{ settings.color_palette.background }}",
+                    "custom_button_border": "{{ settings.color_palette.background }}"
+                  },
+                  "blocks": {}
+                },
+                "accelerated-checkout": {
+                  "type": "accelerated-checkout",
+                  "disabled": true,
+                  "static": true,
+                  "settings": {},
+                  "blocks": {}
+                }
+              },
+              "block_order": []
+            },
+            "custom_liquid_GWYJUW": {
+              "type": "custom-liquid",
+              "name": "Goes Well Product",
+              "settings": {
+                "custom_liquid": "{% comment %}\n  SHEENE — Custom Liquid: \"Goes Well With\"\n  Paste this block AFTER the Add to Cart block on the product page.\n\n  Reads a hand-picked list of products from the \"Goes Well With\" product\n  metafield (up to 7, set per-product in Admin) and shows each one as a\n  card: image, price, title, size/variant buttons if the product has more\n  than one variant, and an Add to Cart button — all rendered directly\n  from Shopify data, no separate fetch needed.\n\n  If the metafield is empty for a product, this whole block renders\n  nothing — safe to paste on every product page.\n\n  ONE THING TO CHECK before using: this assumes your metafield's\n  namespace/key is custom.goes_well_with — Shopify's default when a\n  definition called \"Goes Well With\" is created through the simple admin\n  UI. To confirm: Settings → Custom data → Products → click \"Goes Well\n  With\" → the Namespace and key shown there should read\n  custom.goes_well_with. If it's different, change ONLY the line below\n  marked CHANGE THIS.\n{% endcomment %}\n\n{% liquid\n  assign gww_products = product.metafields.custom.goes_well_products.value\n  # This matches your metafield named \"Goes Well Products\" (custom.goes_well_products)\n%}\n\n{% if gww_products.size > 0 %}\n\n  <div class=\"sh-gww\">\n\n    <div class=\"sh-gww-label\">Goes well with</div>\n\n    {% for gww in gww_products limit: 7 %}\n      {% liquid\n        assign gww_variant = gww.selected_or_first_available_variant | default: gww.variants.first\n        assign gww_title_escaped = gww.title | escape\n        assign gww_on_sale = false\n        if gww_variant.compare_at_price > gww_variant.price\n          assign gww_on_sale = true\n        endif\n      %}\n\n      <div class=\"sh-gww-card\" {% if forloop.first %}data-first{% endif %}>\n\n        <a href=\"{{ gww.url }}\" class=\"sh-gww-image\">\n          {{\n            gww.featured_image\n            | image_url: width: 300\n            | image_tag: loading: 'lazy', alt: gww_title_escaped, sizes: '120px', widths: '120,180,240'\n          }}\n        </a>\n\n        <div class=\"sh-gww-details\">\n\n          <div class=\"sh-gww-price\">\n            <span class=\"sh-gww-price-current\" data-current-price>{{ gww_variant.price | money }}</span>\n            {% if gww_on_sale %}\n              <span class=\"sh-gww-price-compare\" data-compare-price>{{ gww_variant.compare_at_price | money }}</span>\n            {% else %}\n              <span class=\"sh-gww-price-compare\" data-compare-price hidden></span>\n            {% endif %}\n          </div>\n\n          <a href=\"{{ gww.url }}\" class=\"sh-gww-title\">{{ gww.title }}</a>\n\n          {% if gww.variants.size > 1 %}\n            <div class=\"sh-gww-variants\">\n              {% for variant in gww.variants %}\n                <button\n                  type=\"button\"\n                  class=\"sh-gww-variant-btn\"\n                  data-variant-id=\"{{ variant.id }}\"\n                  data-price-formatted=\"{{ variant.price | money }}\"\n                  data-compare-formatted=\"{{ variant.compare_at_price | money }}\"\n                  data-on-sale=\"{% if variant.compare_at_price > variant.price %}true{% else %}false{% endif %}\"\n                  {% unless variant.available %}disabled{% endunless %}\n                >\n                  {{ variant.title }}\n                </button>\n              {% endfor %}\n            </div>\n          {% endif %}\n\n          <button\n            type=\"button\"\n            class=\"sh-gww-add {% if gww.variants.size > 1 %}needs-selection{% endif %}\"\n            data-add-to-cart\n            data-variant-id=\"{{ gww_variant.id }}\"\n            {% unless gww.available %}disabled{% endunless %}\n          >\n            {% if gww.available == false %}\n              Sold out\n            {% elsif gww.variants.size > 1 %}\n              Select Size\n            {% else %}\n              Add to Cart\n            {% endif %}\n          </button>\n\n        </div>\n\n      </div>\n    {% endfor %}\n\n  </div>\n\n  <style>\n    .sh-gww {\n      border: 1px solid var(--color-border, #D4D4D4);\n      border-radius: 0;\n      padding: clamp(1rem, 0.85rem + 0.5vw, 1.5rem);\n      margin: clamp(1rem, 0.8rem + 0.5vw, 1.5rem) 0;\n    }\n\n    .sh-gww-label {\n      font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n      font-weight: 600;\n      font-size: clamp(0.75rem, 0.7rem + 0.15vw, 0.85rem);\n      text-transform: uppercase;\n      letter-spacing: 0.08em;\n      color: var(--color-foreground, #111111);\n      padding-bottom: clamp(0.75rem, 0.6rem + 0.4vw, 1.1rem);\n      border-bottom: 1px solid var(--color-border, #D4D4D4);\n      margin-bottom: clamp(0.9rem, 0.75rem + 0.4vw, 1.25rem);\n    }\n\n    .sh-gww-card {\n      display: flex;\n      flex-wrap: wrap;\n      gap: clamp(0.85rem, 0.7rem + 0.4vw, 1.25rem);\n    }\n    .sh-gww-card:not([data-first]) {\n      margin-top: clamp(0.9rem, 0.75rem + 0.4vw, 1.25rem);\n      padding-top: clamp(0.9rem, 0.75rem + 0.4vw, 1.25rem);\n      border-top: 1px solid var(--color-border, #D4D4D4);\n    }\n\n    .sh-gww-image {\n      flex: 0 0 clamp(80px, 70px + 4vw, 120px);\n      display: block;\n    }\n    .sh-gww-image img {\n      width: 100%;\n      aspect-ratio: 1 / 1;\n      object-fit: cover;\n      display: block;\n      background: var(--color-background-secondary, #F7F7F5);\n    }\n\n    .sh-gww-details {\n      flex: 1 1 200px;\n      min-width: 200px;\n      display: flex;\n      flex-direction: column;\n      gap: clamp(0.35rem, 0.3rem + 0.15vw, 0.5rem);\n    }\n\n    .sh-gww-price {\n      font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n      display: flex;\n      align-items: center;\n      gap: 0.5rem;\n    }\n    .sh-gww-price-current {\n      font-weight: 600;\n      font-size: clamp(0.95rem, 0.88rem + 0.25vw, 1.1rem);\n      color: var(--color-foreground, #111111);\n    }\n    .sh-gww-price-compare {\n      font-size: clamp(0.85rem, 0.8rem + 0.15vw, 0.95rem);\n      color: var(--color-foreground-75, #9A9A9A);\n      text-decoration: line-through;\n    }\n    .sh-gww-price-compare[hidden] {\n      display: none;\n    }\n\n    .sh-gww-title {\n      font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n      font-weight: 600;\n      font-size: clamp(0.95rem, 0.88rem + 0.25vw, 1.05rem);\n      color: var(--color-foreground, #111111);\n      text-decoration: none;\n    }\n\n    .sh-gww-variants {\n      display: flex;\n      flex-wrap: wrap;\n      gap: clamp(0.35rem, 0.3rem + 0.1vw, 0.5rem);\n      margin-top: 0.15rem;\n    }\n    .sh-gww-variant-btn {\n      background: none;\n      border: 1px solid var(--color-border, #D4D4D4);\n      border-radius: 0;\n      padding: clamp(0.4rem, 0.35rem + 0.15vw, 0.55rem) clamp(0.6rem, 0.55rem + 0.2vw, 0.85rem);\n      font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n      font-size: clamp(0.8rem, 0.76rem + 0.12vw, 0.9rem);\n      color: var(--color-foreground, #111111);\n      cursor: pointer;\n    }\n    .sh-gww-variant-btn.is-active {\n      border-color: var(--color-foreground, #111111);\n      border-width: 2px;\n    }\n    .sh-gww-variant-btn:disabled {\n      opacity: 0.4;\n      cursor: not-allowed;\n      text-decoration: line-through;\n    }\n\n    .sh-gww-add {\n      width: 100%;\n      background: var(--color-primary-button-background, #111111);\n      color: var(--color-primary-button-text, #FFFFFF);\n      font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n      font-weight: 600;\n      font-size: clamp(0.85rem, 0.8rem + 0.15vw, 0.95rem);\n      letter-spacing: 0.02em;\n      border: none;\n      border-radius: 0;\n      padding: clamp(0.6rem, 0.55rem + 0.2vw, 0.8rem) 1rem;\n      margin-top: clamp(0.25rem, 0.2rem + 0.1vw, 0.4rem);\n      cursor: pointer;\n      transition: opacity 0.2s ease;\n    }\n    .sh-gww-add:disabled {\n      opacity: 0.5;\n      cursor: not-allowed;\n    }\n    .sh-gww-add:not(:disabled):hover {\n      opacity: 0.85;\n    }\n  </style>\n\n  <script>\n    (function () {\n      document.querySelectorAll('.sh-gww-card').forEach(function (card) {\n\n        var variantButtons = card.querySelectorAll('.sh-gww-variant-btn');\n        var addButton = card.querySelector('[data-add-to-cart]');\n        var currentPriceEl = card.querySelector('[data-current-price]');\n        var comparePriceEl = card.querySelector('[data-compare-price]');\n\n        variantButtons.forEach(function (btn) {\n          btn.addEventListener('click', function () {\n            if (btn.disabled) return;\n\n            variantButtons.forEach(function (b) { b.classList.remove('is-active'); });\n            btn.classList.add('is-active');\n\n            currentPriceEl.textContent = btn.dataset.priceFormatted;\n\n            if (btn.dataset.onSale === 'true') {\n              comparePriceEl.textContent = btn.dataset.compareFormatted;\n              comparePriceEl.hidden = false;\n            } else {\n              comparePriceEl.hidden = true;\n            }\n\n            addButton.dataset.variantId = btn.dataset.variantId;\n            addButton.textContent = 'Add to Cart';\n            addButton.classList.remove('needs-selection');\n          });\n        });\n\n        if (addButton) {\n          addButton.addEventListener('click', function () {\n            if (addButton.disabled) return;\n            if (addButton.classList.contains('needs-selection')) return; // ask them to pick a size first\n\n            var variantId = addButton.dataset.variantId;\n            if (!variantId) return;\n\n            var originalLabel = addButton.textContent;\n            addButton.disabled = true;\n            addButton.textContent = 'Adding…';\n\n            fetch('/cart/add.js', {\n              method: 'POST',\n              headers: { 'Content-Type': 'application/json' },\n              body: JSON.stringify({\n                items: [{ id: variantId, quantity: 1 }]\n              })\n            })\n              .then(function (res) {\n                if (!res.ok) throw new Error('Add to cart failed');\n                return res.json();\n              })\n              .then(function () {\n                addButton.textContent = 'Added';\n                window.location.reload();\n              })\n              .catch(function () {\n                addButton.textContent = originalLabel;\n                addButton.disabled = false;\n                alert('Something went wrong adding this to your cart. Please try again.');\n              });\n          });\n        }\n\n      });\n    })();\n  </script>\n\n{% endif %}"
+              },
+              "blocks": {}
+            },
+            "text_aEtTtq": {
+              "type": "text",
+              "name": "t:names.product_description",
+              "disabled": true,
+              "settings": {
+                "text": "{{ closest.product.description }}",
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "custom",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "accordion_hdqLx6": {
+              "type": "accordion",
+              "name": "t:names.accordion",
+              "settings": {
+                "icon": "plus",
+                "dividers": true,
+                "divider_color": "#e8e7e7",
+                "type_preset": "",
+                "background_color": "",
+                "text_color": "",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "accordion_row_MCKBVj": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "What Makes It Potent?",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_KFMyEy": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<ul><li>Contains Salicylic Acid (BHA) that penetrates deep into the skin & scoops out the dirt, debris, and sebum, hence reducing the oily look of the skin</li><li>Formulated with Capryloyl Salicylic Acid (LHA), which unlike Salicylic Acid, stays on outer layer of skin and provides gentle exfoliation, revealing soft skin. The combination provides multi-level cleansing</li><li>Boosted with anti-bacterial Zinc and several hydrating & soothing ingredients like Xylitylglucoside, Panthenol (Vitamin B5), Allantoin, Pentyle Glycol for hydrating overall after-feel</li><li>Formulated with 2 very mild sulfate-free surfactants (cleansers) that provide optimum cleaning without stripping skin lipids or proteins<br/><br/>All our ingredients are sourced from leading global supplier. Our Salicylic Acid is a high purity grade ingredient</li></ul>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "text_color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_KFMyEy"
+                  ]
+                },
+                "accordion_row_7A8HtE": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Ideal For",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_Mrp3fE": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p><strong>Skin type:</strong> Oily/Combination, Acne-Prone</p><p><strong>Concerns:</strong> Acne, Breakouts & Oiliness</p><p><strong>Suitable for:</strong> 15+ years of age</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "text_color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_Mrp3fE"
+                  ]
+                },
+                "accordion_row_VxMGzX": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "How to Use",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_tCATaG": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Apply on wet face. Pour an appropriate quantity into wet hands, rub together into a light lather, and massage into face. Rinse thoroughly.<br/><br/><strong>When to use:</strong>When to use: AM & PM. Everyday.<br/><br/></p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "text_color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_tCATaG"
+                  ]
+                },
+                "accordion_row_qWx4Gh": {
+                  "type": "_accordion-row",
+                  "settings": {
+                    "heading": "Consumer Studies",
+                    "open_by_default": false,
+                    "icon": "none",
+                    "width": 20
+                  },
+                  "blocks": {
+                    "text_T6KYpe": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>Balanced combination of mild surfactants with BHA & LHA gives gentle cleansing and multi-level exfoliation without irritating & drying the skin</p><p><strong>90%</strong> subjects agreed significant reduction in skin oiliness after 6 washes</p><p><strong>87%</strong> subjects agreed acne occurrences reduced after 6 weeks</p><p><strong>90%</strong>subjects agreed skin felt smoother & brighter after 4 weeks</p><p><strong>Note:</strong> The product has been evaluated for safety through patch testing under the supervision of a Dermatologist.</p>",
+                        "width": "100%",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "rte",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "text_color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_T6KYpe"
+                  ]
+                }
+              },
+              "block_order": [
+                "accordion_row_MCKBVj",
+                "accordion_row_7A8HtE",
+                "accordion_row_VxMGzX",
+                "accordion_row_qWx4Gh"
+              ]
+            }
+          },
+          "block_order": [
+            "group_icgrde",
+            "text_4mwimm",
+            "buy_buttons_eYQEYi",
+            "custom_liquid_GWYJUW",
+            "text_aEtTtq",
+            "accordion_hdqLx6"
+          ]
+        }
+      },
+      "custom_css": [
+        "@media screen and (min-width: 1200px) {.product-information__grid:not( .product-information__grid--half, .product-information--media-none ).product-information--media-left {grid-template-columns: 1fr 1fr; }}"
+      ],
+      "settings": {
+        "content_width": "content-center-aligned",
+        "desktop_media_position": "left",
+        "equal_columns": false,
+        "limit_details_width": false,
+        "gap": 48,
+        "enable_sticky_add_to_cart": true,
+        "background_color": "{{ settings.color_palette.background }}",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "section_MiWbx3": {
+      "type": "section",
+      "blocks": {
+        "text_N3CVT4": {
+          "type": "text",
+          "name": "t:names.heading",
+          "disabled": true,
+          "settings": {
+            "text": "<h2>Ingredients</h2>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-heading--family)",
+            "font_size": "2rem",
+            "line_height": "normal",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "accordion_AnW4ga": {
+          "type": "accordion",
+          "name": "t:names.accordion",
+          "settings": {
+            "icon": "plus",
+            "dividers": true,
+            "divider_color": "#e8e7e7",
+            "type_preset": "",
+            "background_color": "",
+            "text_color": "#000000",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "accordion_row_cfziTW": {
+              "type": "_accordion-row",
+              "disabled": true,
+              "settings": {
+                "heading": "Retinaldehyde",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_NR7Vjq": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>Supports gentle cell renewal, refining texture and improving skin’s surface uniformity.<br/><br/></p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_NR7Vjq"
+              ]
+            },
+            "accordion_row_f378gB": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "disabled": true,
+              "settings": {
+                "heading": "{{ closest.product.metafields.custom.faq_product_1_question.value }}",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_Ji3Cjq": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<p>Enhances radiance, brightens tone, and provides antioxidant protection against oxidative stress.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_Ji3Cjq"
+              ]
+            },
+            "accordion_row_h6ajKJ": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "disabled": true,
+              "settings": {
+                "heading": "Vitamin F",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_Q6PeNw": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<p>Promotes suppleness and a healthy, balanced appearance.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_Q6PeNw"
+              ]
+            },
+            "accordion_row_taGUHj": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "disabled": true,
+              "settings": {
+                "heading": "All Ingredients",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_xHRG4E": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<p>Caprylic/Capric Triglyceride, Isododecane, Ascorbyl Tetraisopalmitate, Diisopropyl Sebacate, Dicaprylyl Carbonate, Triheptanoin, Dipentaerythrityl Hexacaprylate/Hexacaprate, Hydrogenated Polyisobutene, Ethoxydiglycol, Pentylene Glycol, Heptyl Undecylenate, Anemarrhenae Asphodeloides (Root) Extract, Tocopheryl Acetate, Linoleic Acid, Linolenic Acid, Retinaldehyde</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_xHRG4E"
+              ]
+            }
+          },
+          "block_order": [
+            "accordion_row_cfziTW",
+            "accordion_row_f378gB",
+            "accordion_row_h6ajKJ",
+            "accordion_row_taGUHj"
+          ]
+        }
+      },
+      "block_order": [
+        "text_N3CVT4",
+        "accordion_AnW4ga"
+      ],
+      "disabled": true,
+      "name": "t:names.faq_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 32,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "recommended_products_HzXXfa": {
+      "type": "recommended-products",
+      "name": "Recommended Products",
+      "settings": {}
+    },
+    "1787586823fd821aab": {
+      "type": "_blocks",
+      "blocks": {
+        "judge_me_reviews_review_widget_HgYUeD": {
+          "type": "shopify://apps/judge-me-reviews/blocks/review_widget/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
+          "settings": {
+            "review_data": "sample_data",
+            "max_width": 1200,
+            "show_shop_reviews": false,
+            "empty_state": "empty_widget"
+          }
+        }
+      },
+      "block_order": [
+        "judge_me_reviews_review_widget_HgYUeD"
+      ],
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "section_3R6U7q": {
+      "type": "section",
+      "blocks": {
+        "text_Dbchyc": {
+          "type": "text",
+          "name": "t:names.heading",
+          "settings": {
+            "text": "<h2>FAQs</h2>",
+            "width": "fit-content",
+            "max_width": "narrow",
+            "alignment": "left",
+            "type_preset": "custom",
+            "font": "var(--font-heading--family)",
+            "font_size": "2rem",
+            "line_height": "normal",
+            "letter_spacing": "tight",
+            "case": "none",
+            "wrap": "nowrap",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "accordion_eTJndg": {
+          "type": "accordion",
+          "name": "t:names.accordion",
+          "settings": {
+            "icon": "plus",
+            "dividers": true,
+            "divider_color": "#e8e7e7",
+            "type_preset": "",
+            "background_color": "",
+            "text_color": "#000000",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "accordion_row_EJL6DP": {
+              "type": "_accordion-row",
+              "settings": {
+                "heading": "{{ closest.product.metafields.custom.faq_product_1_question.value }}",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_fXPcCC": {
+                  "type": "text",
+                  "settings": {
+                    "text": "<p>{{ closest.product.metafields.custom.faq_product_1_answer | metafield_tag }}</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_fXPcCC"
+              ]
+            },
+            "accordion_row_F7EHmf": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "settings": {
+                "heading": "{{ closest.product.metafields.custom.faq_product_question_2.value }}",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_fmFUhd": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<p>{{ closest.product.metafields.custom.faq_product_answer_2 | metafield_tag }}</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_fmFUhd"
+              ]
+            },
+            "accordion_row_LVjiKW": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "settings": {
+                "heading": "Can this product be used for men & women both?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_TtHVrV": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<p>Yes. This face cleanser works equally well for both men and women.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_TtHVrV"
+              ]
+            },
+            "accordion_row_jPMhA9": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "disabled": true,
+              "settings": {
+                "heading": "What is the recommended age for using this cleanser?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_Kzc7RK": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<p>Anyone over 15 years of age can use this cleanser.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_Kzc7RK"
+              ]
+            },
+            "accordion_row_Pirhgf": {
+              "type": "_accordion-row",
+              "name": "t:names.accordion_row",
+              "disabled": true,
+              "settings": {
+                "heading": "Is the product pregnancy safe?",
+                "open_by_default": false,
+                "icon": "none",
+                "width": 20
+              },
+              "blocks": {
+                "text_8aW3Wz": {
+                  "type": "text",
+                  "name": "t:names.text",
+                  "settings": {
+                    "text": "<p>Pregnant or breastfeeding individuals should not use this product without consulting their healthcare provider first.</p>",
+                    "width": "100%",
+                    "max_width": "normal",
+                    "alignment": "left",
+                    "type_preset": "rte",
+                    "font": "var(--font-body--family)",
+                    "font_size": "",
+                    "line_height": "normal",
+                    "letter_spacing": "normal",
+                    "case": "none",
+                    "wrap": "pretty",
+                    "text_color": "",
+                    "background": false,
+                    "background_color": "#00000026",
+                    "corner_radius": 0,
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {}
+                }
+              },
+              "block_order": [
+                "text_8aW3Wz"
+              ]
+            }
+          },
+          "block_order": [
+            "accordion_row_EJL6DP",
+            "accordion_row_F7EHmf",
+            "accordion_row_LVjiKW",
+            "accordion_row_jPMhA9",
+            "accordion_row_Pirhgf"
+          ]
+        }
+      },
+      "block_order": [
+        "text_Dbchyc",
+        "accordion_eTJndg"
+      ],
+      "disabled": true,
+      "name": "t:names.faq_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 32,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "1787586820879c6e76": {
+      "type": "_blocks",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "background_media": "none",
+        "background_color": "",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_color": "",
+        "border_radius": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    }
+  },
+  "order": [
+    "main",
+    "section_MiWbx3",
+    "recommended_products_HzXXfa",
+    "1787586823fd821aab",
+    "section_3R6U7q",
+    "1787586820879c6e76"
+  ]
+}

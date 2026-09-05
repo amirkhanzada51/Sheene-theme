@@ -1,0 +1,2796 @@
+<style>
+/* =========================================================
+   RECOMMENDED PRODUCTS FOR YOU
+   ========================================================= */
+
+.rpfu-section,
+.rpfu-section * {
+  box-sizing: border-box;
+}
+
+.rpfu-section {
+  width: 100%;
+  margin-top: 50px;
+  background: #ffffff;
+  color: #080808;
+  font-family: "Jost", sans-serif;
+  overflow: hidden;
+}
+
+.rpfu-container {
+  width: calc(100% - 88px);
+  margin: 10px auto;
+}
+
+
+/* =========================================================
+   HEADING
+   ========================================================= */
+
+.rpfu-heading {
+  margin: 20px 0 24px;
+  padding: 0;
+
+  font-family: "Jost", sans-serif;
+  font-size: 32px;
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: -1.25px;
+
+  color: #050505;
+}
+
+
+/* =========================================================
+   PRODUCT GRID
+   ========================================================= */
+
+.rpfu-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  column-gap: 16px;
+  row-gap: 45px;
+}
+
+
+/* =========================================================
+   PRODUCT CARD
+   ========================================================= */
+
+.rpfu-card {
+  width: 100%;
+  min-width: 0;
+
+  position: relative;
+
+  font-family: "Jost", sans-serif;
+  color: #080808;
+}
+
+
+/* =========================================================
+   IMAGE CONTAINER
+   EXACT RATIO = 420 × 630
+   ========================================================= */
+
+.rpfu-media {
+  width: 420px;
+  height: 630px;
+
+  max-width: 100%;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background: #e9edef;
+}
+
+
+/* =========================================================
+   CLICKABLE IMAGE LINK
+   ========================================================= */
+
+.rpfu-image-link {
+  display: block;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  text-decoration: none;
+
+  color: inherit;
+}
+
+
+/* =========================================================
+   IMAGE SLIDES
+   ========================================================= */
+
+.rpfu-slides {
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+
+  transition:
+    transform 0.35s ease;
+
+  will-change: transform;
+}
+
+.rpfu-slide {
+  width: 100%;
+  height: 100%;
+
+  flex: 0 0 100%;
+
+  display: block;
+
+  overflow: hidden;
+}
+
+.rpfu-slide img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition:
+    transform 0.38s ease;
+}
+
+
+/* =========================================================
+   IMAGE HOVER SCALE
+   ========================================================= */
+
+.rpfu-image-link:hover .rpfu-slide img {
+  transform: scale(1.025);
+}
+
+
+/* =========================================================
+   TRENDING BADGE
+   ========================================================= */
+
+.rpfu-trending {
+  position: absolute;
+
+  top: 15px;
+  right: 16px;
+
+  z-index: 5;
+
+  min-height: 25px;
+
+  padding: 5px 11px;
+
+  display: none;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  background: #050505;
+
+  color: #ffffff;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 12px;
+  line-height: 1;
+
+  font-weight: 500;
+
+  white-space: nowrap;
+}
+
+.rpfu-card.is-trending .rpfu-trending {
+  display: flex;
+}
+
+
+/* =========================================================
+   IMAGE ARROWS
+   ========================================================= */
+
+.rpfu-image-arrow {
+  position: absolute;
+
+  top: 50%;
+
+  transform: translateY(-50%);
+
+  z-index: 10;
+
+  width: 25px;
+  height: 25px;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: rgba(255, 255, 255, 0.92);
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  opacity: 1;
+
+  box-shadow: none;
+
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.rpfu-image-arrow:hover {
+  background: #ffffff;
+
+  transform:
+    translateY(-50%)
+    scale(1.04);
+}
+
+.rpfu-image-arrow svg {
+  width: 15px;
+  height: 15px;
+
+  fill: none;
+
+  stroke: #777777;
+
+  stroke-width: 1.7;
+
+  stroke-linecap: round;
+
+  stroke-linejoin: round;
+
+  pointer-events: none;
+}
+
+.rpfu-prev {
+  left: 9px;
+}
+
+.rpfu-next {
+  right: 9px;
+}
+
+
+/* =========================================================
+   SINGLE IMAGE
+   ========================================================= */
+
+.rpfu-card.single-image .rpfu-image-arrow {
+  display: none;
+}
+
+
+/* =========================================================
+   IMAGE DOTS
+   ========================================================= */
+
+.rpfu-dots {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+
+  bottom: 10px;
+
+  z-index: 7;
+
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  gap: 4px;
+
+  pointer-events: none;
+}
+
+.rpfu-dot {
+  width: 6px;
+  height: 6px;
+
+  padding: 0;
+
+  border: 0;
+
+  border-radius: 50%;
+
+  background: #c5c7c8;
+
+  transition:
+    background 0.2s ease;
+}
+
+.rpfu-dot.active {
+  background: #080808;
+}
+
+
+/* =========================================================
+   PRODUCT INFORMATION
+   ========================================================= */
+
+.rpfu-info {
+  width: 100%;
+
+  padding-top: 25px;
+}
+
+
+/* =========================================================
+   PRODUCT TITLE
+   ========================================================= */
+
+.rpfu-title {
+  margin: 0;
+  padding: 0;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 18px;
+
+  line-height: 1.38;
+
+  font-weight: 500;
+
+  letter-spacing: -0.15px;
+
+  color: #080808;
+}
+
+
+/* =========================================================
+   PRODUCT TITLE LINK
+   ========================================================= */
+
+.rpfu-title-link {
+  position: relative;
+
+  display: inline-block;
+
+  color: #080808;
+
+  text-decoration: none;
+
+  font-family: "Jost", sans-serif;
+}
+
+
+/* =========================================================
+   TITLE UNDERLINE ANIMATION
+   LEFT → RIGHT
+   ========================================================= */
+
+.rpfu-title-link::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: -2px;
+
+  width: 100%;
+  height: 1px;
+
+  background: #080808;
+
+  transform: scaleX(0);
+
+  transform-origin: left center;
+
+  transition:
+    transform 0.35s ease;
+}
+
+.rpfu-title-link:hover::after {
+  transform: scaleX(1);
+}
+
+
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+
+.rpfu-description {
+  margin-top: 10px;
+
+  min-height: 21px;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 15px;
+
+  line-height: 1.4;
+
+  font-weight: 400;
+
+  color: #777777;
+}
+
+
+/* =========================================================
+   PRICE
+   ========================================================= */
+
+.rpfu-price-row {
+  margin-top: 5px;
+
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 7px;
+}
+
+.rpfu-price {
+  font-family: "Jost", sans-serif;
+
+  font-size: 15px;
+
+  line-height: 1.4;
+
+  font-weight: 400;
+
+  color: #111111;
+}
+
+.rpfu-compare {
+  font-family: "Jost", sans-serif;
+
+  font-size: 14px;
+
+  line-height: 1.4;
+
+  color: #777777;
+
+  text-decoration: line-through;
+}
+
+
+/* =========================================================
+   VARIANTS
+   ========================================================= */
+
+.rpfu-variants {
+  width: 100%;
+
+  margin-top: 18px;
+
+  display: flex;
+
+  align-items: center;
+
+  flex-wrap: wrap;
+
+  gap: 10px;
+}
+
+.rpfu-variant {
+  min-width: 64px;
+
+  height: 30px;
+
+  padding: 0 17px;
+
+  border: 1px solid #bdbdbd;
+
+  border-radius: 17px;
+
+  background: #ffffff;
+
+  display: inline-flex;
+
+  align-items: center;
+  justify-content: center;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 14px;
+
+  line-height: 1;
+
+  color: #222222;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.rpfu-variant.active {
+  background: #050505;
+
+  border-color: #050505;
+
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   ADD TO CART
+   ========================================================= */
+
+.rpfu-add {
+  width: 100%;
+
+  height: 51px;
+
+  margin-top: 12px;
+
+  padding: 0;
+
+  border: 0;
+
+  background: #050505;
+
+  color: #ffffff;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 16px;
+
+  line-height: 1;
+
+  font-weight: 400;
+
+  cursor: pointer;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  transition:
+    background 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.rpfu-add:hover {
+  background: #181818;
+}
+
+.rpfu-add:disabled {
+  opacity: 0.55;
+
+  cursor: not-allowed;
+}
+
+
+/* =========================================================
+   LOADING
+   ========================================================= */
+
+.rpfu-add.loading {
+  position: relative;
+
+  color: transparent;
+}
+
+.rpfu-add.loading::after {
+  content: "";
+
+  width: 17px;
+  height: 17px;
+
+  position: absolute;
+
+  top: 50%;
+  left: 50%;
+
+  margin:
+    -8.5px
+    0
+    0
+    -8.5px;
+
+  border: 2px solid rgba(255,255,255,.35);
+
+  border-top-color: #ffffff;
+
+  border-radius: 50%;
+
+  animation:
+    rpfuSpin .7s linear infinite;
+}
+
+@keyframes rpfuSpin {
+
+  to {
+    transform: rotate(360deg);
+  }
+
+}
+
+
+/* =========================================================
+   TOAST
+   ========================================================= */
+
+.rpfu-toast {
+  position: fixed;
+
+  left: 50%;
+  bottom: 25px;
+
+  z-index: 99999;
+
+  transform:
+    translate(-50%, 20px);
+
+  padding: 12px 18px;
+
+  background: #050505;
+
+  color: #ffffff;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 14px;
+
+  border-radius: 3px;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition:
+    opacity .25s ease,
+    transform .25s ease;
+}
+
+.rpfu-toast.show {
+  opacity: 1;
+
+  transform:
+    translate(-50%, 0);
+}
+
+
+/* =========================================================
+   LARGE TABLET
+   ========================================================= */
+
+@media screen and (max-width: 1800px) {
+
+  .rpfu-container {
+    width: calc(100% - 88px);
+  }
+
+  .rpfu-media {
+    width: 100%;
+    height: auto;
+
+    aspect-ratio: 420 / 630;
+  }
+
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media screen and (max-width: 1100px) {
+
+  .rpfu-container {
+    width: calc(100% - 50px);
+  }
+
+  .rpfu-grid {
+    grid-template-columns:
+      repeat(3, minmax(0, 1fr));
+
+    gap: 16px;
+  }
+
+  .rpfu-media {
+    width: 100%;
+    height: auto;
+
+    aspect-ratio: 420 / 630;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 749px) {
+
+  .rpfu-container {
+    width: calc(100% - 32px);
+  }
+
+  .rpfu-heading {
+    margin-bottom: 30px;
+
+    font-size: 30px;
+
+    letter-spacing: -0.9px;
+  }
+
+  .rpfu-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 30px 12px;
+  }
+
+  .rpfu-media {
+    width: 100%;
+    height: auto;
+
+    aspect-ratio: 420 / 630;
+  }
+
+  .rpfu-info {
+    padding-top: 16px;
+  }
+
+  .rpfu-title {
+    font-size: 16px;
+  }
+
+  .rpfu-description {
+    font-size: 13px;
+
+    margin-top: 7px;
+  }
+
+  .rpfu-price {
+    font-size: 14px;
+  }
+
+  .rpfu-variants {
+    margin-top: 13px;
+
+    gap: 6px;
+  }
+
+  .rpfu-variant {
+    height: 28px;
+
+    min-width: 55px;
+
+    padding: 0 13px;
+
+    font-size: 12px;
+  }
+
+  .rpfu-add {
+    height: 46px;
+
+    font-size: 14px;
+
+    margin-top: 10px;
+  }
+
+}
+
+
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 420px) {
+
+  .rpfu-container {
+    width: calc(100% - 24px);
+  }
+
+  .rpfu-grid {
+    gap: 28px 10px;
+  }
+
+  .rpfu-title {
+    font-size: 14px;
+  }
+
+  .rpfu-description {
+    font-size: 12px;
+  }
+
+}
+</style>
+
+
+<section
+  class="rpfu-section"
+  id="rpfu-{{ section.id }}"
+  data-product-id="{{ product.id }}"
+>
+
+  <div class="rpfu-container">
+
+    <h2 class="rpfu-heading">
+      Recommended
+    </h2>
+
+    <div
+      class="rpfu-grid"
+      data-rpfu-grid
+    ></div>
+
+  </div>
+
+</section>
+
+
+<div
+  class="rpfu-toast"
+  data-rpfu-toast
+>
+  Added to cart
+</div>
+
+{% comment %}
+  /* =======================================================
+     TOAST
+     ======================================================= */
+{% endcomment %}
+{% comment %} <script>
+(function () {
+
+  const section =
+    document.querySelector(
+      '#rpfu-{{ section.id }}'
+    );
+
+  if (!section) return;
+
+
+  const grid =
+    section.querySelector(
+      '[data-rpfu-grid]'
+    );
+
+  const productId =
+    section.dataset.productId;
+
+  const toast =
+    document.querySelector(
+      '[data-rpfu-toast]'
+    );
+
+    
+  if (!grid || !productId) return;
+
+
+  /* =======================================================
+     MONEY
+     ======================================================= */
+
+  function money(value) {
+
+    const amount =
+      Number(value || 0) / 100;
+
+    return 'Rs. ' +
+      amount.toLocaleString(
+        'en-PK',
+        {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        }
+      );
+
+  }
+
+
+  /* =======================================================
+     ESCAPE HTML
+     ======================================================= */
+
+  function escapeHtml(value) {
+
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+  }
+
+
+  /* =======================================================
+     IMAGE URL
+     ======================================================= */
+
+  function imageUrl(image) {
+
+    if (!image) return '';
+
+    if (typeof image === 'string') {
+      return image;
+    }
+
+    return image.src || '';
+
+  }
+
+
+  /* =======================================================
+     PRODUCT URL
+     ======================================================= */
+
+  function productUrl(product) {
+
+    if (
+      product &&
+      product.url
+    ) {
+
+      return product.url;
+
+    }
+
+    return '#';
+
+  }
+
+
+  /* =======================================================
+     CREATE CARD
+     ======================================================= */
+
+  function createCard(product) {
+
+    const card =
+      document.createElement('article');
+
+    card.className =
+      'rpfu-card';
+
+
+    /* =====================================================
+       PRODUCT URL
+       ===================================================== */
+
+    const currentProductUrl =
+      productUrl(product);
+
+
+    /* =====================================================
+       TRENDING
+       ===================================================== */
+
+    const tags =
+      Array.isArray(product.tags)
+        ? product.tags
+        : [];
+
+
+    const isTrending =
+      tags.some(function (tag) {
+
+        return String(tag)
+          .toLowerCase()
+          .includes('trending');
+
+      });
+
+
+    if (isTrending) {
+
+      card.classList.add(
+        'is-trending'
+      );
+
+    }
+
+
+    /* =====================================================
+       IMAGES
+       ===================================================== */
+
+    let images =
+      Array.isArray(product.images)
+        ? product.images
+        : [];
+
+
+    if (
+      images.length === 0 &&
+      product.featured_image
+    ) {
+
+      images = [
+        product.featured_image
+      ];
+
+    }
+
+
+    images =
+      images.slice(0, 8);
+
+
+    const imageMarkup =
+      images.map(function (image) {
+
+        return `
+          <div class="rpfu-slide">
+
+            <img
+              src="${escapeHtml(
+                imageUrl(image)
+              )}"
+              alt="${escapeHtml(
+                product.title
+              )}"
+              loading="lazy"
+            >
+
+          </div>
+        `;
+
+      }).join('');
+
+
+    /* =====================================================
+       DOTS
+       ===================================================== */
+
+    const dotsMarkup =
+      images.map(function (_, index) {
+
+        return `
+          <span
+            class="rpfu-dot ${
+              index === 0
+                ? 'active'
+                : ''
+            }"
+            data-dot="${index}"
+          ></span>
+        `;
+
+      }).join('');
+
+
+    /* =====================================================
+       SINGLE IMAGE
+       ===================================================== */
+
+    if (images.length <= 1) {
+
+      card.classList.add(
+        'single-image'
+      );
+
+    }
+
+
+    /* =====================================================
+       VARIANTS
+       ===================================================== */
+
+    const variants =
+      Array.isArray(product.variants)
+        ? product.variants
+        : [];
+
+
+    const firstVariant =
+      variants.length
+        ? variants[0]
+        : null;
+
+
+    /* =====================================================
+       PRICE
+       ===================================================== */
+
+    const price =
+      firstVariant
+        ? firstVariant.price
+        : product.price;
+
+
+    const comparePrice =
+      firstVariant
+        ? firstVariant.compare_at_price
+        : product.compare_at_price;
+
+
+    let priceMarkup = `
+      <span class="rpfu-price">
+        ${money(price)}
+      </span>
+    `;
+
+
+    if (
+      comparePrice &&
+      Number(comparePrice) >
+      Number(price)
+    ) {
+
+      priceMarkup += `
+        <span class="rpfu-compare">
+          ${money(comparePrice)}
+        </span>
+      `;
+
+    }
+
+
+    /* =====================================================
+       DESCRIPTION
+       ===================================================== */
+
+    let description = '';
+
+
+    if (product.description) {
+
+      const temp =
+        document.createElement('div');
+
+      temp.innerHTML =
+        product.description;
+
+      description =
+        temp.textContent
+          .replace(/\s+/g, ' ')
+          .trim();
+
+    }
+
+
+    if (description.length > 58) {
+
+      description =
+        description
+          .substring(0, 58)
+          .trim() + '...';
+
+    }
+
+
+    /* =====================================================
+       VARIANT BUTTONS
+       ===================================================== */
+
+    let variantMarkup = '';
+
+
+    if (variants.length > 1) {
+
+      variantMarkup = `
+
+        <div
+          class="rpfu-variants"
+          data-variants
+        >
+
+          ${variants
+            .slice(0, 6)
+            .map(function (
+              variant,
+              index
+            ) {
+
+              let label =
+                variant.title;
+
+
+              if (
+                !label ||
+                label ===
+                'Default Title'
+              ) {
+
+                label =
+                  variant.option1 ||
+                  'Option ' +
+                  (index + 1);
+
+              }
+
+
+              return `
+                <button
+                  type="button"
+                  class="rpfu-variant ${
+                    index === 0
+                      ? 'active'
+                      : ''
+                  }"
+                  data-variant-id="${
+                    variant.id
+                  }"
+                >
+                  ${escapeHtml(label)}
+                </button>
+              `;
+
+            }).join('')}
+
+        </div>
+
+      `;
+
+    }
+
+
+    /* =====================================================
+       CARD HTML
+       ===================================================== */
+
+    card.innerHTML = `
+
+      <div
+        class="rpfu-media"
+        data-current-slide="0"
+      >
+
+        <!-- CLICKABLE PRODUCT IMAGE -->
+
+        <a
+          href="${escapeHtml(
+            currentProductUrl
+          )}"
+          class="rpfu-image-link"
+          aria-label="${escapeHtml(
+            product.title
+          )}"
+        >
+
+          <div
+            class="rpfu-slides"
+            data-slides
+          >
+            ${imageMarkup}
+          </div>
+
+        </a>
+
+
+        <span class="rpfu-trending">
+          Trending
+        </span>
+
+
+        <!-- PREVIOUS IMAGE -->
+
+        <button
+          type="button"
+          class="rpfu-image-arrow rpfu-prev"
+          data-prev
+          aria-label="Previous image"
+        >
+
+          <svg viewBox="0 0 24 24">
+            <path d="M15 18L9 12L15 6"></path>
+          </svg>
+
+        </button>
+
+
+        <!-- NEXT IMAGE -->
+
+        <button
+          type="button"
+          class="rpfu-image-arrow rpfu-next"
+          data-next
+          aria-label="Next image"
+        >
+
+          <svg viewBox="0 0 24 24">
+            <path d="M9 18L15 12L9 6"></path>
+          </svg>
+
+        </button>
+
+
+        <div class="rpfu-dots">
+          ${dotsMarkup}
+        </div>
+
+      </div>
+
+
+      <div class="rpfu-info">
+
+        <!-- CLICKABLE PRODUCT TITLE -->
+
+        <h3 class="rpfu-title">
+
+          <a
+            href="${escapeHtml(
+              currentProductUrl
+            )}"
+            class="rpfu-title-link"
+          >
+            ${escapeHtml(
+              product.title
+            )}
+          </a>
+
+        </h3>
+
+
+        <div class="rpfu-description">
+          ${escapeHtml(
+            description
+          )}
+        </div>
+
+
+        <div class="rpfu-price-row">
+          ${priceMarkup}
+        </div>
+
+
+        ${variantMarkup}
+
+
+        <button
+          type="button"
+          class="rpfu-add ${
+            variants.length > 1
+              ? 'select-size'
+              : ''
+          }"
+          data-add
+          data-variant-id="${
+            firstVariant
+              ? firstVariant.id
+              : ''
+          }"
+        >
+          ${
+            variants.length > 1
+              ? 'Select Size'
+              : 'Add to Cart'
+          }
+        </button>
+
+      </div>
+
+    `;
+
+
+    /* =====================================================
+       IMAGE SLIDER
+       ===================================================== */
+
+    const slides =
+      card.querySelector(
+        '[data-slides]'
+      );
+
+    const dots =
+      card.querySelectorAll(
+        '[data-dot]'
+      );
+
+
+    let currentSlide = 0;
+
+
+    function goToSlide(index) {
+
+      if (images.length <= 1) {
+        return;
+      }
+
+
+      if (index < 0) {
+
+        index =
+          images.length - 1;
+
+      }
+
+
+      if (
+        index >= images.length
+      ) {
+
+        index = 0;
+
+      }
+
+
+      currentSlide = index;
+
+
+      slides.style.transform =
+        'translateX(-' +
+        (
+          currentSlide * 100
+        ) +
+        '%)';
+
+
+      dots.forEach(
+        function (dot, i) {
+
+          dot.classList.toggle(
+            'active',
+            i === currentSlide
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       IMAGE ARROWS
+       ===================================================== */
+
+    const prev =
+      card.querySelector(
+        '[data-prev]'
+      );
+
+    const next =
+      card.querySelector(
+        '[data-next]'
+      );
+
+
+    if (prev) {
+
+      prev.addEventListener(
+        'click',
+        function (event) {
+
+          event.preventDefault();
+
+          event.stopPropagation();
+
+          goToSlide(
+            currentSlide - 1
+          );
+
+        }
+      );
+
+    }
+
+
+    if (next) {
+
+      next.addEventListener(
+        'click',
+        function (event) {
+
+          event.preventDefault();
+
+          event.stopPropagation();
+
+          goToSlide(
+            currentSlide + 1
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       VARIANT SELECTION
+       ===================================================== */
+
+    const variantButtons =
+      card.querySelectorAll(
+        '.rpfu-variant[data-variant-id]'
+      );
+
+    const addButton =
+      card.querySelector(
+        '[data-add]'
+      );
+
+
+    variantButtons.forEach(
+      function (button) {
+
+        button.addEventListener(
+          'click',
+          function () {
+
+            variantButtons.forEach(
+              function (item) {
+
+                item.classList.remove(
+                  'active'
+                );
+
+              }
+            );
+
+
+            button.classList.add(
+              'active'
+            );
+
+
+            addButton.dataset.variantId =
+              button.dataset.variantId;
+
+
+            addButton.textContent =
+              'Add to Cart';
+
+
+            addButton.classList.remove(
+              'select-size'
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+    /* =====================================================
+       ADD TO CART
+       ===================================================== */
+
+    if (addButton) {
+
+      addButton.addEventListener(
+        'click',
+        async function () {
+
+          const variantId =
+            addButton.dataset.variantId;
+
+
+          if (!variantId) {
+            return;
+          }
+
+
+          addButton.classList.add(
+            'loading'
+          );
+
+          addButton.disabled = true;
+
+
+          try {
+
+            const response =
+              await fetch(
+                '/cart/add.js',
+                {
+                  method: 'POST',
+
+                  headers: {
+                    'Content-Type':
+                      'application/json',
+
+                    'Accept':
+                      'application/json'
+                  },
+
+                  body:
+                    JSON.stringify({
+                      items: [
+                        {
+                          id:
+                            Number(
+                              variantId
+                            ),
+                          quantity: 1
+                        }
+                      ]
+                    })
+                }
+              );
+
+
+            if (!response.ok) {
+
+              throw new Error(
+                'Cart error'
+              );
+
+            }
+
+
+            await response.json();
+
+
+            showToast(
+              'Added to cart'
+            );
+
+
+            document.dispatchEvent(
+              new CustomEvent(
+                'cart:refresh'
+              )
+            );
+
+
+            document.dispatchEvent(
+              new CustomEvent(
+                'cart:updated'
+              )
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              error
+            );
+
+            showToast(
+              'Unable to add to cart'
+            );
+
+          }
+
+
+          addButton.classList.remove(
+            'loading'
+          );
+
+          addButton.disabled =
+            false;
+
+        }
+      );
+
+    }
+
+
+    return card;
+
+  }
+
+
+  /* =======================================================
+     TOAST
+     ======================================================= */
+
+  let toastTimer = null;
+
+
+  function showToast(message) {
+
+    if (!toast) return;
+
+
+    toast.textContent =
+      message;
+
+
+    toast.classList.add(
+      'show'
+    );
+
+
+    clearTimeout(
+      toastTimer
+    );
+
+
+    toastTimer =
+      setTimeout(
+        function () {
+
+          toast.classList.remove(
+            'show'
+          );
+
+        },
+        2200
+      );
+
+  }
+
+
+  /* =======================================================
+     LOAD SHOPIFY RECOMMENDATIONS
+     ======================================================= */
+
+  async function loadRecommendations() {
+
+    try {
+
+      const response =
+        await fetch(
+          '/recommendations/products.json' +
+          '?product_id=' +
+          encodeURIComponent(
+            productId
+          ) +
+          '&limit=8' +
+          '&intent=related'
+        );
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          'Recommendation request failed'
+        );
+
+      }
+
+
+      const data =
+        await response.json();
+
+
+      const products =
+        data.products || [];
+
+
+      if (!products.length) {
+
+        grid.innerHTML = '';
+
+        return;
+
+      }
+
+
+      /*
+        Desktop:
+        EXACTLY 4 PRODUCT CARDS.
+      */
+
+      const displayProducts =
+        products.slice(0, 4);
+
+
+      displayProducts.forEach(
+        function (product) {
+
+          grid.appendChild(
+            createCard(product)
+          );
+
+        }
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        'Recommended products:',
+        error
+      );
+
+      grid.innerHTML = '';
+
+    }
+
+  }
+
+
+  loadRecommendations();
+
+
+})();
+</script> {% endcomment %}
+
+
+<script>
+(function () {
+
+  const section =
+    document.querySelector(
+      '#rpfu-{{ section.id }}'
+    );
+
+  if (!section) return;
+
+
+  const grid =
+    section.querySelector(
+      '[data-rpfu-grid]'
+    );
+
+  const productId =
+    section.dataset.productId;
+
+  const toast =
+    document.querySelector(
+      '[data-rpfu-toast]'
+    );
+
+    
+  if (!grid || !productId) return;
+
+
+  /* =======================================================
+     HIDE SECTION
+     ======================================================= */
+
+  function hideSection() {
+
+    section.hidden = true;
+
+    section.style.display =
+      'none';
+
+  }
+
+
+  /* =======================================================
+     MONEY
+     ======================================================= */
+
+  function money(value) {
+
+    const amount =
+      Number(value || 0) / 100;
+
+    return 'Rs. ' +
+      amount.toLocaleString(
+        'en-PK',
+        {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        }
+      );
+
+  }
+
+
+  /* =======================================================
+     ESCAPE HTML
+     ======================================================= */
+
+  function escapeHtml(value) {
+
+    return String(value || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+  }
+
+
+  /* =======================================================
+     IMAGE URL
+     ======================================================= */
+
+  function imageUrl(image) {
+
+    if (!image) return '';
+
+    if (typeof image === 'string') {
+      return image;
+    }
+
+    return image.src || '';
+
+  }
+
+
+  /* =======================================================
+     PRODUCT URL
+     ======================================================= */
+
+  function productUrl(product) {
+
+    if (
+      product &&
+      product.url
+    ) {
+
+      return product.url;
+
+    }
+
+    return '#';
+
+  }
+
+
+  /* =======================================================
+     CREATE CARD
+     ======================================================= */
+
+  function createCard(product) {
+
+    const card =
+      document.createElement('article');
+
+    card.className =
+      'rpfu-card';
+
+
+    /* =====================================================
+       PRODUCT URL
+       ===================================================== */
+
+    const currentProductUrl =
+      productUrl(product);
+
+
+    /* =====================================================
+       TRENDING
+       ===================================================== */
+
+    const tags =
+      Array.isArray(product.tags)
+        ? product.tags
+        : [];
+
+
+    const isTrending =
+      tags.some(function (tag) {
+
+        return String(tag)
+          .toLowerCase()
+          .includes('trending');
+
+      });
+
+
+    if (isTrending) {
+
+      card.classList.add(
+        'is-trending'
+      );
+
+    }
+
+
+    /* =====================================================
+       IMAGES
+       ===================================================== */
+
+    let images =
+      Array.isArray(product.images)
+        ? product.images
+        : [];
+
+
+    if (
+      images.length === 0 &&
+      product.featured_image
+    ) {
+
+      images = [
+        product.featured_image
+      ];
+
+    }
+
+
+    images =
+      images.slice(0, 8);
+
+
+    const imageMarkup =
+      images.map(function (image) {
+
+        return `
+          <div class="rpfu-slide">
+
+            <img
+              src="${escapeHtml(
+                imageUrl(image)
+              )}"
+              alt="${escapeHtml(
+                product.title
+              )}"
+              loading="lazy"
+            >
+
+          </div>
+        `;
+
+      }).join('');
+
+
+    /* =====================================================
+       DOTS
+       ===================================================== */
+
+    const dotsMarkup =
+      images.map(function (_, index) {
+
+        return `
+          <span
+            class="rpfu-dot ${
+              index === 0
+                ? 'active'
+                : ''
+            }"
+            data-dot="${index}"
+          ></span>
+        `;
+
+      }).join('');
+
+
+    /* =====================================================
+       SINGLE IMAGE
+       ===================================================== */
+
+    if (images.length <= 1) {
+
+      card.classList.add(
+        'single-image'
+      );
+
+    }
+
+
+    /* =====================================================
+       VARIANTS
+       ===================================================== */
+
+    const variants =
+      Array.isArray(product.variants)
+        ? product.variants
+        : [];
+
+
+    const firstVariant =
+      variants.length
+        ? variants[0]
+        : null;
+
+
+    /* =====================================================
+       PRICE
+       ===================================================== */
+
+    const price =
+      firstVariant
+        ? firstVariant.price
+        : product.price;
+
+
+    const comparePrice =
+      firstVariant
+        ? firstVariant.compare_at_price
+        : product.compare_at_price;
+
+
+    let priceMarkup = `
+      <span class="rpfu-price">
+        ${money(price)}
+      </span>
+    `;
+
+
+    if (
+      comparePrice &&
+      Number(comparePrice) >
+      Number(price)
+    ) {
+
+      priceMarkup += `
+        <span class="rpfu-compare">
+          ${money(comparePrice)}
+        </span>
+      `;
+
+    }
+
+
+    /* =====================================================
+       DESCRIPTION
+       ===================================================== */
+
+    let description = '';
+
+
+    if (product.description) {
+
+      const temp =
+        document.createElement('div');
+
+      temp.innerHTML =
+        product.description;
+
+      description =
+        temp.textContent
+          .replace(/\s+/g, ' ')
+          .trim();
+
+    }
+
+
+    if (description.length > 58) {
+
+      description =
+        description
+          .substring(0, 58)
+          .trim() + '...';
+
+    }
+
+
+    /* =====================================================
+       VARIANT BUTTONS
+       ===================================================== */
+
+    let variantMarkup = '';
+
+
+    if (variants.length > 1) {
+
+      variantMarkup = `
+
+        <div
+          class="rpfu-variants"
+          data-variants
+        >
+
+          ${variants
+            .slice(0, 6)
+            .map(function (
+              variant,
+              index
+            ) {
+
+              let label =
+                variant.title;
+
+
+              if (
+                !label ||
+                label ===
+                'Default Title'
+              ) {
+
+                label =
+                  variant.option1 ||
+                  'Option ' +
+                  (index + 1);
+
+              }
+
+
+              return `
+                <button
+                  type="button"
+                  class="rpfu-variant ${
+                    index === 0
+                      ? 'active'
+                      : ''
+                  }"
+                  data-variant-id="${
+                    variant.id
+                  }"
+                >
+                  ${escapeHtml(label)}
+                </button>
+              `;
+
+            }).join('')}
+
+        </div>
+
+      `;
+
+    }
+
+
+    /* =====================================================
+       CARD HTML
+       ===================================================== */
+
+    card.innerHTML = `
+
+      <div
+        class="rpfu-media"
+        data-current-slide="0"
+      >
+
+        <!-- CLICKABLE PRODUCT IMAGE -->
+
+        <a
+          href="${escapeHtml(
+            currentProductUrl
+          )}"
+          class="rpfu-image-link"
+          aria-label="${escapeHtml(
+            product.title
+          )}"
+        >
+
+          <div
+            class="rpfu-slides"
+            data-slides
+          >
+            ${imageMarkup}
+          </div>
+
+        </a>
+
+
+        <span class="rpfu-trending">
+          Trending
+        </span>
+
+
+        <!-- PREVIOUS IMAGE -->
+
+        <button
+          type="button"
+          class="rpfu-image-arrow rpfu-prev"
+          data-prev
+          aria-label="Previous image"
+        >
+
+          <svg viewBox="0 0 24 24">
+            <path d="M15 18L9 12L15 6"></path>
+          </svg>
+
+        </button>
+
+
+        <!-- NEXT IMAGE -->
+
+        <button
+          type="button"
+          class="rpfu-image-arrow rpfu-next"
+          data-next
+          aria-label="Next image"
+        >
+
+          <svg viewBox="0 0 24 24">
+            <path d="M9 18L15 12L9 6"></path>
+          </svg>
+
+        </button>
+
+
+        <div class="rpfu-dots">
+          ${dotsMarkup}
+        </div>
+
+      </div>
+
+
+      <div class="rpfu-info">
+
+        <!-- CLICKABLE PRODUCT TITLE -->
+
+        <h3 class="rpfu-title">
+
+          <a
+            href="${escapeHtml(
+              currentProductUrl
+            )}"
+            class="rpfu-title-link"
+          >
+            ${escapeHtml(
+              product.title
+            )}
+          </a>
+
+        </h3>
+
+
+        <div class="rpfu-description">
+          ${escapeHtml(
+            description
+          )}
+        </div>
+
+
+        <div class="rpfu-price-row">
+          ${priceMarkup}
+        </div>
+
+
+        ${variantMarkup}
+
+
+        <button
+          type="button"
+          class="rpfu-add ${
+            variants.length > 1
+              ? 'select-size'
+              : ''
+          }"
+          data-add
+          data-variant-id="${
+            firstVariant
+              ? firstVariant.id
+              : ''
+          }"
+        >
+          ${
+            variants.length > 1
+              ? 'Select Size'
+              : 'Add to Cart'
+          }
+        </button>
+
+      </div>
+
+    `;
+
+
+    /* =====================================================
+       IMAGE SLIDER
+       ===================================================== */
+
+    const slides =
+      card.querySelector(
+        '[data-slides]'
+      );
+
+    const dots =
+      card.querySelectorAll(
+        '[data-dot]'
+      );
+
+
+    let currentSlide = 0;
+
+
+    function goToSlide(index) {
+
+      if (images.length <= 1) {
+        return;
+      }
+
+
+      if (index < 0) {
+
+        index =
+          images.length - 1;
+
+      }
+
+
+      if (
+        index >= images.length
+      ) {
+
+        index = 0;
+
+      }
+
+
+      currentSlide = index;
+
+
+      slides.style.transform =
+        'translateX(-' +
+        (
+          currentSlide * 100
+        ) +
+        '%)';
+
+
+      dots.forEach(
+        function (dot, i) {
+
+          dot.classList.toggle(
+            'active',
+            i === currentSlide
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       IMAGE ARROWS
+       ===================================================== */
+
+    const prev =
+      card.querySelector(
+        '[data-prev]'
+      );
+
+    const next =
+      card.querySelector(
+        '[data-next]'
+      );
+
+
+    if (prev) {
+
+      prev.addEventListener(
+        'click',
+        function (event) {
+
+          event.preventDefault();
+
+          event.stopPropagation();
+
+          goToSlide(
+            currentSlide - 1
+          );
+
+        }
+      );
+
+    }
+
+
+    if (next) {
+
+      next.addEventListener(
+        'click',
+        function (event) {
+
+          event.preventDefault();
+
+          event.stopPropagation();
+
+          goToSlide(
+            currentSlide + 1
+          );
+
+        }
+      );
+
+    }
+
+
+    /* =====================================================
+       VARIANT SELECTION
+       ===================================================== */
+
+    const variantButtons =
+      card.querySelectorAll(
+        '.rpfu-variant[data-variant-id]'
+      );
+
+    const addButton =
+      card.querySelector(
+        '[data-add]'
+      );
+
+
+    variantButtons.forEach(
+      function (button) {
+
+        button.addEventListener(
+          'click',
+          function () {
+
+            variantButtons.forEach(
+              function (item) {
+
+                item.classList.remove(
+                  'active'
+                );
+
+              }
+            );
+
+
+            button.classList.add(
+              'active'
+            );
+
+
+            addButton.dataset.variantId =
+              button.dataset.variantId;
+
+
+            addButton.textContent =
+              'Add to Cart';
+
+
+            addButton.classList.remove(
+              'select-size'
+            );
+
+          }
+        );
+
+      }
+    );
+
+
+    /* =====================================================
+       ADD TO CART
+       ===================================================== */
+
+    if (addButton) {
+
+      addButton.addEventListener(
+        'click',
+        async function () {
+
+          const variantId =
+            addButton.dataset.variantId;
+
+
+          if (!variantId) {
+            return;
+          }
+
+
+          addButton.classList.add(
+            'loading'
+          );
+
+          addButton.disabled = true;
+
+
+          try {
+
+            const response =
+              await fetch(
+                '/cart/add.js',
+                {
+                  method: 'POST',
+
+                  headers: {
+                    'Content-Type':
+                      'application/json',
+
+                    'Accept':
+                      'application/json'
+                  },
+
+                  body:
+                    JSON.stringify({
+                      items: [
+                        {
+                          id:
+                            Number(
+                              variantId
+                            ),
+                          quantity: 1
+                        }
+                      ]
+                    })
+                }
+              );
+
+
+            if (!response.ok) {
+
+              throw new Error(
+                'Cart error'
+              );
+
+            }
+
+
+            await response.json();
+
+
+            showToast(
+              'Added to cart'
+            );
+
+
+            document.dispatchEvent(
+              new CustomEvent(
+                'cart:refresh'
+              )
+            );
+
+
+            document.dispatchEvent(
+              new CustomEvent(
+                'cart:updated'
+              )
+            );
+
+
+          } catch (error) {
+
+            console.error(
+              error
+            );
+
+            showToast(
+              'Unable to add to cart'
+            );
+
+          }
+
+
+          addButton.classList.remove(
+            'loading'
+          );
+
+          addButton.disabled =
+            false;
+
+        }
+      );
+
+    }
+
+
+    return card;
+
+  }
+
+
+  /* =======================================================
+     TOAST
+     ======================================================= */
+
+  let toastTimer = null;
+
+
+  function showToast(message) {
+
+    if (!toast) return;
+
+
+    toast.textContent =
+      message;
+
+
+    toast.classList.add(
+      'show'
+    );
+
+
+    clearTimeout(
+      toastTimer
+    );
+
+
+    toastTimer =
+      setTimeout(
+        function () {
+
+          toast.classList.remove(
+            'show'
+          );
+
+        },
+        2200
+      );
+
+  }
+
+
+  /* =======================================================
+     LOAD SHOPIFY RECOMMENDATIONS
+     ======================================================= */
+
+  async function loadRecommendations() {
+
+    try {
+
+      const response =
+        await fetch(
+          '/recommendations/products.json' +
+          '?product_id=' +
+          encodeURIComponent(
+            productId
+          ) +
+          '&limit=8' +
+          '&intent=related'
+        );
+
+
+      if (!response.ok) {
+
+        throw new Error(
+          'Recommendation request failed'
+        );
+
+      }
+
+
+      const data =
+        await response.json();
+
+
+      const products =
+        data.products || [];
+
+
+      if (!products.length) {
+
+        grid.innerHTML = '';
+
+        hideSection();
+
+        return;
+
+      }
+
+
+      /*
+        Desktop:
+        EXACTLY 4 PRODUCT CARDS.
+      */
+
+      const displayProducts =
+        products.slice(0, 4);
+
+
+      displayProducts.forEach(
+        function (product) {
+
+          grid.appendChild(
+            createCard(product)
+          );
+
+        }
+      );
+
+
+    } catch (error) {
+
+      console.error(
+        'Recommended products:',
+        error
+      );
+
+      grid.innerHTML = '';
+
+      hideSection();
+
+    }
+
+  }
+
+
+  loadRecommendations();
+
+
+})();
+</script>
+
+
+{% schema %}
+{
+  "name": "Recommended Products",
+  "tag": "section",
+  "class": "recommended-products-section",
+
+  "settings": [],
+
+  "presets": [
+    {
+      "name": "Recommended Products"
+    }
+  ]
+}
+{% endschema %}

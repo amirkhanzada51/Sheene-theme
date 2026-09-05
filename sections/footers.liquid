@@ -1,0 +1,236 @@
+<!-- Shopify Section Schema / Custom Liquid Footer -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+<style>
+  .custom-footer-section {
+    background-color: #1a1a1a;
+    color: #e5e5e5;
+    font-family: 'Jost', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    padding: 60px 0px 0px 0px;
+    margin: 0;
+    box-sizing: border-box;
+    width: 100%;
+  }
+
+  .custom-footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 40px 50px 40px;
+    display: flex;
+    justify-content: space-between;
+    gap: 40px;
+  }
+
+  .custom-footer-col {
+    flex: 1;
+  }
+
+  .custom-footer-col-1 {
+    max-width: 280px;
+  }
+
+  .custom-footer-col-2 {
+    max-width: 250px;
+  }
+
+  .custom-footer-col-3 {
+    max-width: 380px;
+  }
+
+  .custom-footer-heading {
+    color: #d3d2d1;
+    font-family: 'Jost', sans-serif;
+    font-size: 17px;
+    font-weight: 500;
+    margin-bottom:10px;
+    letter-spacing: 0.2px;
+  }
+
+  .custom-footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .custom-footer-links li {
+    margin-bottom: 5px;
+  }
+
+  .custom-footer-links a {
+    color: #cccccc;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .custom-footer-links a:hover {
+    color: #ffffff;
+  }
+
+  .custom-footer-contact-p {
+    color: #cccccc;
+    margin: 0 0 5px 0;
+  }
+
+  .custom-footer-link-underline {
+    color: #ffffff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .custom-footer-link-underline:hover {
+    color: #ffffff;
+    
+  }
+
+  .custom-footer-socials {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-top: 24px;
+  }
+
+  .custom-footer-socials a {
+    color: #ffffff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .custom-footer-socials a:hover {
+    opacity: 0.8;
+    transform: translateY(-2px);
+  }
+
+  .custom-footer-socials svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+
+  .custom-footer-bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 10px 40px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .custom-footer-copyright {
+    color: #cccccc;
+    font-size: 15px;
+    margin: 0;
+  }
+
+  .custom-footer-copyright a {
+    color: #d3d2d1;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 900px) {
+    .custom-footer-container {
+      flex-direction: column;
+      gap: 35px;
+      padding-bottom: 40px;
+    }
+    .custom-footer-col {
+      max-width: 100%;
+    }
+  }
+</style>
+
+<footer class="custom-footer-section">
+  <div class="custom-footer-container">
+    
+    <!-- Column 1: Company Overview -->
+    <div class="custom-footer-col custom-footer-col-1">
+      <div class="custom-footer-heading">Company Overview</div>
+      <ul class="custom-footer-links">
+        <li><a href="/pages/about-us">About Us</a></li>
+        <li><a href="/pages/our-values">Our values</a></li>
+        <li><a href="/policies/privacy-policy">Privacy notice</a></li>
+        <li><a href="/policies/cookies">Cookie Policy</a></li>
+        <li><a href="/policies/terms-of-service">Terms & conditions</a></li>
+        <li><a href="/pages/disclaimer">Disclaimer</a></li>
+        <li><a href="/pages/corporate-information">Corporate Information</a></li>
+        <li><a href="/pages/media-outreach">Media Outreach</a></li>
+        <li><a href="/pages/distributor-queries">Distributor Queries</a></li>
+        <li><a href="/pages/grievance-redressal">Grievance Redressal</a></li>
+      </ul>
+    </div>
+
+    <!-- Column 2: Quick Links -->
+    <div class="custom-footer-col custom-footer-col-2">
+      <div class="custom-footer-heading">Quick Links</div>
+      <ul class="custom-footer-links">
+        <li><a href="/pages/knowledge">Knowledge</a></li>
+        <li><a href="/pages/faqs">FAQs</a></li>
+        <li><a href="/policies/shipping-policy">Shipping Policy</a></li>
+        <li><a href="/policies/refund-policy">Return & refund policy</a></li>
+        <li><a href="/pages/payment-policy">Payment Policy</a></li>
+        <li><a href="/apps/track-order">Track order</a></li>
+        {% comment %} <li><a href="/pages/download-app">Download App</a></li> {% endcomment %}
+      </ul>
+    </div>
+
+    <!-- Column 3: Contact Us -->
+    <div class="custom-footer-col custom-footer-col-3">
+      <div class="custom-footer-heading">Contact Us</div>
+      
+      <p class="custom-footer-contact-p">Need help fast?</p>
+      <p class="custom-footer-contact-p">
+        <a href="https://wa.me/923272937782" class="custom-footer-link-underline">+923272937782</a>
+      </p>
+      <p class="custom-footer-contact-p">This is AI WhatsApp number. Kindly DM.</p>
+      <p class="custom-footer-contact-p">OR</p>
+      <p class="custom-footer-contact-p">
+        Fill out <a href="/pages/contact" class="custom-footer-link-underline">our form</a> or email 
+        <a href="mailto:contact@sheene.shop" class="custom-footer-link-underline">contact@sheene.shop</a>
+      </p>
+      
+      <br>
+      
+      <p class="custom-footer-contact-p">
+        For gifting inquiries, write to us at 
+        <a href="mailto:contact@sheene.shop" class="custom-footer-link-underline">contact@sheene.shop</a>
+      </p>
+
+      <!-- Social Media Icons -->
+      <div class="custom-footer-socials">
+        <a href="https://www.facebook.com/sheene.skincare" aria-label="Facebook" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H7.5v-3H10V9.5C10 7.01 11.49 5.6 13.78 5.6c1.1 0 2.25.2 2.25.2v2.47h-1.27c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.45 3h-2.33v6.8c4.56-.93 8-4.96 8-9.8z"/></svg>
+        </a>
+        <a href="https://www.instagram.com/sheene.shop/" aria-label="Instagram" target="_blank">
+          <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+        </a>
+        <a href="https://www.tiktok.com/@sheene.skincare" aria-label="TikTok" target="_blank">
+        <svg class="icon icon-tiktok" viewBox="0 0 20 20"><path fill="currentColor" d="M10.511 1.705h2.74s-.157 3.51 3.795 3.768v2.711s-2.114.129-3.796-1.158l.028 5.606A5.073 5.073 0 1 1 8.213 7.56h.708v2.785a2.298 2.298 0 1 0 1.618 2.205z"></path></svg>  
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Copyright Bottom Bar -->
+  <div class="custom-footer-bottom">
+    <p class="custom-footer-copyright">
+      Copyright &copy; {{ 'now' | date: "%Y" }} <a href="{{ routes.root_url }}">{{ shop.name }}</a>.
+    </p>
+  </div>
+</footer>
+
+{% schema %}
+{
+  "name": "Custom Exact Footer",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Custom Exact Footer"
+    }
+  ]
+}
+{% endschema %}

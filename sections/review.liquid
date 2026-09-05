@@ -1,0 +1,775 @@
+<style>
+/* ================================
+   PIXEL PERFECT CUSTOMER REVIEWS
+   ================================ */
+
+.mb-cr,
+.mb-cr * {
+  box-sizing: border-box;
+}
+
+.mb-cr {
+  width: 100%;
+  background: #fff;
+  font-family: "Jost", Arial, sans-serif;
+  padding: 82px 0 118px;
+  overflow: hidden;
+  color: #111;
+}
+
+.mb-cr-inner {
+  width: calc(100% - 140px);
+  max-width: 1780px;
+  margin: 0 auto;
+    padding: 40px 7px 8px;
+}
+
+/* HEADING — EXACT 32PX */
+.mb-cr-heading {
+  margin: 0 0 24px;
+  font-size: 32px;
+  line-height: 1.15;
+  font-weight: 500;
+  letter-spacing: -0.65px;
+  color: #080808;
+  font-family: Jost;
+}
+
+/* SLIDER */
+.mb-cr-slider {
+  position: relative;
+  width: 100%;
+}
+
+.mb-cr-window {
+  width: 100%;
+  overflow: hidden;
+}
+
+.mb-cr-track {
+  display: flex;
+  gap: 32px;
+  width: max-content;
+  transition: transform .5s cubic-bezier(.22,.61,.36,1);
+}
+
+/* CARD */
+.mb-cr-card {
+  position: relative;
+  flex: 0 0 calc((100vw - 140px - 64px) / 3);
+  height: 435px;
+  padding: 24px;
+  background: #fff;
+  border: 1px solid #d9dde7;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* TOP */
+.mb-cr-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mb-cr-user {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.mb-cr-name {
+  font-size: 16px;
+  line-height: 21px;
+  font-weight: 600;
+  color: #292929;
+}
+
+.mb-cr-verified {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 5px;
+  font-size: 17px;
+  line-height: 21px;
+  color: #7b8497;
+}
+
+.mb-cr-check {
+  width: 12px;
+  height: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: #41669c;
+  color: #fff;
+  font: 700 8px/12px Arial;
+}
+
+.mb-cr-date {
+  font-size: 12px;
+  line-height: 21px;
+  color: #7b8497;
+  white-space: nowrap;
+}
+
+/* STARS */
+.mb-cr-stars {
+  display: flex;
+  gap: 1px;
+  {% comment %} margin-top: 14px; {% endcomment %}
+}
+
+.mb-cr-star {
+  font: 900 29px/29px Arial, sans-serif;
+  color: #050505;
+}
+
+/* TITLE */
+.mb-cr-title {
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 600;
+  letter-spacing: -.45px;
+  color: #272727;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* TEXT */
+.mb-cr-text {
+  max-width: 470px;
+  font-size: 14px;
+  line-height: 1.62;
+  font-weight: 400;
+  color: #616161;
+}
+
+/* PRODUCT */
+.mb-cr-product {
+  position: absolute;
+  left: 32px;
+  right: 32px;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.mb-cr-product-img {
+  width: 45px;
+  height: 45px;
+  flex: 0 0 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f0f2f2;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.mb-cr-product-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.mb-cr-product-name {
+  margin: 0 0 0 9px;
+  font-size: 14px;
+  line-height: 1.25;
+  color: #7b8497;
+}
+
+/* ARROWS */
+.mb-cr-arrow {
+  position: absolute;
+  z-index: 10;
+  top: 191px;
+
+  width: 39px;
+  height: 39px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+
+  background: #fff;
+  color: #30345d;
+
+  box-shadow:
+    0 6px 20px rgba(0,0,0,.10),
+    0 1px 5px rgba(0,0,0,.04);
+
+  cursor: pointer;
+  transition: .2s ease;
+}
+
+.mb-cr-arrow:hover {
+  transform: scale(1.04);
+}
+
+.mb-cr-arrow svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.mb-cr-prev {
+  left: 32px;
+}
+
+.mb-cr-next {
+  right: 32px;
+}
+
+.mb-cr-arrow.disabled {
+  opacity: .35;
+  pointer-events: none;
+}
+
+
+/* TABLET */
+@media(max-width:1199px) {
+
+  .mb-cr-inner {
+    width: calc(100% - 70px);
+  }
+
+  .mb-cr-card {
+    flex-basis: calc((100vw - 70px - 32px) / 2);
+  }
+}
+
+
+/* MOBILE */
+@media(max-width:767px) {
+
+  .mb-cr {
+    padding: 48px 0 70px;
+  }
+
+  .mb-cr-inner {
+    width: calc(100% - 32px);
+  }
+
+  .mb-cr-heading {
+    font-size: 32px;
+    margin-bottom: 30px;
+  }
+
+  .mb-cr-card {
+    flex-basis: calc(100vw - 32px);
+    height: 405px;
+    padding: 27px 24px 25px;
+  }
+
+  .mb-cr-name {
+    font-size: 16px;
+  }
+
+  .mb-cr-verified {
+    font-size: 15px;
+  }
+
+  .mb-cr-date {
+    font-size: 14px;
+  }
+
+  .mb-cr-star {
+    font-size: 27px;
+  }
+
+  .mb-cr-title {
+    font-size: 20px;
+  }
+
+  .mb-cr-text {
+    font-size: 16px;
+  }
+
+  .mb-cr-product {
+    left: 24px;
+    right: 24px;
+    bottom: 24px;
+  }
+
+  .mb-cr-product-name {
+    font-size: 16px;
+  }
+
+  .mb-cr-arrow {
+    width: 48px;
+    height: 48px;
+    top: 175px;
+  }
+
+  .mb-cr-prev {
+    left: -10px;
+  }
+
+  .mb-cr-next {
+    right: -10px;
+  }
+}
+</style>
+
+
+<section class="mb-cr">
+
+  <div class="mb-cr-inner">
+
+    <h2 class="mb-cr-heading">
+      What Our Customers Say
+    </h2>
+
+    <div class="mb-cr-slider">
+
+      <div class="mb-cr-window">
+
+        <div class="mb-cr-track" id="MBCRTrack">
+
+
+          <!-- CARD 1 -->
+          <article class="mb-cr-card">
+
+            <div class="mb-cr-top">
+              <div class="mb-cr-user">
+                <span class="mb-cr-name">Ayesha K.</span>
+
+                <span class="mb-cr-verified">
+                  <span class="mb-cr-check">✓</span>
+                  Verified Buyer
+                </span>
+              </div>
+
+              <span class="mb-cr-date">08/22/26</span>
+            </div>
+
+            <div class="mb-cr-stars">
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+            </div>
+
+            <h3 class="mb-cr-title">
+              Absolutely loved this Oil to Milk Cleanser!...
+            </h3>
+
+            <p class="mb-cr-text">
+              Absolutely loved this Oil to Milk Cleanser! It removes makeup and dirt really well without making my skin feel dry or tight. Definitely recommend!
+            </p>
+
+            <div class="mb-cr-product">
+              <div class="mb-cr-product-img">
+                <img
+                  src="https://sheene.shop/cdn/shop/files/pomelli_photoshoot_image_4k_0818_16.png"
+                  alt="Oil to Milk Cleanser"
+                >
+              </div>
+
+              <p class="mb-cr-product-name">
+                Oil to Milk Cleanser
+              </p>
+            </div>
+
+          </article>
+
+
+          <!-- CARD 2 -->
+          <article class="mb-cr-card">
+
+            <div class="mb-cr-top">
+              <div class="mb-cr-user">
+                <span class="mb-cr-name">Hafsa S.</span>
+
+                <span class="mb-cr-verified">
+                  <span class="mb-cr-check">✓</span>
+                  Verified Buyer
+                </span>
+              </div>
+
+              <span class="mb-cr-date">08/27/26</span>
+            </div>
+
+            <div class="mb-cr-stars">
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+            </div>
+
+            <h3 class="mb-cr-title">
+              This rocks
+            </h3>
+
+            <p class="mb-cr-text">
+              Super lightweight and easy to use. My skin feels smoother and looks more fresh. Loving it so far!
+            </p>
+
+            <div class="mb-cr-product">
+              <div class="mb-cr-product-img">
+                <img
+                  src="https://sheene.shop/cdn/shop/files/pomelli_photoshoot_image_4k_0818_13.png"
+                  alt="Niacinamide Face Serum"
+                >
+              </div>
+
+              <p class="mb-cr-product-name">
+                Niacinamide Face Serum
+              </p>
+            </div>
+
+          </article>
+
+
+          <!-- CARD 3 -->
+          <article class="mb-cr-card">
+
+            <div class="mb-cr-top">
+              <div class="mb-cr-user">
+                <span class="mb-cr-name">Bisma Z.</span>
+
+                <span class="mb-cr-verified">
+                  <span class="mb-cr-check">✓</span>
+                  Verified Buyer
+                </span>
+              </div>
+
+              <span class="mb-cr-date">08/11/26</span>
+            </div>
+
+            <div class="mb-cr-stars">
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+            </div>
+
+            <h3 class="mb-cr-title">
+              This toner suits everyone.
+            </h3>
+
+            <p class="mb-cr-text">
+              Feels so refreshing on my skin! Leaves it smooth, fresh, and glowing. Really happy with it!
+            </p>
+
+            <div class="mb-cr-product">
+              <div class="mb-cr-product-img">
+                <img
+                  src="https://sheene.shop/cdn/shop/files/pomelli_photoshoot_image_9_16_0823_2_eb912959-ded0-444b-85ff-efaf512ac895.png"
+                  alt="Glycolic Face Toner"
+                >
+              </div>
+
+              <p class="mb-cr-product-name">
+                Glycolic Face Toner
+              </p>
+            </div>
+
+          </article>
+
+
+          <!-- CARD 4 -->
+          <article class="mb-cr-card">
+
+            <div class="mb-cr-top">
+              <div class="mb-cr-user">
+                <span class="mb-cr-name">Tayyaba</span>
+
+                <span class="mb-cr-verified">
+                  <span class="mb-cr-check">✓</span>
+                  Verified Buyer
+                </span>
+              </div>
+
+              <span class="mb-cr-date">08/06/26</span>
+            </div>
+
+            <div class="mb-cr-stars">
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+            </div>
+
+            <h3 class="mb-cr-title">
+              Amazing product
+            </h3>
+
+            <p class="mb-cr-text">
+              So easy to apply and feels super light! No greasy feel, and perfect for daily use. Love it!.
+            </p>
+ <div class="mb-cr-product">
+              <div class="mb-cr-product-img">
+                <img
+                  src="https://sheene.shop/cdn/shop/files/pomelli_photoshoot_image_9_16_0823_4.png"
+                  alt="Sunscreen Spray SPF 50 ++"
+                >
+              </div>
+              <p class="mb-cr-product-name">
+                Sunscreen Spray SPF 50 ++
+              </p>
+            </div>
+
+          </article>
+
+
+          <!-- CARD 5 -->
+          <article class="mb-cr-card">
+
+            <div class="mb-cr-top">
+              <div class="mb-cr-user">
+                <span class="mb-cr-name">Amna Z.</span>
+
+                <span class="mb-cr-verified">
+                  <span class="mb-cr-check">✓</span>
+                  Verified Buyer
+                </span>
+              </div>
+
+              <span class="mb-cr-date">09/01/26</span>
+            </div>
+
+            <div class="mb-cr-stars">
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+            </div>
+
+            <h3 class="mb-cr-title">
+              Awesome one!
+            </h3>
+
+            <p class="mb-cr-text">
+              Such a smooth cleanser! Melts away makeup effortlessly and leaves my skin feeling soft and fresh. A new favorite!
+            </p>
+
+            <div class="mb-cr-product">
+              <div class="mb-cr-product-img">
+                <img
+                  src="https://sheene.shop/cdn/shop/files/pomelli_photoshoot_image_4k_0818_16.png"
+                  alt="Oil to Milk Cleanser"
+                >
+              </div>
+
+              <p class="mb-cr-product-name">
+                Oil to Milk Cleanser
+              </p>
+            </div>
+
+          </article>
+
+
+          <!-- CARD 6 -->
+          <article class="mb-cr-card">
+
+            <div class="mb-cr-top">
+              <div class="mb-cr-user">
+                <span class="mb-cr-name">Laiba Z.</span>
+
+                <span class="mb-cr-verified">
+                  <span class="mb-cr-check">✓</span>
+                  Verified Buyer
+                </span>
+              </div>
+
+              <span class="mb-cr-date">08/14/26</span>
+            </div>
+
+            <div class="mb-cr-stars">
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+              <span class="mb-cr-star">★</span>
+            </div>
+
+            <h3 class="mb-cr-title">
+              Absolutely loved it
+            </h3>
+
+            <p class="mb-cr-text">
+              Amazing texture and very comfortable on my skin.
+            </p>
+
+            <div class="mb-cr-product">
+              <div class="mb-cr-product-img">
+                <img
+                  src="https://sheene.shop/cdn/shop/files/pomelli_photoshoot_image_9_16_0823_2_1.png"
+                  alt="Vitamin C Serum"
+                >
+              </div>
+
+              <p class="mb-cr-product-name">
+                Vitamin C Serum
+              </p>
+            </div>
+
+          </article>
+
+        </div>
+      </div>
+
+
+      <!-- LEFT -->
+      <button
+        type="button"
+        class="mb-cr-arrow mb-cr-prev"
+        id="MBCRPrev"
+        aria-label="Previous"
+      >
+        <svg viewBox="0 0 24 24">
+          <path d="M15 5L8 12L15 19"></path>
+        </svg>
+      </button>
+
+
+      <!-- RIGHT -->
+      <button
+        type="button"
+        class="mb-cr-arrow mb-cr-next"
+        id="MBCRNext"
+        aria-label="Next"
+      >
+        <svg viewBox="0 0 24 24">
+          <path d="M9 5L16 12L9 19"></path>
+        </svg>
+      </button>
+
+    </div>
+  </div>
+</section>
+
+
+<script>
+(function () {
+
+  const track = document.getElementById("MBCRTrack");
+  const prev = document.getElementById("MBCRPrev");
+  const next = document.getElementById("MBCRNext");
+
+  if (!track || !prev || !next) return;
+
+  let index = 0;
+
+
+  function visibleCards() {
+
+    if (window.innerWidth <= 767) {
+      return 1;
+    }
+
+    if (window.innerWidth <= 1199) {
+      return 2;
+    }
+
+    return 3;
+  }
+
+
+  function cardStep() {
+
+    const card = track.querySelector(".mb-cr-card");
+
+    if (!card) return 0;
+
+    const gap = parseFloat(
+      getComputedStyle(track).gap
+    ) || 0;
+
+    return card.offsetWidth + gap;
+  }
+
+
+  function maxIndex() {
+
+    const total =
+      track.querySelectorAll(".mb-cr-card").length;
+
+    const visible = visibleCards();
+
+    return Math.max(
+      0,
+      Math.ceil(total / visible) - 1
+    );
+  }
+
+
+  function update() {
+
+    const visible = visibleCards();
+    const step = cardStep();
+
+    const max = maxIndex();
+
+    if (index > max) {
+      index = max;
+    }
+
+    track.style.transform =
+      "translateX(-" +
+      (index * step * visible) +
+      "px)";
+
+
+    if (index === 0) {
+      prev.classList.add("disabled");
+    } else {
+      prev.classList.remove("disabled");
+    }
+
+
+    if (index >= max) {
+      next.classList.add("disabled");
+    } else {
+      next.classList.remove("disabled");
+    }
+  }
+
+
+  next.addEventListener("click", function () {
+
+    if (index < maxIndex()) {
+      index++;
+      update();
+    }
+
+  });
+
+
+  prev.addEventListener("click", function () {
+
+    if (index > 0) {
+      index--;
+      update();
+    }
+
+  });
+
+
+  window.addEventListener("resize", function () {
+    index = 0;
+    update();
+  });
+
+
+  update();
+
+})();
+</script>
