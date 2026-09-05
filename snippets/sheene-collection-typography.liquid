@@ -1,0 +1,32 @@
+{% comment %}
+  Collection page ke filters ko site ke body font par le aata hai.
+  layout/theme.liquid mein </head> se pehle:
+  {% render 'sheene-collection-typography' %}
+{% endcomment %}
+
+{% style %}
+  /* filter panel ka heading aur har filter ka label */
+  .facets__label,
+  .facets__summary,
+  .facets__status,
+  .sorting-filter__label,
+  .facets__clear,
+  .price-facet__highest-price {
+    font-family: var(--font-body--family);
+    font-style: var(--font-body--style);
+  }
+
+  /* AVAILABILITY, PRICE, CATEGORY jaise labels */
+  .facets__label {
+    font-size: var(--font-size--sm);
+    font-weight: 600;
+    letter-spacing: var(--letter-spacing-sm);
+  }
+
+  /* checkbox ke saath wale options: In stock, Face Serums waghera */
+  .facets__item label,
+  .sorting-filter__label {
+    font-size: var(--font-size--md);
+    font-weight: 400;
+  }
+{% endstyle %}
