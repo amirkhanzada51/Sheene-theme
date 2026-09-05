@@ -308,11 +308,26 @@
     color: var(--sh-muted);
   }
     @media screen and (min-width: 750px) {
+    /* khaali media column hatao */
     .product-information__grid {
       grid-template-columns: 1fr !important;
     }
     .product-information__media {
       display: none !important;
+    }
+
+    /* group ke do column ka ratio */
+    .layout-panel-flex--row:has(.sh-gallery) {
+      align-items: flex-start;
+    }
+    .layout-panel-flex--row > *:has(> .sh-gallery) {
+      flex: 0 0 55%;
+      min-width: 0;
+    }
+    .layout-panel-flex--row > *:has(> .sh-pdp) {
+      flex: 1 1 0;
+      min-width: 0;
+      padding-left: 40px;
     }
   }
 </style>
