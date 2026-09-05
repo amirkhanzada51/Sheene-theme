@@ -1,0 +1,1111 @@
+{% comment %}
+  ==========================================================
+  SHEENE - Best Sellers slider  (home page Custom Liquid)
+  ==========================================================
+
+  Is version mein kya theek hua:
+
+  1. IMAGE RATIO
+     Pehle box 2/3 par fix tha aur image par object-fit: contain.
+     420x630 images exactly 2:3 thin is liye box bhar jata tha.
+     1024x1024 square images aane par upar neeche grey patti aa gayi.
+     Ab ratio ek hi variable se control hota hai: --bs-image-ratio
+     Neeche section rule mein set karo, teenon breakpoints par lag jayega.
+
+  2. TOOTI HUI CSS LINE
+     ".sh image" rule mein "transition:" likhna reh gaya tha,
+     sirf "transform 0.38s ease;" tha. Is se hover animate nahi hota tha.
+
+  3. RESPONSIVE IMAGES
+     Ab srcset + sizes hai, browser screen ke hisab se sahi size uthata hai.
+     Pehle har card 1200px ki image load karta tha.
+
+  4. COMPARE PRICE
+     Pehle "Rs. 0.00" string se compare hota tha, jo currency format
+     badalne par toot jata. Ab khaali attribute se check hota hai.
+
+  5. RATING
+     Pehle har product par 4 stars hardcoded thay. Judge.me installed hai,
+     ab asli rating metafield se aati hai. Jis product par review nahi,
+     wahan stars chhup jati hain.
+
+  IMAGE SIZE
+     --bs-image-ratio ko apni images ke ratio se match rakho:
+       1024x1024  ->  1 / 1
+       1200x1800  ->  2 / 3   (portrait, cards zyada premium lagte hain)
+       1600x2000  ->  4 / 5
+     Product page snippet mein GALLERY_RATIO bhi wahi rakhna, warna
+     same product home par aur PDP par alag dikhega.
+{% endcomment %}
+
+<style>
+/* =========================================================
+   MAIN SECTION
+   ========================================================= */
+.custom-best-sellers {
+  /* IMAGE RATIO — sirf yahan badlo, sab breakpoints par lag jayega */
+  --bs-image-ratio: 1 / 1;
+
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 40px 7px 8px;
+  background: #fff;
+  overflow: hidden !important;
+  box-sizing: border-box;
+}
+.custom-best-sellers *,
+.custom-best-sellers *::before,
+.custom-best-sellers *::after {
+  box-sizing: border-box;
+}
+/* =========================================================
+   HEADING
+   ========================================================= */
+.custom-best-sellers__heading {
+  margin: 0 0 34px;
+  padding: 0;
+  font-size: 32px;
+  line-height: 1.2;
+  font-weight: 500;
+  color: #111;
+  text-align: left;
+  letter-spacing: -0.5px;
+}
+/* =========================================================
+   PRODUCT VIEWPORT
+   ========================================================= */
+.custom-best-sellers__viewport {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden !important;
+}
+/* =========================================================
+   PRODUCT TRACK
+   ========================================================= */
+.custom-best-sellers__track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  gap: 24px;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.55s cubic-bezier(.22, .61, .36, 1);
+  will-change: transform;
+}
+/* =========================================================
+   PRODUCT CARD
+   ========================================================= */
+.custom-best-sellers__card {
+  position: relative;
+  flex: 0 0 calc((100% - 72px) / 4);
+  width: calc((100% - 72px) / 4);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  overflow: visible;
+}
+/* =========================================================
+   PRODUCT IMAGE BOX
+   ========================================================= */
+.custom-best-sellers__image-box {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--bs-image-ratio);
+  background: #e9edef;
+  overflow: hidden;
+}
+/* =========================================================
+   IMAGE LINK
+   ========================================================= */
+.custom-best-sellers__image-link {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  overflow: hidden;
+  z-index: 1;
+}
+/* =========================================================
+   IMAGE TRACK
+   ========================================================= */
+.custom-best-sellers__image-track {
+  display: flex;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  transform: translate3d(0, 0, 0);
+  transition: transform 0.45s cubic-bezier(.22, .61, .36, 1);
+  will-change: transform;
+}
+/* =========================================================
+   IMAGE SLIDE
+   ========================================================= */
+.custom-best-sellers__image-slide {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  min-width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+/* =========================================================
+   PRODUCT IMAGE
+   contain = kuch crop nahi hota.
+   Agar image ka ratio --bs-image-ratio se match kare to
+   box poora bhar jata hai aur koi khaali patti nahi aati.
+   ========================================================= */
+.custom-best-sellers__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: center center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  vertical-align: middle;
+  user-select: none;
+  -webkit-user-drag: none;
+  transition: transform 0.38s ease;   /* pehle "transition:" missing tha */
+}
+.custom-best-sellers__image:hover {
+  transform: scale(1.025);
+}
+/* =========================================================
+   BEST SELLER BADGE
+   ========================================================= */
+.custom-best-sellers__badge {
+  position: absolute;
+  top: 11px;
+  right: 11px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 21px;
+  padding: 4px 8px;
+  background: #000;
+  color: #fff;
+  border-radius: 10px;
+  font-size: 15px;
+  line-height: 1;
+  font-weight: 600;
+  white-space: nowrap;
+}
+/* =========================================================
+   IMAGE ARROWS
+   ========================================================= */
+.custom-best-sellers__image-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 40;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .94);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+  transition: transform .15s ease;
+}
+.custom-best-sellers__image-arrow:hover {
+  background: rgba(255, 255, 255, .94);
+}
+.custom-best-sellers__image-arrow:active {
+  transform: translateY(-50%) scale(.92);
+}
+.custom-best-sellers__image-arrow--prev { left: 7px; }
+.custom-best-sellers__image-arrow--next { right: 7px; }
+.custom-best-sellers__image-arrow svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+  fill: none;
+  stroke: #777;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+/* =========================================================
+   IMAGE DOTS
+   ========================================================= */
+.custom-best-sellers__image-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 8px;
+  transform: translateX(-50%);
+  z-index: 35;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  height: 7px;
+  pointer-events: none;
+}
+.custom-best-sellers__image-dot {
+  width: 4px;
+  height: 4px;
+  min-width: 4px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 50%;
+  background: #b9b9b9;
+}
+.custom-best-sellers__image-dot.is-active { background: #000; }
+/* =========================================================
+   PRODUCT CONTENT
+   ========================================================= */
+.custom-best-sellers__content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  padding-top: 17px;
+}
+/* =========================================================
+   PRODUCT TITLE
+   ========================================================= */
+.custom-best-sellers__title {
+  margin: 0;
+  padding: 0;
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 600;
+  color: #111;
+  letter-spacing: 0;
+  white-space: normal;
+}
+.custom-best-sellers__title a {
+  color: inherit;
+  text-decoration: none;
+}
+/* =========================================================
+   DESCRIPTION
+   ========================================================= */
+.custom-best-sellers__description {
+  margin-top: 7px;
+  min-height: 20px;
+  overflow: hidden;
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 400;
+  color: #858585;
+}
+/* =========================================================
+   RATING
+   ========================================================= */
+.custom-best-sellers__rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 7px;
+  height: 17px;
+  text-decoration: none;
+  color: inherit;
+}
+.custom-best-sellers__stars {
+  position: relative;
+  display: inline-block;
+  font-size: 16px;
+  line-height: 1;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.custom-best-sellers__stars-bg { color: #c9c9c9; }
+.custom-best-sellers__stars-fg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  width: var(--bs-rating, 0%);
+  color: #000;
+}
+.custom-best-sellers__rating-count {
+  font-size: 13px;
+  line-height: 1;
+  color: #858585;
+}
+/* =========================================================
+   PRICE
+   ========================================================= */
+.custom-best-sellers__price-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 8px;
+  min-height: 21px;
+}
+.custom-best-sellers__price {
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 500;
+  color: #111;
+}
+.custom-best-sellers__compare {
+  font-size: 15px;
+  line-height: 1.35;
+  font-weight: 400;
+  color: #888;
+  text-decoration: line-through;
+}
+/* =========================================================
+   VARIANTS
+   ========================================================= */
+.custom-best-sellers__variants {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 10px;
+  min-height: 30px;
+}
+.custom-best-sellers__variant {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 22px;
+  padding: 3px 12px;
+  border: 1px solid #bdbdbd;
+  border-radius: 15px;
+  background: #fff;
+  color: #222;
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
+  font-family: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  transition:
+    background .15s ease,
+    color .15s ease,
+    border-color .15s ease;
+}
+.custom-best-sellers__variant.is-selected {
+  background: #000;
+  border-color: #000;
+  color: #fff;
+  font-weight: 600;
+}
+.custom-best-sellers__variant:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+/* =========================================================
+   CART FORM
+   ========================================================= */
+.custom-best-sellers__cart-form {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+/* =========================================================
+   ADD TO CART
+   ========================================================= */
+.custom-best-sellers__add {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  padding: 14px 15px;
+  min-height: 48px;
+  border: 1px solid #000;
+  border-radius: 0;
+  background: #000;
+  color: #fff;
+  font-family: Jost, sans-serif;
+  font-size: 16px;
+  line-height: 1.2;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  box-shadow: none;
+  transition: none;
+}
+.custom-best-sellers__add:hover,
+.custom-best-sellers__add:focus,
+.custom-best-sellers__add:active {
+  background: #000 !important;
+  color: #fff !important;
+  border-color: #000 !important;
+  box-shadow: none !important;
+}
+/* =========================================================
+   BOTTOM SLIDER
+   ========================================================= */
+.custom-best-sellers__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 42px;
+}
+.custom-best-sellers__bottom-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.custom-best-sellers__bottom-dot {
+  width: 24px;
+  height: 4px;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  border-radius: 5px;
+  background: #e7e7e7;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.custom-best-sellers__bottom-dot.is-active { background: #000; }
+/* =========================================================
+   VIEW ALL
+   ========================================================= */
+.custom-best-sellers__view-all-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+.custom-best-sellers__view-all {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 163px;
+  min-height: 39px;
+  padding: 14px 46px;
+  border: 1px solid #111;
+  background: #fff;
+  color: #111;
+  text-decoration: none;
+  font-family: Jost, sans-serif;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 400;
+  transition: none;
+}
+.custom-best-sellers__view-all:hover,
+.custom-best-sellers__view-all:focus,
+.custom-best-sellers__view-all:active {
+  background: #fff !important;
+  color: #111 !important;
+  border-color: #111 !important;
+  box-shadow: none !important;
+}
+/* =========================================================
+   TABLET
+   ========================================================= */
+@media screen and (max-width: 989px) {
+  .custom-best-sellers {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+  .custom-best-sellers__track { gap: 16px; }
+  .custom-best-sellers__card {
+    flex: 0 0 calc((100% - 48px) / 4);
+    width: calc((100% - 48px) / 4);
+  }
+  /* aspect-ratio yahan set nahi karte, variable se aata hai */
+}
+/* =========================================================
+   MOBILE — EXACTLY 2 PRODUCTS
+   ========================================================= */
+@media screen and (max-width: 749px) {
+  .custom-best-sellers {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 28px 7px 12px !important;
+    margin: 0 !important;
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
+  }
+  .custom-best-sellers__heading {
+    margin: 0 0 28px !important;
+    padding: 0 !important;
+    font-size: 32px !important;
+    line-height: 1.2;
+  }
+  .custom-best-sellers__viewport {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  .custom-best-sellers__track { gap: 12px; }
+  .custom-best-sellers__card {
+    flex: 0 0 calc((100% - 12px) / 2);
+    width: calc((100% - 12px) / 2);
+    min-width: 0;
+  }
+  .custom-best-sellers__image-box {
+    width: 100%;
+    overflow: hidden;
+  }
+  .custom-best-sellers__badge {
+    top: 8px;
+    right: 8px;
+    min-height: 20px;
+    padding: 4px 7px;
+    font-size: 15px;
+  }
+  .custom-best-sellers__image-arrow { width: 20px; height: 20px; }
+  .custom-best-sellers__image-arrow--prev { left: 6px; }
+  .custom-best-sellers__image-arrow--next { right: 6px; }
+  .custom-best-sellers__content { padding-top: 13px; }
+  .custom-best-sellers__title {
+    font-size: 18px !important;
+    line-height: 1.25;
+  }
+  .custom-best-sellers__description {
+    margin-top: 6px;
+    min-height: 19px;
+    font-size: 15px !important;
+    line-height: 1.3;
+  }
+  .custom-best-sellers__rating { margin-top: 6px; }
+  .custom-best-sellers__stars { font-size: 15px; }
+  .custom-best-sellers__price-row { margin-top: 7px; gap: 5px; }
+  .custom-best-sellers__price,
+  .custom-best-sellers__compare { font-size: 15px !important; }
+  .custom-best-sellers__variants { gap: 5px; margin-top: 9px; }
+  .custom-best-sellers__variant {
+    font-size: 15px !important;
+    padding: 3px 9px;
+  }
+  .custom-best-sellers__add {
+    margin-top: 9px;
+    padding: 14px 15px !important;
+    min-height: 0;
+    font-size: 16px !important;
+  }
+  .custom-best-sellers__bottom { margin-top: 35px; }
+  .custom-best-sellers__bottom-dot { width: 22px; height: 4px; }
+  .custom-best-sellers__view-all-wrap { margin-top: 19px; }
+  .custom-best-sellers__view-all {
+    min-width: 163px;
+    min-height: 39px;
+    padding: 14px 30px;
+    font-size: 18px;
+  }
+}
+/* =========================================================
+   SMALL MOBILE
+   ========================================================= */
+@media screen and (max-width: 380px) {
+  .custom-best-sellers {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+  .custom-best-sellers__track { gap: 10px; }
+  .custom-best-sellers__card {
+    flex: 0 0 calc((100% - 10px) / 2);
+    width: calc((100% - 10px) / 2);
+  }
+  .custom-best-sellers__title { font-size: 18px !important; }
+  .custom-best-sellers__description { font-size: 15px !important; }
+  .custom-best-sellers__variant {
+    padding-left: 7px;
+    padding-right: 7px;
+  }
+}
+/* =========================================================
+   SAFETY
+   overflow-x: clip use kiya hai, hidden nahi.
+   hidden html/body par lagane se doosri jagah position: sticky
+   toot jati hai. clip wahi kaam karta hai bina sticky tore.
+   ========================================================= */
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+.custom-best-sellers {
+  contain: layout paint;
+}
+</style>
+
+<section
+  class="custom-best-sellers"
+  id="CustomBestSellers-{{ section.id | default: 'main' }}"
+>
+  <h2 class="custom-best-sellers__heading">
+    Our Best Sellers
+  </h2>
+
+  <div class="custom-best-sellers__viewport">
+    <div class="custom-best-sellers__track">
+      {% assign best_seller_collection = collections['best-sellers'] %}
+      {% assign product_limit = 8 %}
+
+      {% if best_seller_collection != blank and best_seller_collection.products_count > 0 %}
+        {% for product in best_seller_collection.products limit: product_limit %}
+
+          {% comment %} ---- asli rating, agar review app ne likhi hai ---- {% endcomment %}
+          {% liquid
+            assign rating_value = 0
+            assign rating_count = 0
+            if product.metafields.reviews.rating.value != blank
+              assign rating_value = product.metafields.reviews.rating.value.rating | times: 1.0
+              assign rating_count = product.metafields.reviews.rating_count.value | times: 1
+            elsif product.metafields.loox.avg_rating != blank
+              assign rating_value = product.metafields.loox.avg_rating.value | times: 1.0
+              assign rating_count = product.metafields.loox.num_reviews.value | times: 1
+            endif
+            assign rating_percent = rating_value | times: 20.0
+          %}
+
+          <article class="custom-best-sellers__card" data-product-card>
+
+            <div class="custom-best-sellers__image-box" data-image-slider>
+
+              <span class="custom-best-sellers__badge">Best Seller</span>
+
+              <a
+                href="{{ product.url }}"
+                class="custom-best-sellers__image-link"
+                aria-label="{{ product.title | escape }}"
+              >
+                <div class="custom-best-sellers__image-track" data-image-track>
+                  {% if product.images.size > 0 %}
+                    {% for image in product.images limit: 8 %}
+                      <div class="custom-best-sellers__image-slide">
+                        <img
+                          class="custom-best-sellers__image"
+                          src="{{ image | image_url: width: 800 }}"
+                          srcset="
+                            {{ image | image_url: width: 400 }} 400w,
+                            {{ image | image_url: width: 600 }} 600w,
+                            {{ image | image_url: width: 800 }} 800w,
+                            {{ image | image_url: width: 1200 }} 1200w
+                          "
+                          sizes="(min-width: 990px) 23vw, (min-width: 750px) 23vw, 48vw"
+                          alt="{{ image.alt | default: product.title | escape }}"
+                          loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                          width="{{ image.width }}"
+                          height="{{ image.height }}"
+                          draggable="false"
+                        >
+                      </div>
+                    {% endfor %}
+                  {% elsif product.featured_image %}
+                    <div class="custom-best-sellers__image-slide">
+                      <img
+                        class="custom-best-sellers__image"
+                        src="{{ product.featured_image | image_url: width: 800 }}"
+                        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                        loading="lazy"
+                        width="{{ product.featured_image.width }}"
+                        height="{{ product.featured_image.height }}"
+                        draggable="false"
+                      >
+                    </div>
+                  {% endif %}
+                </div>
+              </a>
+
+              <button
+                type="button"
+                class="custom-best-sellers__image-arrow custom-best-sellers__image-arrow--prev"
+                aria-label="Previous product image"
+                data-image-prev
+              >
+                <svg viewBox="0 0 24 24"><path d="M14.5 5L7.5 12L14.5 19"></path></svg>
+              </button>
+
+              <button
+                type="button"
+                class="custom-best-sellers__image-arrow custom-best-sellers__image-arrow--next"
+                aria-label="Next product image"
+                data-image-next
+              >
+                <svg viewBox="0 0 24 24"><path d="M9.5 5L16.5 12L9.5 19"></path></svg>
+              </button>
+
+              {% if product.images.size > 1 %}
+                <div class="custom-best-sellers__image-dots" data-image-dots>
+                  {% for image in product.images limit: 8 %}
+                    <span class="custom-best-sellers__image-dot{% if forloop.first %} is-active{% endif %}"></span>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="custom-best-sellers__content">
+
+              <h3 class="custom-best-sellers__title">
+                <a href="{{ product.url }}">{{ product.title }}</a>
+              </h3>
+
+              <div class="custom-best-sellers__description">
+                {{ product.description | strip_html | truncate: 72 }}
+              </div>
+
+              {% if rating_count > 0 %}
+                <a
+                  class="custom-best-sellers__rating"
+                  href="{{ product.url }}"
+                  aria-label="Rated {{ rating_value }} out of 5 from {{ rating_count }} reviews"
+                >
+                  <span class="custom-best-sellers__stars" style="--bs-rating: {{ rating_percent }}%;" aria-hidden="true">
+                    <span class="custom-best-sellers__stars-bg">★★★★★</span>
+                    <span class="custom-best-sellers__stars-fg">★★★★★</span>
+                  </span>
+                  <span class="custom-best-sellers__rating-count">({{ rating_count }})</span>
+                </a>
+              {% endif %}
+
+              <div class="custom-best-sellers__price-row">
+                {% assign available_variant = product.selected_or_first_available_variant %}
+                <span class="custom-best-sellers__price" data-product-price>
+                  {{ available_variant.price | money }}
+                </span>
+                <span
+                  class="custom-best-sellers__compare"
+                  data-product-compare
+                  {% unless available_variant.compare_at_price > available_variant.price %}style="display:none;"{% endunless %}
+                >
+                  {%- if available_variant.compare_at_price > available_variant.price -%}
+                    {{ available_variant.compare_at_price | money }}
+                  {%- endif -%}
+                </span>
+              </div>
+
+              {% if product.variants.size > 1 %}
+                <div class="custom-best-sellers__variants" data-variant-selector>
+                  {% for variant in product.variants %}
+                    <button
+                      type="button"
+                      class="custom-best-sellers__variant{% if variant.id == available_variant.id %} is-selected{% endif %}"
+                      data-variant-id="{{ variant.id }}"
+                      data-variant-price="{{ variant.price | money | escape }}"
+                      data-variant-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | escape }}{% endif %}"
+                      data-variant-available="{{ variant.available }}"
+                      {% unless variant.available %}disabled{% endunless %}
+                    >{{ variant.title }}</button>
+                  {% endfor %}
+                </div>
+              {% elsif product.variants.first.title != 'Default Title' %}
+                <div class="custom-best-sellers__variants" data-variant-selector>
+                  <button
+                    type="button"
+                    class="custom-best-sellers__variant is-selected"
+                    data-variant-id="{{ product.variants.first.id }}"
+                    data-variant-price="{{ product.variants.first.price | money | escape }}"
+                    data-variant-compare="{% if product.variants.first.compare_at_price > product.variants.first.price %}{{ product.variants.first.compare_at_price | money | escape }}{% endif %}"
+                    data-variant-available="{{ product.variants.first.available }}"
+                    {% unless product.variants.first.available %}disabled{% endunless %}
+                  >{{ product.variants.first.title }}</button>
+                </div>
+              {% endif %}
+
+              <form
+                action="{{ routes.cart_add_url }}"
+                method="post"
+                class="custom-best-sellers__cart-form"
+                data-cart-form
+              >
+                <input
+                  type="hidden"
+                  name="id"
+                  value="{{ available_variant.id }}"
+                  data-selected-variant
+                >
+                <button
+                  type="submit"
+                  class="custom-best-sellers__add"
+                  {% unless available_variant.available %}disabled{% endunless %}
+                >
+                  {% if available_variant.available %}Add to cart{% else %}Sold out{% endif %}
+                </button>
+              </form>
+
+            </div>
+          </article>
+        {% endfor %}
+      {% else %}
+        <div style="width:100%;padding:50px 20px;text-align:center;font-size:16px;">
+          Please create a Shopify collection with handle <strong>best-sellers</strong>.
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="custom-best-sellers__bottom">
+    <div class="custom-best-sellers__bottom-dots" data-product-slider-dots></div>
+  </div>
+
+  {% if best_seller_collection != blank %}
+    <div class="custom-best-sellers__view-all-wrap">
+      <a href="{{ best_seller_collection.url }}" class="custom-best-sellers__view-all">
+        View all products
+      </a>
+    </div>
+  {% endif %}
+</section>
+
+<script>
+(function () {
+  'use strict';
+
+  function initBestSellers() {
+    document.querySelectorAll('.custom-best-sellers').forEach(function (section) {
+      if (section.dataset.initialized === 'true') return;
+      section.dataset.initialized = 'true';
+
+      var viewport = section.querySelector('.custom-best-sellers__viewport');
+      var track = section.querySelector('.custom-best-sellers__track');
+      var cards = Array.from(section.querySelectorAll('.custom-best-sellers__card'));
+      var dotsContainer = section.querySelector('[data-product-slider-dots]');
+
+      if (!viewport || !track || !cards.length) return;
+
+      var currentPage = 0;
+
+      function getVisibleProducts() {
+        return window.innerWidth <= 749 ? 2 : 4;
+      }
+
+      function getGap() {
+        if (window.innerWidth <= 749) return window.innerWidth <= 380 ? 10 : 12;
+        if (window.innerWidth <= 989) return 16;
+        return 24;
+      }
+
+      function getTotalPages() {
+        return Math.max(1, Math.ceil(cards.length / getVisibleProducts()));
+      }
+
+      function buildBottomDots() {
+        if (!dotsContainer) return;
+        dotsContainer.innerHTML = '';
+        var totalPages = getTotalPages();
+
+        for (var i = 0; i < totalPages; i++) {
+          var button = document.createElement('button');
+          button.type = 'button';
+          button.className = 'custom-best-sellers__bottom-dot';
+          button.setAttribute('aria-label', 'Show product group ' + (i + 1));
+          button.dataset.page = i;
+          if (i === currentPage) button.classList.add('is-active');
+
+          button.addEventListener('click', function () {
+            var page = parseInt(this.dataset.page, 10);
+            if (isNaN(page)) return;
+            currentPage = Math.max(0, Math.min(page, getTotalPages() - 1));
+            updateProductSlider();
+          });
+
+          dotsContainer.appendChild(button);
+        }
+      }
+
+      function updateProductSlider() {
+        var visible = getVisibleProducts();
+        var gap = getGap();
+        var totalPages = getTotalPages();
+
+        if (currentPage >= totalPages) currentPage = totalPages - 1;
+        if (currentPage < 0) currentPage = 0;
+
+        var cardWidth = cards[0].getBoundingClientRect().width;
+        var moveDistance = currentPage * visible * (cardWidth + gap);
+        var maxMove = Math.max(0, track.scrollWidth - viewport.clientWidth);
+        moveDistance = Math.min(moveDistance, maxMove);
+
+        track.style.transform = 'translate3d(' + (-moveDistance) + 'px, 0, 0)';
+
+        if (dotsContainer) {
+          dotsContainer.querySelectorAll('.custom-best-sellers__bottom-dot')
+            .forEach(function (dot, index) {
+              dot.classList.toggle('is-active', index === currentPage);
+            });
+        }
+      }
+
+      /* ---------- per card image slider ---------- */
+      cards.forEach(function (card) {
+        var imageBox = card.querySelector('[data-image-slider]');
+        if (!imageBox) return;
+
+        var imageTrack = imageBox.querySelector('[data-image-track]');
+        var slides = Array.from(imageBox.querySelectorAll('.custom-best-sellers__image-slide'));
+        var prevButton = imageBox.querySelector('[data-image-prev]');
+        var nextButton = imageBox.querySelector('[data-image-next]');
+        var dots = Array.from(imageBox.querySelectorAll('.custom-best-sellers__image-dot'));
+
+        if (slides.length <= 1) {
+          if (prevButton) prevButton.style.display = 'none';
+          if (nextButton) nextButton.style.display = 'none';
+          dots.forEach(function (dot) { dot.style.display = 'none'; });
+          return;
+        }
+
+        var currentImage = 0;
+
+        function updateImageSlider(direction) {
+          if (direction === 'next') {
+            currentImage = (currentImage + 1) % slides.length;
+          } else if (direction === 'prev') {
+            currentImage = (currentImage - 1 + slides.length) % slides.length;
+          }
+
+          imageTrack.style.transform = 'translate3d(-' + (currentImage * 100) + '%, 0, 0)';
+
+          dots.forEach(function (dot, index) {
+            dot.classList.toggle('is-active', index === currentImage);
+          });
+        }
+
+        if (nextButton) {
+          nextButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            updateImageSlider('next');
+          });
+        }
+
+        if (prevButton) {
+          prevButton.addEventListener('click', function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            updateImageSlider('prev');
+          });
+        }
+
+        [prevButton, nextButton].forEach(function (button) {
+          if (!button) return;
+          button.addEventListener('mousedown', function (event) {
+            event.preventDefault();
+          });
+        });
+
+        /* mobile swipe */
+        var startX = 0;
+        imageBox.addEventListener('touchstart', function (e) {
+          startX = e.touches[0].clientX;
+        }, { passive: true });
+        imageBox.addEventListener('touchend', function (e) {
+          var dx = startX - e.changedTouches[0].clientX;
+          if (Math.abs(dx) > 40) updateImageSlider(dx > 0 ? 'next' : 'prev');
+        }, { passive: true });
+      });
+
+      /* ---------- variant selector ---------- */
+      cards.forEach(function (card) {
+        var selector = card.querySelector('[data-variant-selector]');
+        var hiddenInput = card.querySelector('[data-selected-variant]');
+        var addButton = card.querySelector('.custom-best-sellers__add');
+        var priceElement = card.querySelector('[data-product-price]');
+        var compareElement = card.querySelector('[data-product-compare]');
+
+        if (!selector || !hiddenInput) return;
+
+        var variants = Array.from(selector.querySelectorAll('.custom-best-sellers__variant'));
+
+        variants.forEach(function (variant) {
+          variant.addEventListener('click', function (event) {
+            event.preventDefault();
+            if (variant.disabled) return;
+
+            variants.forEach(function (item) {
+              item.classList.remove('is-selected');
+            });
+            variant.classList.add('is-selected');
+
+            var variantId = variant.getAttribute('data-variant-id');
+            if (variantId) hiddenInput.value = variantId;
+
+            var variantPrice = variant.getAttribute('data-variant-price');
+            if (priceElement && variantPrice) priceElement.textContent = variantPrice;
+
+            /* compare price khaali ho to chhupa do */
+            var variantCompare = variant.getAttribute('data-variant-compare');
+            if (compareElement) {
+              if (variantCompare) {
+                compareElement.textContent = variantCompare;
+                compareElement.style.display = '';
+              } else {
+                compareElement.textContent = '';
+                compareElement.style.display = 'none';
+              }
+            }
+
+            if (addButton) {
+              addButton.disabled = false;
+              addButton.textContent = 'Add to cart';
+            }
+          });
+        });
+      });
+
+      /* ---------- cart form ---------- */
+      section.querySelectorAll('[data-cart-form]').forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+          var selectedVariant = form.querySelector('[data-selected-variant]');
+          if (!selectedVariant || !selectedVariant.value) {
+            event.preventDefault();
+          }
+        });
+      });
+
+      buildBottomDots();
+      setTimeout(updateProductSlider, 100);
+
+      var resizeTimer = null;
+      window.addEventListener('resize', function () {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function () {
+          var totalPages = getTotalPages();
+          if (currentPage >= totalPages) currentPage = Math.max(0, totalPages - 1);
+          buildBottomDots();
+          updateProductSlider();
+        }, 120);
+      });
+    });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initBestSellers);
+  } else {
+    initBestSellers();
+  }
+
+  document.addEventListener('shopify:section:load', function (event) {
+    var section = event.target && event.target.querySelector
+      ? event.target.querySelector('.custom-best-sellers')
+      : null;
+    if (section) section.dataset.initialized = 'false';
+    initBestSellers();
+  });
+})();
+</script>
