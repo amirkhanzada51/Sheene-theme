@@ -168,6 +168,14 @@
                     "padding-inline-end": 0
                   },
                   "blocks": {
+                    "custom_liquid_gXTaDm": {
+                      "type": "custom-liquid",
+                      "name": "Dynamic Accordian",
+                      "settings": {
+                        "custom_liquid": "{% render 'sheene-product-accordion' %}"
+                      },
+                      "blocks": {}
+                    },
                     "text_kTy3Yk": {
                       "type": "text",
                       "name": "t:names.heading",
@@ -324,6 +332,7 @@
                     "accordion_jgFpNM": {
                       "type": "accordion",
                       "name": "t:names.accordion",
+                      "disabled": true,
                       "settings": {
                         "icon": "plus",
                         "dividers": true,
@@ -508,6 +517,7 @@
                     }
                   },
                   "block_order": [
+                    "custom_liquid_gXTaDm",
                     "text_kTy3Yk",
                     "review_gFytLP",
                     "custom_liquid_mYKJ39",
