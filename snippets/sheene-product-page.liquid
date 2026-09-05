@@ -377,8 +377,15 @@
       display: grid !important;
       grid-template-columns: {{ MEDIA_WIDTH }} 1fr;
       column-gap: {{ COLUMN_GAP }};
-      row-gap: var(--gap-lg, 1rem);
+      row-gap: 0;
       align-items: start;
+      align-content: start;
+    }
+
+    /* row-gap 0 hai, is liye info column ko apna gap chahiye */
+    .layout-panel-flex:has(> * > .sh-gallery) > .sh-pdp,
+    .layout-panel-flex:has(> * > .sh-gallery) .sh-pdp {
+      margin-block-end: var(--gap-lg, 1rem);
     }
 
     .layout-panel-flex:has(> * > .sh-gallery) > .sh-gallery,
