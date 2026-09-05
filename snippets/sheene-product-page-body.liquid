@@ -307,7 +307,7 @@
     background: transparent;
     color: var(--sh-muted);
   }
-    @media screen and (min-width: 750px) {
+      @media screen and (min-width: 750px) {
     /* khaali media column hatao */
     .product-information__grid {
       grid-template-columns: 1fr !important;
@@ -316,18 +316,25 @@
       display: none !important;
     }
 
-    /* group ke do column ka ratio */
+    /* poori width mat lo, cap karo aur center rakho */
+    .product-details {
+      width: 100%;
+      max-width: 1240px;
+      margin-inline: auto;
+    }
+
+    /* group ke do column */
     .layout-panel-flex--row:has(.sh-gallery) {
       align-items: flex-start;
     }
     .layout-panel-flex--row > *:has(> .sh-gallery) {
-      flex: 0 0 55%;
+      flex: 0 0 52%;
       min-width: 0;
     }
     .layout-panel-flex--row > *:has(> .sh-pdp) {
       flex: 1 1 0;
       min-width: 0;
-      padding-left: 40px;
+      padding-left: 48px;
     }
   }
 </style>
