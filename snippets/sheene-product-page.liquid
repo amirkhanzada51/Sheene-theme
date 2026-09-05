@@ -1,0 +1,653 @@
+{% comment %}
+==========================================================================
+  SHEENE - Product page (gallery + info) - ONE FILE
+==========================================================================
+
+  Snippet ka naam:  sheene-product-page
+
+  ISTEMAAL
+  --------
+  Do Custom Liquid blocks, dono isi file ko call karte hain:
+
+    Slider block (left):   {% render 'sheene-product-page', part: 'slider' %}
+    Body block (right):    {% render 'sheene-product-page', part: 'body' %}
+
+  Agar dono ek hi block mein chahiye (upar neeche stack honge):
+
+                           {% render 'sheene-product-page' %}
+
+  BLOCK STRUCTURE (theme editor mein)
+  -----------------------------------
+    Product details
+    └─ Group  (Direction: Horizontal, Stack on mobile: on)
+       ├─ Slider block
+       └─ Group  (Direction: Vertical)
+          ├─ Body block
+          ├─ Buy buttons
+          ├─ Goes Well With
+          ├─ Description
+          └─ Accordion
+
+  Layout ki saari CSS is file ke andar hai. Theme ki files chherne
+  ki zaroorat nahi.
+
+  KNOBS (neeche wale liquid block mein)
+  -------------------------------------
+    GALLERY_RATIO   image ka shape: '1 / 1', '4 / 5', '3 / 4'
+    MEDIA_WIDTH     desktop par gallery column ka hissa
+    MAX_WIDTH       poore product area ki max width
+    COLUMN_GAP      dono columns ke beech ka gap
+    STICKY_MEDIA    scroll par gallery chipki rahe ya nahi
+
+  REVIEW STARS
+  ------------
+  Asli review data padhta hai:
+    1. product.metafields.reviews.rating   (Judge.me, Okendo, Stamped)
+    2. product.metafields.loox.avg_rating  (Loox)
+  Judge.me installed hai. Jis product par reviews aayenge, wahan stars
+  khud dikhne lag jayengi. Reviews na hone par block chhup jata hai.
+  Neutral "Be the first to review" chahiye to SHOW_EMPTY_STATE true kar do.
+{% endcomment %}
+
+{% liquid
+  assign part = part | default: 'all'
+  assign product = product | default: closest.product
+
+  assign GALLERY_RATIO = '1 / 1'
+  assign MEDIA_WIDTH = '52%'
+  assign MAX_WIDTH = '1240px'
+  assign COLUMN_GAP = '48px'
+  assign STICKY_MEDIA = true
+
+  assign SHOW_EMPTY_STATE = false
+  assign REVIEWS_ANCHOR = '#sh-reviews'
+%}
+
+{% comment %} ---------- shared layout + design CSS ---------- {% endcomment %}
+<style>
+  .sh-gallery {
+    width: 100%;
+    --sh-gallery-ratio: {{ GALLERY_RATIO }};
+  }
+
+  .sh-gallery-viewport {
+    position: relative;
+    width: 100%;
+    aspect-ratio: var(--sh-gallery-ratio);
+    overflow: hidden;
+    background: rgb(var(--color-foreground-rgb, 17 17 17) / 0.04);
+    border-radius: var(--style-border-radius-md, 0);
+    touch-action: pan-y;
+    overscroll-behavior-x: contain;
+  }
+
+  .sh-gallery-track {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.4s var(--ease-out-quad, cubic-bezier(0.32, 0.72, 0, 1));
+  }
+
+  .sh-gallery-slide {
+    flex: 0 0 100%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .sh-gallery-empty { background: rgb(var(--color-foreground-rgb, 17 17 17) / 0.04); }
+
+  .sh-gallery-media,
+  .sh-gallery-media video,
+  .sh-gallery-media model-viewer {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .sh-gallery-media--embed { position: relative; width: 100%; height: 100%; }
+  .sh-gallery-media--embed iframe { width: 100%; height: 100%; border: 0; }
+
+  .sh-gallery-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 2.5rem;
+    height: 2.5rem;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgb(var(--color-background-rgb, 255 255 255) / 0.85);
+    color: var(--color-foreground, #111111);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--animation-speed, 0.15s) ease;
+  }
+  .sh-gallery-arrow--prev { left: 0.75rem; }
+  .sh-gallery-arrow--next { right: 0.75rem; }
+  .sh-gallery-arrow:hover { background: var(--color-background, #FFFFFF); }
+  .sh-gallery-arrow:focus-visible {
+    outline: var(--focus-outline-width, 2px) solid var(--color-foreground, #111111);
+    outline-offset: 2px;
+  }
+
+  .sh-gallery-dots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--gap-xs, 0.5rem);
+    margin-top: var(--margin-lg, 1rem);
+  }
+
+  .sh-gallery-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    border: 1px solid rgb(var(--color-foreground-rgb, 17 17 17) / 0.35);
+    background: transparent;
+    padding: 0;
+    cursor: pointer;
+    transition: background var(--animation-speed, 0.15s) ease;
+  }
+  .sh-gallery-dot.is-active {
+    background: var(--color-foreground, #111111);
+    border-color: var(--color-foreground, #111111);
+  }
+
+  /* ---------- info column ---------- */
+  .sh-pdp {
+    --sh-gap: var(--margin-lg, 1rem);
+    --sh-muted: rgb(var(--color-foreground-rgb, 17 17 17) / var(--opacity-muted-text, 0.6));
+    --sh-line: rgb(var(--color-foreground-rgb, 17 17 17) / 0.22);
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    width: 100%;
+    font-family: var(--font-body--family, system-ui, sans-serif);
+    color: var(--color-foreground, #111111);
+  }
+  .sh-pdp > * { margin: 0; }
+  .sh-pdp > * + * { margin-top: var(--sh-gap); }
+
+  .sh-title {
+    font-family: var(--font-h1--family, var(--font-heading--family, system-ui, sans-serif));
+    font-style: var(--font-h1--style, normal);
+    font-weight: var(--font-h1--weight, 700);
+    font-size: clamp(1.75rem, 1.2rem + 1.4vw, 2.5rem);
+    line-height: var(--font-h1--line-height, 1.15);
+    letter-spacing: var(--font-h1--letter-spacing, -0.02em);
+    text-transform: var(--font-h1--case, none);
+    color: var(--color-foreground, #111111);
+    text-wrap: balance;
+  }
+
+  .sh-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gap-xs, 0.5rem);
+    text-decoration: none;
+    color: inherit;
+    line-height: 1;
+  }
+  .sh-rating:hover .sh-rating-count { text-decoration: underline; }
+  .sh-rating-stars {
+    position: relative;
+    display: inline-block;
+    font-size: var(--font-size--lg, 1.125rem);
+    line-height: 1;
+    letter-spacing: 0.18em;
+    white-space: nowrap;
+  }
+  .sh-rating-stars-bg { color: var(--sh-line); }
+  .sh-rating-stars-fg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    width: var(--sh-rating, 0%);
+    color: var(--color-foreground, #111111);
+  }
+  .sh-rating-count { font-size: var(--font-size--sm, 0.875rem); color: var(--sh-muted); }
+
+  .sh-price {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--gap-sm, 0.7rem);
+    line-height: 1;
+  }
+  .sh-price-compare {
+    color: var(--sh-muted);
+    text-decoration: line-through;
+    font-size: var(--font-size--md, 1rem);
+  }
+  .sh-price-current {
+    color: var(--color-foreground, #111111);
+    font-weight: 600;
+    font-size: var(--font-size--xl, 1.25rem);
+  }
+  .sh-price-badge {
+    background: var(--color-foreground, #111111);
+    color: var(--color-background, #FFFFFF);
+    font-size: var(--font-size--2xs, 0.75rem);
+    text-transform: uppercase;
+    letter-spacing: var(--letter-spacing-sm, 0.06em);
+    padding: 0.35em 0.7em;
+    border-radius: var(--style-border-radius-xs, 0);
+  }
+  .sh-price [hidden] { display: none !important; }
+
+  .sh-tax { font-size: var(--font-size--sm, 0.875rem); color: var(--sh-muted); }
+
+  .sh-variants {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-lg, 1rem);
+    width: 100%;
+  }
+  .sh-option { border: 0; padding: 0; margin: 0; min-inline-size: 0; }
+  .sh-option-label {
+    display: flex;
+    align-items: baseline;
+    gap: 0.4rem;
+    padding: 0;
+    margin-bottom: var(--margin-xs, 0.5rem);
+    font-size: var(--font-size--sm, 0.875rem);
+    color: var(--sh-muted);
+  }
+  .sh-option-selected { color: var(--color-foreground, #111111); }
+  .sh-option-values { display: flex; flex-wrap: wrap; gap: var(--gap-xs, 0.5rem); }
+
+  .sh-pill {
+    font-family: inherit;
+    font-size: var(--font-size--sm, 0.875rem);
+    line-height: 1;
+    letter-spacing: var(--letter-spacing-sm, 0.06em);
+    text-transform: uppercase;
+    color: var(--color-foreground, #111111);
+    background: transparent;
+    border: var(--variant-picker-button-border-width, 1px) solid var(--sh-line);
+    border-radius: var(--variant-picker-button-radius, 999px);
+    padding: 0.85em 1.4em;
+    min-height: var(--minimum-touch-target, 44px);
+    cursor: pointer;
+    transition: background var(--animation-speed, 0.15s) ease,
+                color var(--animation-speed, 0.15s) ease,
+                border-color var(--animation-speed, 0.15s) ease;
+  }
+  .sh-pill:hover { border-color: var(--color-foreground, #111111); }
+  .sh-pill:focus-visible {
+    outline: var(--focus-outline-width, 2px) solid var(--color-foreground, #111111);
+    outline-offset: var(--focus-outline-offset, 2px);
+  }
+  .sh-pill.is-selected {
+    background: var(--color-foreground, #111111);
+    border-color: var(--color-foreground, #111111);
+    color: var(--color-background, #FFFFFF);
+  }
+  .sh-pill.is-unavailable {
+    color: var(--sh-muted);
+    border-color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.12);
+    text-decoration: line-through;
+  }
+  .sh-pill.is-unavailable.is-selected { background: transparent; color: var(--sh-muted); }
+
+  /* ---------- section layout ---------- */
+  @media screen and (min-width: 750px) {
+    /* theme ka media column hidden hai, uski khaali jagah hatao */
+    .product-information__grid { grid-template-columns: 1fr !important; }
+    .product-information__media { display: none !important; }
+
+    /* poori page width mat lo */
+    .product-details {
+      width: 100%;
+      max-width: {{ MAX_WIDTH }};
+      margin-inline: auto;
+    }
+
+    /* --- SETUP A: ek hi block (part omitted) ---
+       Custom Liquid block ke wrapper ko transparent bana kar gallery aur
+       info ko parent panel ka seedha grid item bana dete hain. Us se
+       gallery left column mein poori height leti hai, aur Body ke baad
+       aane wale theme blocks (Buy buttons, Goes Well With, Accordion)
+       khud ba khud right column mein stack ho jate hain. Group ko
+       horizontal karne ki zaroorat nahi. */
+    .layout-panel-flex > *:has(> .sh-gallery),
+    .layout-panel-flex > *:has(> .sh-pdp) {
+      display: contents;
+    }
+
+    .layout-panel-flex:has(> * > .sh-gallery) {
+      display: grid !important;
+      grid-template-columns: {{ MEDIA_WIDTH }} 1fr;
+      column-gap: {{ COLUMN_GAP }};
+      row-gap: var(--gap-lg, 1rem);
+      align-items: start;
+    }
+
+    .layout-panel-flex:has(> * > .sh-gallery) > .sh-gallery,
+    .layout-panel-flex:has(> * > .sh-gallery) .sh-gallery {
+      grid-column: 1;
+      grid-row: 1 / span 50;
+      {% if STICKY_MEDIA %}position: sticky; top: calc(var(--header-height, 0px) + 1.5rem);{% endif %}
+    }
+
+    /* --- SETUP B: do alag blocks ek horizontal group ke andar --- */
+    .layout-panel-flex--row:has(.sh-gallery) { align-items: flex-start; }
+    .layout-panel-flex--row > *:has(> .sh-gallery) {
+      flex: 0 0 {{ MEDIA_WIDTH }};
+      min-width: 0;
+      {% if STICKY_MEDIA %}position: sticky; top: calc(var(--header-height, 0px) + 1.5rem);{% endif %}
+    }
+    .layout-panel-flex--row > *:has(> .sh-pdp) {
+      flex: 1 1 0;
+      min-width: 0;
+      padding-left: {{ COLUMN_GAP }};
+    }
+  }
+
+</style>
+
+
+{% comment %} ============ GALLERY ============ {% endcomment %}
+{% if part == 'slider' or part == 'all' %}
+  {% assign media_count = product.media.size %}
+
+  <div class="sh-gallery" id="ShGallery-{{ product.id }}" data-total="{{ media_count }}">
+    <div class="sh-gallery-viewport">
+      {% if media_count > 0 %}
+        <div class="sh-gallery-track">
+          {% for media in product.media %}
+            <div class="sh-gallery-slide" data-index="{{ forloop.index0 }}">
+              {% case media.media_type %}
+                {% when 'image' %}
+                  {{
+                    media
+                    | image_url: width: 1600
+                    | image_tag:
+                      loading: 'lazy',
+                      sizes: '(min-width: 750px) 52vw, 100vw',
+                      widths: '400,600,800,1000,1200,1600',
+                      alt: media.alt | default: product.title,
+                      class: 'sh-gallery-media'
+                  }}
+                {% when 'video' %}
+                  {{ media | video_tag: controls: true, autoplay: false, loop: false, muted: false, class: 'sh-gallery-media' }}
+                {% when 'external_video' %}
+                  <div class="sh-gallery-media sh-gallery-media--embed">{{ media | external_video_tag }}</div>
+                {% when 'model' %}
+                  {{ media | model_viewer_tag: class: 'sh-gallery-media' }}
+              {% endcase %}
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="sh-gallery-slide sh-gallery-empty"></div>
+      {% endif %}
+
+      {% if media_count > 1 %}
+        <button type="button" class="sh-gallery-arrow sh-gallery-arrow--prev" data-direction="prev" aria-label="Previous image">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
+        </button>
+        <button type="button" class="sh-gallery-arrow sh-gallery-arrow--next" data-direction="next" aria-label="Next image">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
+        </button>
+      {% endif %}
+    </div>
+
+    {% if media_count > 1 %}
+      <div class="sh-gallery-dots" aria-label="Product images">
+        {% for media in product.media %}
+          <button type="button" class="sh-gallery-dot" data-goto="{{ forloop.index0 }}" aria-label="Go to image {{ forloop.index }}"></button>
+        {% endfor %}
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    (function () {
+      var root = document.getElementById('ShGallery-{{ product.id }}');
+      if (!root || root.dataset.shInit) return;
+      root.dataset.shInit = '1';
+
+      var total = parseInt(root.dataset.total, 10) || 0;
+      var track = root.querySelector('.sh-gallery-track');
+      var dots = root.querySelectorAll('.sh-gallery-dot');
+      var arrows = root.querySelectorAll('.sh-gallery-arrow');
+      var index = 0;
+
+      function goTo(n) {
+        if (total < 1 || !track) return;
+        index = ((n % total) + total) % total;
+        track.style.transform = 'translateX(-' + (index * 100) + '%)';
+        dots.forEach(function (d, i) { d.classList.toggle('is-active', i === index); });
+        root.querySelectorAll('video').forEach(function (v) { v.pause(); });
+      }
+      root.shGoTo = goTo;
+
+      if (total > 1) {
+        arrows.forEach(function (b) {
+          b.addEventListener('click', function () {
+            goTo(b.dataset.direction === 'next' ? index + 1 : index - 1);
+          });
+        });
+        dots.forEach(function (d) {
+          d.addEventListener('click', function () { goTo(parseInt(d.dataset.goto, 10)); });
+        });
+        var vp = root.querySelector('.sh-gallery-viewport');
+        var startX = 0;
+        vp.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+        vp.addEventListener('touchend', function (e) {
+          var dx = startX - e.changedTouches[0].clientX;
+          if (Math.abs(dx) > 40) goTo(dx > 0 ? index + 1 : index - 1);
+        }, { passive: true });
+      }
+
+      goTo(0);
+    })();
+  </script>
+{% endif %}
+
+
+{% comment %} ============ INFO ============ {% endcomment %}
+{% if part == 'body' or part == 'all' %}
+  {% liquid
+    assign current_variant = product.selected_or_first_available_variant
+
+    assign rating_value = 0
+    assign rating_count = 0
+    if product.metafields.reviews.rating.value != blank
+      assign rating_value = product.metafields.reviews.rating.value.rating | times: 1.0
+      assign rating_count = product.metafields.reviews.rating_count.value | times: 1
+    elsif product.metafields.loox.avg_rating != blank
+      assign rating_value = product.metafields.loox.avg_rating.value | times: 1.0
+      assign rating_count = product.metafields.loox.num_reviews.value | times: 1
+    endif
+    assign rating_percent = rating_value | times: 20.0
+
+    assign has_real_options = false
+    for option in product.options_with_values
+      unless option.name == 'Title' and option.values.size == 1
+        assign has_real_options = true
+      endunless
+    endfor
+  %}
+
+  <div class="sh-pdp" id="ShPdp-{{ product.id }}" data-gallery="ShGallery-{{ product.id }}">
+
+    <h1 class="sh-title">{{ product.title }}</h1>
+
+    {% if rating_count > 0 %}
+      <a class="sh-rating" href="{{ REVIEWS_ANCHOR }}"
+         aria-label="Rated {{ rating_value }} out of 5 from {{ rating_count }} reviews">
+        <span class="sh-rating-stars" style="--sh-rating: {{ rating_percent }}%;" aria-hidden="true">
+          <span class="sh-rating-stars-bg">★★★★★</span>
+          <span class="sh-rating-stars-fg">★★★★★</span>
+        </span>
+        <span class="sh-rating-count">({{ rating_count }})</span>
+      </a>
+    {% elsif SHOW_EMPTY_STATE %}
+      <a class="sh-rating sh-rating--empty" href="{{ REVIEWS_ANCHOR }}">
+        <span class="sh-rating-stars" style="--sh-rating: 0%;" aria-hidden="true">
+          <span class="sh-rating-stars-bg">★★★★★</span>
+          <span class="sh-rating-stars-fg">★★★★★</span>
+        </span>
+        <span class="sh-rating-count">Be the first to review</span>
+      </a>
+    {% endif %}
+
+    <div class="sh-price">
+      <span class="sh-price-compare" data-sh-compare
+        {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>
+        {{ current_variant.compare_at_price | money }}
+      </span>
+      <span class="sh-price-current" data-sh-current>{{ current_variant.price | money }}</span>
+      <span class="sh-price-badge" data-sh-badge
+        {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>Sale</span>
+    </div>
+
+    <p class="sh-tax">Shipping calculated at checkout.</p>
+
+    {% if has_real_options %}
+      <div class="sh-variants">
+        {% for option in product.options_with_values %}
+          {% unless option.name == 'Title' and option.values.size == 1 %}
+            <fieldset class="sh-option" data-option-position="{{ option.position }}">
+              <legend class="sh-option-label">
+                {{ option.name }}
+                <span class="sh-option-selected" data-sh-selected-for="{{ option.position }}">{{ option.selected_value }}</span>
+              </legend>
+              <div class="sh-option-values">
+                {% for value in option.values %}
+                  <button
+                    type="button"
+                    class="sh-pill{% if option.selected_value == value %} is-selected{% endif %}"
+                    data-option-position="{{ option.position }}"
+                    data-option-value="{{ value | escape }}"
+                    aria-pressed="{% if option.selected_value == value %}true{% else %}false{% endif %}"
+                  >{{ value }}</button>
+                {% endfor %}
+              </div>
+            </fieldset>
+          {% endunless %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <script type="application/json" data-sh-variant-data>
+      [{% for v in product.variants %}{
+        "id": {{ v.id }},
+        "available": {{ v.available }},
+        "options": {{ v.options | json }},
+        "price": {{ v.price | money | json }},
+        "compare_at": {{ v.compare_at_price | money | json }},
+        "on_sale": {% if v.compare_at_price > v.price %}true{% else %}false{% endif %},
+        "media_index": {% if v.featured_media %}{{ v.featured_media.position | minus: 1 }}{% else %}null{% endif %}
+      }{% unless forloop.last %},{% endunless %}{% endfor %}]
+    </script>
+  </div>
+
+  <script>
+    (function () {
+      var root = document.getElementById('ShPdp-{{ product.id }}');
+      if (!root || root.dataset.shInit) return;
+      root.dataset.shInit = '1';
+
+      var dataEl = root.querySelector('[data-sh-variant-data]');
+      if (!dataEl) return;
+      var variants = [];
+      try { variants = JSON.parse(dataEl.textContent); } catch (e) { return; }
+      if (!variants.length) return;
+
+      var priceCurrent = root.querySelector('[data-sh-current]');
+      var priceCompare = root.querySelector('[data-sh-compare]');
+      var priceBadge = root.querySelector('[data-sh-badge]');
+      var gallery = document.getElementById(root.dataset.gallery);
+
+      function selectedOptions() {
+        var out = [];
+        root.querySelectorAll('.sh-option').forEach(function (fs) {
+          var pos = parseInt(fs.dataset.optionPosition, 10);
+          var active = fs.querySelector('.sh-pill.is-selected');
+          out[pos - 1] = active ? active.dataset.optionValue : null;
+        });
+        return out;
+      }
+
+      function match(opts) {
+        return variants.find(function (v) {
+          return opts.every(function (val, i) { return val === null || v.options[i] === val; });
+        });
+      }
+
+      function markAvailability(opts) {
+        root.querySelectorAll('.sh-option').forEach(function (fs) {
+          var pos = parseInt(fs.dataset.optionPosition, 10);
+          fs.querySelectorAll('.sh-pill').forEach(function (pill) {
+            var test = opts.slice();
+            test[pos - 1] = pill.dataset.optionValue;
+            var m = match(test);
+            pill.classList.toggle('is-unavailable', !m || !m.available);
+          });
+        });
+      }
+
+      function apply() {
+        var opts = selectedOptions();
+        var variant = match(opts);
+        markAvailability(opts);
+
+        root.querySelectorAll('.sh-option').forEach(function (fs) {
+          var label = root.querySelector('[data-sh-selected-for="' + fs.dataset.optionPosition + '"]');
+          var active = fs.querySelector('.sh-pill.is-selected');
+          if (label && active) label.textContent = active.textContent.trim();
+        });
+
+        if (!variant) return;
+
+        if (priceCurrent) priceCurrent.innerHTML = variant.price;
+        if (priceCompare) {
+          priceCompare.innerHTML = variant.compare_at || '';
+          priceCompare.hidden = !variant.on_sale;
+        }
+        if (priceBadge) priceBadge.hidden = !variant.on_sale;
+
+        document.querySelectorAll('form[action*="/cart/add"] [name="id"]').forEach(function (el) {
+          el.value = variant.id;
+          el.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+
+        if (window.history && history.replaceState) {
+          var url = new URL(window.location.href);
+          url.searchParams.set('variant', variant.id);
+          history.replaceState({}, '', url.toString());
+        }
+
+        if (gallery && typeof gallery.shGoTo === 'function' && variant.media_index !== null) {
+          gallery.shGoTo(variant.media_index);
+        }
+      }
+
+      root.querySelectorAll('.sh-pill').forEach(function (pill) {
+        pill.addEventListener('click', function () {
+          var fs = pill.closest('.sh-option');
+          fs.querySelectorAll('.sh-pill').forEach(function (p) {
+            p.classList.remove('is-selected');
+            p.setAttribute('aria-pressed', 'false');
+          });
+          pill.classList.add('is-selected');
+          pill.setAttribute('aria-pressed', 'true');
+          apply();
+        });
+      });
+
+      apply();
+    })();
+  </script>
+{% endif %}
