@@ -108,6 +108,14 @@
                 "padding-inline-end": 0
               },
               "blocks": {
+                "custom_liquid_3Yz8Ed": {
+                  "type": "custom-liquid",
+                  "name": "Slider",
+                  "settings": {
+                    "custom_liquid": "{% render sheene-product-page-image-slider %}"
+                  },
+                  "blocks": {}
+                },
                 "custom_liquid_4zNNiH": {
                   "type": "custom-liquid",
                   "name": "Product Title",
@@ -154,6 +162,7 @@
                 "review_Jkeaj3": {
                   "type": "review",
                   "name": "t:names.product_review_stars",
+                  "disabled": true,
                   "settings": {
                     "stars_style": "shaded",
                     "show_number": true,
@@ -166,6 +175,7 @@
                 }
               },
               "block_order": [
+                "custom_liquid_3Yz8Ed",
                 "custom_liquid_4zNNiH",
                 "custom_liquid_c7bPAB",
                 "text_xrnftG",
