@@ -73,7 +73,7 @@
               "type": "group",
               "name": "t:names.header",
               "settings": {
-                "content_direction": "column",
+                "content_direction": "row",
                 "vertical_on_mobile": true,
                 "horizontal_alignment": "flex-start",
                 "vertical_alignment": "center",
@@ -109,66 +109,140 @@
                 "padding-inline-end": 0
               },
               "blocks": {
-                "custom_liquid_3Yz8Ed": {
-                  "type": "custom-liquid",
-                  "name": "Slider",
+                "group_9VYJTt": {
+                  "type": "group",
+                  "name": "Vertical group",
                   "settings": {
-                    "custom_liquid": "{% render 'sheene-product-page-image-slider' %}"
-                  },
-                  "blocks": {}
-                },
-                "custom_liquid_aKprkg": {
-                  "type": "custom-liquid",
-                  "name": "Body",
-                  "settings": {
-                    "custom_liquid": "{% render 'sheene-product-page-body' %}\nhelllo"
-                  },
-                  "blocks": {}
-                },
-                "custom_liquid_4zNNiH": {
-                  "type": "custom-liquid",
-                  "name": "Product Title",
-                  "disabled": true,
-                  "settings": {
-                    "custom_liquid": "{% comment %}\n  SHEENE — Custom Liquid block 1 of 6: Product Title\n  Paste this whole file into a \"Custom Liquid\" block on the Product page,\n  first in the order (Title → Price → Shipping → Quantity → Add to cart → Buy it now).\n  Dynamic: pulls product.title automatically, works on every product.\n{% endcomment %}\n\n<h1 class=\"sh-product-title\">{{ product.title }}</h1>\n\n<style>\n  .sh-product-title {\n    font-family: var(--font-heading-family, 'Inter', system-ui, sans-serif);\n    font-weight: 700;\n    letter-spacing: -0.02em;\n    line-height: 1.15;\n    color: var(--color-foreground, #111111);\n    /* Fluid size: scales smoothly between mobile and desktop, no fixed breakpoints */\n    font-size: clamp(1.75rem, 1.35rem + 1.6vw, 2.75rem);\n    margin: 0 0 clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem) 0;\n  }\n</style>"
-                  },
-                  "blocks": {}
-                },
-                "custom_liquid_c7bPAB": {
-                  "type": "custom-liquid",
-                  "name": "Product Price",
-                  "disabled": true,
-                  "settings": {
-                    "custom_liquid": "{% comment %}\n  SHEENE — Custom Liquid block 2 of 6: Price row\n  Shows compare-at price (struck through) + current price + \"Sale\" badge,\n  but ONLY when the product is genuinely marked down (compare_at_price > price).\n  If there's no discount, only the plain price shows — no fake strike-through.\n  Uses Shopify's `money` filter, so currency formatting follows your shop\n  settings automatically — never hardcoded as \"Rs.\"\n\n  v2: added a negative top margin to close the extra gap that Shopify's\n  block-to-block spacing was adding above this block, on top of the\n  title's own margin. If this ever looks too tight or too loose after\n  a theme update, adjust the -2.25rem value below — nothing else here\n  depends on it.\n{% endcomment %}\n\n{% liquid\n  assign variant = product.selected_or_first_available_variant\n  assign on_sale = false\n  if variant.compare_at_price > variant.price\n    assign on_sale = true\n  endif\n%}\n\n<div class=\"sh-price-row\" data-variant-id=\"{{ variant.id }}\">\n  {% if on_sale %}\n    <span class=\"sh-price-compare\">{{ variant.compare_at_price | money }}</span>\n  {% endif %}\n  <span class=\"sh-price-current\">{{ variant.price | money }}</span>\n  {% if on_sale %}\n    <span class=\"sh-price-badge\">Sale</span>\n  {% endif %}\n</div>\n\n<style>\n  .sh-price-row {\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    gap: clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem);\n    font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n    margin: 0 0 clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem) 0;\n  }\n  .sh-price-compare {\n    color: var(--color-foreground-75, #9A9A9A);\n    text-decoration: line-through;\n    font-size: clamp(0.95rem, 0.88rem + 0.3vw, 1.1rem);\n  }\n  .sh-price-current {\n    color: var(--color-foreground, #111111);\n    font-weight: 600;\n    font-size: clamp(1.1rem, 1rem + 0.45vw, 1.4rem);\n  }\n  .sh-price-badge {\n    background: var(--color-foreground, #111111);\n    color: #FFFFFF;\n    font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n    font-size: clamp(0.7rem, 0.66rem + 0.1vw, 0.8rem);\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n    padding: 0.3em 0.65em;\n    border-radius: 0;\n  }\n</style>"
-                  },
-                  "blocks": {}
-                },
-                "text_xrnftG": {
-                  "type": "text",
-                  "name": "Product title - old",
-                  "disabled": true,
-                  "settings": {
-                    "text": "<h1>{{ closest.product.title }}</h1>",
-                    "width": "100%",
-                    "max_width": "normal",
-                    "alignment": "left",
-                    "type_preset": "custom",
-                    "font": "var(--font-body--family)",
-                    "font_size": "3rem",
-                    "line_height": "normal",
-                    "letter_spacing": "normal",
-                    "case": "none",
-                    "wrap": "pretty",
-                    "text_color": "",
-                    "background": false,
-                    "background_color": "#00000026",
-                    "corner_radius": 0,
+                    "content_direction": "row",
+                    "vertical_on_mobile": true,
+                    "horizontal_alignment": "flex-start",
+                    "vertical_alignment": "center",
+                    "align_baseline": false,
+                    "horizontal_alignment_flex_direction_column": "flex-start",
+                    "vertical_alignment_flex_direction_column": "center",
+                    "gap": 12,
+                    "width": "fill",
+                    "custom_width": 100,
+                    "width_mobile": "fill",
+                    "custom_width_mobile": 100,
+                    "height": "fit",
+                    "custom_height": 100,
+                    "background_media": "none",
+                    "background_color": "",
+                    "video_position": "cover",
+                    "background_image_position": "cover",
+                    "toggle_overlay": false,
+                    "overlay_color": "#00000026",
+                    "overlay_style": "solid",
+                    "gradient_direction": "to top",
+                    "border": "none",
+                    "border_width": 1,
+                    "border_opacity": 100,
+                    "border_color": "",
+                    "border_radius": 0,
+                    "link": "",
+                    "open_in_new_tab": false,
+                    "placeholder": "",
                     "padding-block-start": 0,
                     "padding-block-end": 0,
                     "padding-inline-start": 0,
                     "padding-inline-end": 0
                   },
-                  "blocks": {}
+                  "blocks": {
+                    "text_kTy3Yk": {
+                      "type": "text",
+                      "name": "t:names.heading",
+                      "disabled": true,
+                      "settings": {
+                        "text": "<p>✨Earn 5% MCash on every order, post-delivery. ⓘ</p>",
+                        "width": "fit-content",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "custom",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1.125rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "text_color": "#ffffff",
+                        "background": true,
+                        "background_color": "#000000",
+                        "corner_radius": 5,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    },
+                    "review_gFytLP": {
+                      "type": "review",
+                      "name": "t:names.product_review_stars",
+                      "disabled": true,
+                      "settings": {
+                        "stars_style": "shaded",
+                        "show_number": true,
+                        "text_color": "",
+                        "type_preset": "paragraph",
+                        "width": "100%",
+                        "alignment": "left"
+                      },
+                      "blocks": {}
+                    },
+                    "custom_liquid_mYKJ39": {
+                      "type": "custom-liquid",
+                      "name": "Product Price",
+                      "disabled": true,
+                      "settings": {
+                        "custom_liquid": "{% comment %}\n  SHEENE — Custom Liquid block 2 of 6: Price row\n  Shows compare-at price (struck through) + current price + \"Sale\" badge,\n  but ONLY when the product is genuinely marked down (compare_at_price > price).\n  If there's no discount, only the plain price shows — no fake strike-through.\n  Uses Shopify's `money` filter, so currency formatting follows your shop\n  settings automatically — never hardcoded as \"Rs.\"\n\n  v2: added a negative top margin to close the extra gap that Shopify's\n  block-to-block spacing was adding above this block, on top of the\n  title's own margin. If this ever looks too tight or too loose after\n  a theme update, adjust the -2.25rem value below — nothing else here\n  depends on it.\n{% endcomment %}\n\n{% liquid\n  assign variant = product.selected_or_first_available_variant\n  assign on_sale = false\n  if variant.compare_at_price > variant.price\n    assign on_sale = true\n  endif\n%}\n\n<div class=\"sh-price-row\" data-variant-id=\"{{ variant.id }}\">\n  {% if on_sale %}\n    <span class=\"sh-price-compare\">{{ variant.compare_at_price | money }}</span>\n  {% endif %}\n  <span class=\"sh-price-current\">{{ variant.price | money }}</span>\n  {% if on_sale %}\n    <span class=\"sh-price-badge\">Sale</span>\n  {% endif %}\n</div>\n\n<style>\n  .sh-price-row {\n    display: flex;\n    align-items: center;\n    flex-wrap: wrap;\n    gap: clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem);\n    font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n    margin: 0 0 clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem) 0;\n  }\n  .sh-price-compare {\n    color: var(--color-foreground-75, #9A9A9A);\n    text-decoration: line-through;\n    font-size: clamp(0.95rem, 0.88rem + 0.3vw, 1.1rem);\n  }\n  .sh-price-current {\n    color: var(--color-foreground, #111111);\n    font-weight: 600;\n    font-size: clamp(1.1rem, 1rem + 0.45vw, 1.4rem);\n  }\n  .sh-price-badge {\n    background: var(--color-foreground, #111111);\n    color: #FFFFFF;\n    font-family: var(--font-body-family, 'Inter', system-ui, sans-serif);\n    font-size: clamp(0.7rem, 0.66rem + 0.1vw, 0.8rem);\n    text-transform: uppercase;\n    letter-spacing: 0.06em;\n    padding: 0.3em 0.65em;\n    border-radius: 0;\n  }\n</style>"
+                      },
+                      "blocks": {}
+                    },
+                    "custom_liquid_CT48yK": {
+                      "type": "custom-liquid",
+                      "name": "Body",
+                      "settings": {
+                        "custom_liquid": "{% render 'sheene-product-page-body' %}\nhelllo"
+                      },
+                      "blocks": {}
+                    },
+                    "custom_liquid_dqgyJX": {
+                      "type": "custom-liquid",
+                      "name": "Product Title",
+                      "disabled": true,
+                      "settings": {
+                        "custom_liquid": "{% comment %}\n  SHEENE — Custom Liquid block 1 of 6: Product Title\n  Paste this whole file into a \"Custom Liquid\" block on the Product page,\n  first in the order (Title → Price → Shipping → Quantity → Add to cart → Buy it now).\n  Dynamic: pulls product.title automatically, works on every product.\n{% endcomment %}\n\n<h1 class=\"sh-product-title\">{{ product.title }}</h1>\n\n<style>\n  .sh-product-title {\n    font-family: var(--font-heading-family, 'Inter', system-ui, sans-serif);\n    font-weight: 700;\n    letter-spacing: -0.02em;\n    line-height: 1.15;\n    color: var(--color-foreground, #111111);\n    /* Fluid size: scales smoothly between mobile and desktop, no fixed breakpoints */\n    font-size: clamp(1.75rem, 1.35rem + 1.6vw, 2.75rem);\n    margin: 0 0 clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem) 0;\n  }\n</style>"
+                      },
+                      "blocks": {}
+                    },
+                    "custom_liquid_6DznVc": {
+                      "type": "custom-liquid",
+                      "name": "Slider",
+                      "settings": {
+                        "custom_liquid": "{% render 'sheene-product-page-image-slider' %}"
+                      },
+                      "blocks": {}
+                    },
+                    "custom_liquid_YbHkfV": {
+                      "type": "custom-liquid",
+                      "name": "Product Title",
+                      "disabled": true,
+                      "settings": {
+                        "custom_liquid": "{% comment %}\n  SHEENE — Custom Liquid block 1 of 6: Product Title\n  Paste this whole file into a \"Custom Liquid\" block on the Product page,\n  first in the order (Title → Price → Shipping → Quantity → Add to cart → Buy it now).\n  Dynamic: pulls product.title automatically, works on every product.\n{% endcomment %}\n\n<h1 class=\"sh-product-title\">{{ product.title }}</h1>\n\n<style>\n  .sh-product-title {\n    font-family: var(--font-heading-family, 'Inter', system-ui, sans-serif);\n    font-weight: 700;\n    letter-spacing: -0.02em;\n    line-height: 1.15;\n    color: var(--color-foreground, #111111);\n    /* Fluid size: scales smoothly between mobile and desktop, no fixed breakpoints */\n    font-size: clamp(1.75rem, 1.35rem + 1.6vw, 2.75rem);\n    margin: 0 0 clamp(0.5rem, 0.4rem + 0.3vw, 0.75rem) 0;\n  }\n</style>"
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_kTy3Yk",
+                    "review_gFytLP",
+                    "custom_liquid_mYKJ39",
+                    "custom_liquid_CT48yK",
+                    "custom_liquid_dqgyJX",
+                    "custom_liquid_6DznVc",
+                    "custom_liquid_YbHkfV"
+                  ]
                 },
                 "review_Jkeaj3": {
                   "type": "review",
@@ -186,40 +260,9 @@
                 }
               },
               "block_order": [
-                "custom_liquid_3Yz8Ed",
-                "custom_liquid_aKprkg",
-                "custom_liquid_4zNNiH",
-                "custom_liquid_c7bPAB",
-                "text_xrnftG",
+                "group_9VYJTt",
                 "review_Jkeaj3"
               ]
-            },
-            "text_4mwimm": {
-              "type": "text",
-              "name": "t:names.heading",
-              "disabled": true,
-              "settings": {
-                "text": "<p>✨Earn 5% MCash on every order, post-delivery. ⓘ</p>",
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "custom",
-                "font": "var(--font-body--family)",
-                "font_size": "1.125rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "text_color": "#ffffff",
-                "background": true,
-                "background_color": "#000000",
-                "corner_radius": 5,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
             },
             "buy_buttons_eYQEYi": {
               "type": "buy-buttons",
@@ -505,7 +548,6 @@
           },
           "block_order": [
             "group_icgrde",
-            "text_4mwimm",
             "buy_buttons_eYQEYi",
             "custom_liquid_GWYJUW",
             "text_aEtTtq",
