@@ -31,17 +31,6 @@
         "padding-block-end": 0
       }
     },
-    "custom_liquid_z7Rkbn": {
-      "type": "custom-liquid",
-      "name": "t:names.custom_liquid",
-      "settings": {
-        "custom_liquid": "",
-        "background_color": "",
-        "section_width": "page-width",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
-    },
     "custom_liquid_Hft4Gx": {
       "type": "custom-liquid",
       "name": "t:names.custom_liquid",
@@ -56,7 +45,7 @@
     "custom_liquid_YrKN6a": {
       "type": "custom-liquid",
       "disabled": true,
-      "name": "t:names.custom_liquid",
+      "name": " Hero Banner",
       "settings": {
         "custom_liquid": "{% comment %}\n  Minimalist — Exact Hero Banner\n  Upload screenshot/banner to Shopify > Settings > Files\n  Filename: hero-banner.png\n{% endcomment %}\n\n<section class=\"exact-hero-banner\">\n  <img\n    src=\"{{ 'skininsights.avif' | file_url }}\"\n    alt=\"Build Your Own Bundle\"\n    class=\"exact-hero-banner__image\"\n    width=\"1826\"\n    height=\"813\"\n    loading=\"eager\"\n    fetchpriority=\"high\"\n  >\n</section>\n\n<style>\n  .exact-hero-banner {\n    width: 100%;\n    max-width: 100%;\n    margin: 0;\n    padding: 0;\n    overflow: hidden;\n    line-height: 0;\n  }\n\n  .exact-hero-banner__image {\n    display: block;\n    width: 100%;\n    height: auto;\n    max-width: 100%;\n    margin: 0;\n    padding: 0;\n    border: 0;\n  }\n\n  /* Mobile — keeps the complete original image proportional */\n  @media screen and (max-width: 749px) {\n    .exact-hero-banner {\n      width: 100%;\n      overflow: hidden;\n    }\n\n    .exact-hero-banner__image {\n      width: 100%;\n      height: auto;\n      min-width: 0;\n      object-fit: contain;\n    }\n  }\n</style>",
         "background_color": "",
@@ -2010,7 +1999,6 @@
   "order": [
     "custom_liquid_HChwgB",
     "custom_liquid_E4k7FY",
-    "custom_liquid_z7Rkbn",
     "custom_liquid_Hft4Gx",
     "custom_liquid_YrKN6a",
     "shop_by_category_bU8Mkd",
