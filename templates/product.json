@@ -116,6 +116,14 @@
                   },
                   "blocks": {}
                 },
+                "custom_liquid_aKprkg": {
+                  "type": "custom-liquid",
+                  "name": "Body",
+                  "settings": {
+                    "custom_liquid": "{% render sheene-product-page-body %}"
+                  },
+                  "blocks": {}
+                },
                 "custom_liquid_4zNNiH": {
                   "type": "custom-liquid",
                   "name": "Product Title",
@@ -176,6 +184,7 @@
               },
               "block_order": [
                 "custom_liquid_3Yz8Ed",
+                "custom_liquid_aKprkg",
                 "custom_liquid_4zNNiH",
                 "custom_liquid_c7bPAB",
                 "text_xrnftG",
