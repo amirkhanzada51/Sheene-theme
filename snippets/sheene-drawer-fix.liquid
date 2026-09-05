@@ -1,0 +1,34 @@
+{% comment %}
+  Horizon bug fix: Android ke back button se cart drawer ka <dialog>
+  natively band hota hai, lekin theme-drawer ka close() nahi chalta,
+  is liye scroll lock reh jata hai aur page click nahi hota.
+
+  Ye script dialog ke native close event ko sun kar theme ka apna
+  close() chala deti hai, jis se cleanup ho jata hai.
+
+  layout/theme.liquid mein </body> se pehle:
+  {% render 'sheene-drawer-fix' %}
+{% endcomment %}
+
+<script>
+  (function () {
+    // close event bubble nahi hota, is liye capture phase (true) zaroori hai
+    document.addEventListener('close', function (event) {
+      var dialog = event.target;
+      if (!(dialog instanceof HTMLDialogElement)) return;
+
+      var drawer = dialog.closest('theme-drawer');
+      if (!drawer) return;
+
+      // Theme khud bhi panel.close() call karta hai jab drawer ko top par
+      // laata hai ya modal/sidebar mode switch karta hai, aur foran baad
+      // showModal() kar deta hai. Is liye ek tick ruk kar check karte hain
+      // ke dialog waqai band hi raha.
+      setTimeout(function () {
+        if (dialog.open) return;
+        if (!drawer.hasAttribute('open')) return;
+        if (typeof drawer.close === 'function') drawer.close();
+      }, 0);
+    }, true);
+  })();
+</script>
