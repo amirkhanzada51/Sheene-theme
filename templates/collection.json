@@ -101,6 +101,7 @@
     },
     "product_card_Uwbra4": {
       "type": "product-card",
+      "disabled": true,
       "custom_css": [],
       "name": "Filtered Product Grid",
       "settings": {
