@@ -257,41 +257,53 @@
     width: 100%;
     margin: 0;
     padding: 0 1.25rem 1.35rem;
-    border: 1px solid rgb(var(--color-foreground-rgb, 17 17 17) / 0.14);
+    border: 1px solid rgb(var(--color-border-rgb, 17 17 17) / 0.16);
     border-radius: 12px;
     min-inline-size: 0;
   }
 
+  /* legend ka treatment bilkul "GOES WELL WITH" jaisa,
+     lekin theme ke asli font variable ke saath */
   .sh-variants-legend {
     padding: 0 0.5rem;
     margin-inline-start: 0.25rem;
-    font-size: var(--font-size--xs, 0.8125rem);
-    letter-spacing: 0.08em;
+    font-family: var(--font-body--family, system-ui, sans-serif);
+    font-style: var(--font-body--style, normal);
+    font-weight: 600;
+    font-size: clamp(0.75rem, 0.7rem + 0.15vw, 0.85rem);
     text-transform: uppercase;
-    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.7);
+    letter-spacing: 0.08em;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.75);
   }
 
   .sh-option + .sh-option { margin-top: 1.25rem; }
 
+  /* "Select Size" — GWW title jaise size aur weight par */
   .sh-option-label {
     display: block;
     margin: 0 0 0.75rem;
-    font-size: var(--font-size--md, 1rem);
+    font-family: var(--font-body--family, system-ui, sans-serif);
+    font-style: var(--font-body--style, normal);
     font-weight: 600;
+    font-size: clamp(0.95rem, 0.88rem + 0.25vw, 1.05rem);
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--color-foreground, #111111);
   }
 
   .sh-option-values { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 
   .sh-pill {
-    font-family: inherit;
-    font-size: var(--font-size--md, 1rem);
+    font-family: var(--font-body--family, system-ui, sans-serif);
+    font-style: var(--font-body--style, normal);
+    font-weight: var(--font-body--weight, 400);
+    font-size: clamp(0.85rem, 0.8rem + 0.15vw, 0.95rem);
     line-height: 1;
     letter-spacing: 0;
     text-transform: none;
     color: var(--color-foreground, #111111);
     background: transparent;
-    border: 1px solid rgb(var(--color-foreground-rgb, 17 17 17) / 0.18);
+    border: 1px solid rgb(var(--color-border-rgb, 17 17 17) / 0.22);
     border-radius: {{ PILL_RADIUS }};
     padding: 0.85em 1.5em;
     min-height: var(--minimum-touch-target, 44px);
@@ -299,7 +311,7 @@
     transition: border-color var(--animation-speed, 0.15s) ease,
                 box-shadow var(--animation-speed, 0.15s) ease;
   }
-  .sh-pill:hover { border-color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.45); }
+  .sh-pill:hover { border-color: rgb(var(--color-border-rgb, 17 17 17) / 0.5); }
   .sh-pill:focus-visible {
     outline: var(--focus-outline-width, 2px) solid var(--color-foreground, #111111);
     outline-offset: var(--focus-outline-offset, 2px);
@@ -313,13 +325,13 @@
   }
 
   .sh-pill.is-unavailable {
-    color: var(--sh-muted);
-    border-color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.1);
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.4);
+    border-color: rgb(var(--color-border-rgb, 17 17 17) / 0.1);
     text-decoration: line-through;
   }
   .sh-pill.is-unavailable.is-selected {
     box-shadow: none;
-    font-weight: 400;
+    font-weight: var(--font-body--weight, 400);
   }
 
   /* ---------- section layout ---------- */
