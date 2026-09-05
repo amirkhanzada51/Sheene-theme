@@ -14,7 +14,6 @@
       "blocks": {
         "media-gallery": {
           "type": "_product-media-gallery",
-          "disabled": true,
           "static": true,
           "settings": {
             "media_presentation": "carousel",
