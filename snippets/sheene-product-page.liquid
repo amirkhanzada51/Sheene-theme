@@ -512,7 +512,7 @@
         {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>Sale</span>
     </div>
 
-    <p class="sh-tax">Shipping calculated at checkout.</p>
+    {% comment %} <p class="sh-tax">Shipping calculated at checkout.</p> {% endcomment %}
 
     {% if has_real_options %}
       <div class="sh-variants">
