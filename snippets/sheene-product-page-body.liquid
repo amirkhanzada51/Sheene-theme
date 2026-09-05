@@ -307,8 +307,14 @@
     background: transparent;
     color: var(--sh-muted);
   }
-  .sh-gallery { grid-column: 2; }
-  .sh-pdp { grid-column: 2; }
+    @media screen and (min-width: 750px) {
+    .product-information__grid {
+      grid-template-columns: 1fr !important;
+    }
+    .product-information__media {
+      display: none !important;
+    }
+  }
 </style>
 
 <script>
