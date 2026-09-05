@@ -53,8 +53,7 @@
   assign part = part | default: 'all'
   assign product = product | default: closest.product
 
-#  assign GALLERY_RATIO = '1 / 1'
-  assign GALLERY_RATIO = '2 / 3'
+  assign GALLERY_RATIO = '1 / 1'
   assign MEDIA_WIDTH = '52%'
   assign MAX_WIDTH = '1240px'
   assign COLUMN_GAP = '48px'
@@ -63,6 +62,9 @@
   assign VARIANT_BOX_TITLE = 'Choose variants'
   assign OPTION_LABEL_PREFIX = 'Select'
   assign PILL_RADIUS = '4px'
+
+  assign HIDE_ARROWS_MOBILE = true
+  assign MOBILE_GALLERY_GAP = '1.75rem'
 
   assign SHOW_EMPTY_STATE = false
   assign REVIEWS_ANCHOR = '#sh-reviews'
@@ -333,6 +335,17 @@
   .sh-pill.is-unavailable.is-selected {
     box-shadow: none;
     font-weight: var(--font-body--weight, 400);
+  }
+
+  /* ---------- mobile ---------- */
+  @media screen and (max-width: 749px) {
+    {% if HIDE_ARROWS_MOBILE %}
+    /* mobile par swipe kaafi hai, arrows image ko dhak lete hain */
+    .sh-gallery-arrow { display: none; }
+    {% endif %}
+
+    /* gallery aur title ke beech saans */
+    .sh-gallery { margin-bottom: {{ MOBILE_GALLERY_GAP }}; }
   }
 
   /* ---------- section layout ---------- */
