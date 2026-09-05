@@ -121,7 +121,7 @@
                   "type": "custom-liquid",
                   "name": "Body",
                   "settings": {
-                    "custom_liquid": "{% render 'sheene-product-page-body' %}"
+                    "custom_liquid": "{% render 'sheene-product-page-body' %}\nhelllo"
                   },
                   "blocks": {}
                 },
