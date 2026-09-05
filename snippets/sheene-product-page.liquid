@@ -59,6 +59,10 @@
   assign COLUMN_GAP = '48px'
   assign STICKY_MEDIA = true
 
+  assign VARIANT_BOX_TITLE = 'Choose variants'
+  assign OPTION_LABEL_PREFIX = 'Select'
+  assign PILL_RADIUS = '4px'
+
   assign SHOW_EMPTY_STATE = false
   assign REVIEWS_ANCHOR = '#sh-reviews'
 %}
@@ -246,57 +250,77 @@
   .sh-tax { font-size: var(--font-size--sm, 0.875rem); color: var(--sh-muted); }
 
   .sh-variants {
-    display: flex;
-    flex-direction: column;
-    gap: var(--gap-lg, 1rem);
     width: 100%;
   }
-  .sh-option { border: 0; padding: 0; margin: 0; min-inline-size: 0; }
-  .sh-option-label {
-    display: flex;
-    align-items: baseline;
-    gap: 0.4rem;
-    padding: 0;
-    margin-bottom: var(--margin-xs, 0.5rem);
-    font-size: var(--font-size--sm, 0.875rem);
-    color: var(--sh-muted);
+
+  .sh-variants-box {
+    width: 100%;
+    margin: 0;
+    padding: 0 1.25rem 1.35rem;
+    border: 1px solid rgb(var(--color-foreground-rgb, 17 17 17) / 0.14);
+    border-radius: 12px;
+    min-inline-size: 0;
   }
-  .sh-option-selected { color: var(--color-foreground, #111111); }
-  .sh-option-values { display: flex; flex-wrap: wrap; gap: var(--gap-xs, 0.5rem); }
+
+  .sh-variants-legend {
+    padding: 0 0.5rem;
+    margin-inline-start: 0.25rem;
+    font-size: var(--font-size--xs, 0.8125rem);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.7);
+  }
+
+  .sh-option + .sh-option { margin-top: 1.25rem; }
+
+  .sh-option-label {
+    display: block;
+    margin: 0 0 0.75rem;
+    font-size: var(--font-size--md, 1rem);
+    font-weight: 600;
+    color: var(--color-foreground, #111111);
+  }
+
+  .sh-option-values { display: flex; flex-wrap: wrap; gap: 0.6rem; }
 
   .sh-pill {
     font-family: inherit;
-    font-size: var(--font-size--sm, 0.875rem);
+    font-size: var(--font-size--md, 1rem);
     line-height: 1;
-    letter-spacing: var(--letter-spacing-sm, 0.06em);
-    text-transform: uppercase;
+    letter-spacing: 0;
+    text-transform: none;
     color: var(--color-foreground, #111111);
     background: transparent;
-    border: var(--variant-picker-button-border-width, 1px) solid var(--sh-line);
-    border-radius: var(--variant-picker-button-radius, 999px);
-    padding: 0.85em 1.4em;
+    border: 1px solid rgb(var(--color-foreground-rgb, 17 17 17) / 0.18);
+    border-radius: {{ PILL_RADIUS }};
+    padding: 0.85em 1.5em;
     min-height: var(--minimum-touch-target, 44px);
     cursor: pointer;
-    transition: background var(--animation-speed, 0.15s) ease,
-                color var(--animation-speed, 0.15s) ease,
-                border-color var(--animation-speed, 0.15s) ease;
+    transition: border-color var(--animation-speed, 0.15s) ease,
+                box-shadow var(--animation-speed, 0.15s) ease;
   }
-  .sh-pill:hover { border-color: var(--color-foreground, #111111); }
+  .sh-pill:hover { border-color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.45); }
   .sh-pill:focus-visible {
     outline: var(--focus-outline-width, 2px) solid var(--color-foreground, #111111);
     outline-offset: var(--focus-outline-offset, 2px);
   }
+
+  /* selected: moti black outline, bina layout shift ke */
   .sh-pill.is-selected {
-    background: var(--color-foreground, #111111);
     border-color: var(--color-foreground, #111111);
-    color: var(--color-background, #FFFFFF);
+    box-shadow: inset 0 0 0 1px var(--color-foreground, #111111);
+    font-weight: 600;
   }
+
   .sh-pill.is-unavailable {
     color: var(--sh-muted);
-    border-color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.12);
+    border-color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.1);
     text-decoration: line-through;
   }
-  .sh-pill.is-unavailable.is-selected { background: transparent; color: var(--sh-muted); }
+  .sh-pill.is-unavailable.is-selected {
+    box-shadow: none;
+    font-weight: 400;
+  }
 
   /* ---------- section layout ---------- */
   @media screen and (min-width: 750px) {
@@ -512,31 +536,32 @@
         {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>Sale</span>
     </div>
 
-    {% comment %} <p class="sh-tax">Shipping calculated at checkout.</p> {% endcomment %}
+    <p class="sh-tax">Shipping calculated at checkout.</p>
 
     {% if has_real_options %}
       <div class="sh-variants">
-        {% for option in product.options_with_values %}
-          {% unless option.name == 'Title' and option.values.size == 1 %}
-            <fieldset class="sh-option" data-option-position="{{ option.position }}">
-              <legend class="sh-option-label">
-                {{ option.name }}
-                <span class="sh-option-selected" data-sh-selected-for="{{ option.position }}">{{ option.selected_value }}</span>
-              </legend>
-              <div class="sh-option-values">
-                {% for value in option.values %}
-                  <button
-                    type="button"
-                    class="sh-pill{% if option.selected_value == value %} is-selected{% endif %}"
-                    data-option-position="{{ option.position }}"
-                    data-option-value="{{ value | escape }}"
-                    aria-pressed="{% if option.selected_value == value %}true{% else %}false{% endif %}"
-                  >{{ value }}</button>
-                {% endfor %}
+        <fieldset class="sh-variants-box">
+          <legend class="sh-variants-legend">{{ VARIANT_BOX_TITLE }}</legend>
+
+          {% for option in product.options_with_values %}
+            {% unless option.name == 'Title' and option.values.size == 1 %}
+              <div class="sh-option" data-option-position="{{ option.position }}">
+                <span class="sh-option-label">{{ OPTION_LABEL_PREFIX }} {{ option.name }}</span>
+                <div class="sh-option-values">
+                  {% for value in option.values %}
+                    <button
+                      type="button"
+                      class="sh-pill{% if option.selected_value == value %} is-selected{% endif %}"
+                      data-option-position="{{ option.position }}"
+                      data-option-value="{{ value | escape }}"
+                      aria-pressed="{% if option.selected_value == value %}true{% else %}false{% endif %}"
+                    >{{ value }}</button>
+                  {% endfor %}
+                </div>
               </div>
-            </fieldset>
-          {% endunless %}
-        {% endfor %}
+            {% endunless %}
+          {% endfor %}
+        </fieldset>
       </div>
     {% endif %}
 
@@ -602,12 +627,6 @@
         var opts = selectedOptions();
         var variant = match(opts);
         markAvailability(opts);
-
-        root.querySelectorAll('.sh-option').forEach(function (fs) {
-          var label = root.querySelector('[data-sh-selected-for="' + fs.dataset.optionPosition + '"]');
-          var active = fs.querySelector('.sh-pill.is-selected');
-          if (label && active) label.textContent = active.textContent.trim();
-        });
 
         if (!variant) return;
 
