@@ -103,7 +103,7 @@
       "type": "product-card",
       "name": "Filtered Product Grid",
       "settings": {
-        "collection": "all-products",
+        "collection": "best-sellers",
         "products_per_page": 16,
         "columns_desktop": 3
       }
