@@ -120,8 +120,17 @@
   </div>
 
   <style>
+    /* Custom Liquid block ka bina class wala wrapper simat jata hai
+    jab group ka alignment flex-start ho. Usko stretch karo. */
+    :where(.layout-panel-flex, .group-block-content) > *:has(> .sh-acc) {
+      width: 100%;
+      align-self: stretch;
+    }
+
     .sh-acc {
       width: 100%;
+      max-width: 100%;
+      align-self: stretch;
       border-top: 1px solid rgb(var(--color-border-rgb, 17 17 17) / 0.14);
     }
 
