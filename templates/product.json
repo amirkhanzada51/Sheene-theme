@@ -846,11 +846,6 @@
         "padding-block-end": 48
       }
     },
-    "recommended_products_HzXXfa": {
-      "type": "recommended-products",
-      "name": "Recommended Products",
-      "settings": {}
-    },
     "1787586823fd821aab": {
       "type": "_blocks",
       "blocks": {
@@ -895,6 +890,11 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "recommended_products_HzXXfa": {
+      "type": "recommended-products",
+      "name": "Recommended Products",
+      "settings": {}
     },
     "section_3R6U7q": {
       "type": "section",
@@ -1231,8 +1231,8 @@
   "order": [
     "main",
     "section_MiWbx3",
-    "recommended_products_HzXXfa",
     "1787586823fd821aab",
+    "recommended_products_HzXXfa",
     "section_3R6U7q",
     "1787586820879c6e76"
   ]
