@@ -31,6 +31,7 @@
         },
         "announcement_z7E7Ja": {
           "type": "_announcement",
+          "disabled": true,
           "settings": {
             "text": "🔥 LIMITED TIME OFFER — Get <strong>10% OFF</strong> on Your First Order | 🚚 Fast Delivery Available",
             "link": "",
@@ -75,7 +76,7 @@
         "announcement_Fj7MWe": {
           "type": "_announcement",
           "settings": {
-            "text": "🚚 <strong>FREE DELIVERY</strong> — 🚚 <strong>FREE DELIVERY</strong> — 🚚 <strong>FREE DELIVERY</strong>",
+            "text": "🚚 <strong>FREE DELIVERY</strong> — <strong>Flat 10% Off </strong>— <strong>Free 5ml Tester</strong>",
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.75rem",
