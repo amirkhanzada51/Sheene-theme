@@ -98,7 +98,7 @@
       "settings": {
         "speed": 5,
         "section_width": "full-width",
-        "background_color": "#2E2828",
+        "background_color": "{{ settings.color_palette.foreground }}",
         "divider_width": 1,
         "divider_color": "{{ settings.color_palette.color2 }}",
         "padding-block-start": 15,
