@@ -1,0 +1,10 @@
+
+(function () {
+  var CODE = "SHEENE10"; // apna code yahan
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest('[name="checkout"], a[href^="/checkout"], a[href*="/cart/checkout"]');
+    if (!btn) return;
+    e.preventDefault();
+    window.location.href = "/discount/" + CODE + "?redirect=/checkout";
+  }, true);
+})();
