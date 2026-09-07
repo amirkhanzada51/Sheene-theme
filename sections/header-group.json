@@ -16,6 +16,7 @@
       "blocks": {
         "announcement_BxgCk9": {
           "type": "_announcement",
+          "disabled": true,
           "settings": {
             "text": "🌿 PURE QUALITY OIL — Premium Quality at the <strong>Best Price</strong> | Shop Now & Save!",
             "link": "",
@@ -58,6 +59,7 @@
         },
         "announcement_y9CLHW": {
           "type": "_announcement",
+          "disabled": true,
           "settings": {
             "text": "🔥 WEEKEND SPECIAL — Enjoy <strong>Exclusive Discounts</strong> on Selected Oil Products",
             "link": "",
@@ -73,7 +75,7 @@
         "announcement_Fj7MWe": {
           "type": "_announcement",
           "settings": {
-            "text": "🚚 <strong>FREE DELIVERY</strong> — Get Free Delivery on Orders Above <strong>2500rs</strong>",
+            "text": "🚚 <strong>FREE DELIVERY</strong> — 🚚 <strong>FREE DELIVERY</strong> — 🚚 <strong>FREE DELIVERY</strong>",
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.75rem",
@@ -96,7 +98,7 @@
       "settings": {
         "speed": 5,
         "section_width": "full-width",
-        "background_color": "{{ settings.color_palette.foreground }}",
+        "background_color": "#2E2828",
         "divider_width": 1,
         "divider_color": "{{ settings.color_palette.color2 }}",
         "padding-block-start": 15,
