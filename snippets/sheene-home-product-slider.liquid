@@ -548,34 +548,34 @@
   grid-template-columns: 1fr 1fr;
   gap: 0;
   align-items: stretch;
-  max-height: min(86vh, 760px);
-  min-height: 480px;
+  max-height: min(82vh, 660px);
+  min-height: 440px;
   overflow: hidden;
   border-radius: 6px;
 }
-/* Media column ab poori row bharta hai, is liye neeche khali
-   safed patti nahi aati. Image contain rehti hai aur padding
-   ki wajah se kinaron se chipakti nahi. */
+/* Image edge to edge bharti hai, koi padding nahi aur koi
+   alag background nahi. Pehle padding + contain ki wajah se
+   image ke apne grey backdrop ke peeche ek aur grey box
+   nazar aata tha, jo "box ke andar box" lagta tha.
+   cover use kiya hai kyunki product shots mein upar neeche
+   kaafi khali jagah hai, crop hone par product nahi katta. */
 .shpg-modal__media {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   height: 100%;
   min-height: 0;
-  padding: 30px;
-  background: #f4f5f6;
+  padding: 0;
+  background: #efefef;
   overflow: hidden;
 }
 .shpg-modal__media img {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center center;
 }
 .shpg-modal__info {
-  padding: 34px 34px 34px 32px;
+  padding: 30px 30px 30px 28px;
   min-height: 0;
   overflow-y: auto;
   display: flex;
@@ -912,10 +912,10 @@ body.shpg-modal-open {
   /* Mobile par image screen ka teesra hissa se zyada na le,
      warna variants aur button fold ke neeche chale jate hain. */
   .shpg-modal__media {
-    height: 32vh;
-    max-height: 32vh;
-    min-height: 180px;
-    padding: 14px;
+    height: 30vh;
+    max-height: 30vh;
+    min-height: 170px;
+    padding: 0;
   }
   .shpg-modal__info {
     padding: 20px 18px 24px;
