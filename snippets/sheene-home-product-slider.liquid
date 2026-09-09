@@ -975,6 +975,7 @@ body {
             assign has_options = true
           endif
           assign modal_id = 'ShPgModal-' | append: uid | append: '-' | append: product.id
+          assign modal_form_id = modal_id | append: '-form'
         %}
 
         <article class="custom-best-sellers__card{{ mobile_hide }}" data-product-card>
@@ -1167,7 +1168,7 @@ body {
                   </span>
                 </div>
 
-                {%- form 'product', product, id: modal_id | append: '-form', novalidate: 'novalidate', data-shpg-form: '' -%}
+                {%- form 'product', product, id: modal_form_id, novalidate: 'novalidate' -%}
                   <input type="hidden" name="id" value="{{ available_variant.id }}" data-shpg-variant-id>
 
                   <fieldset class="shpg-vbox">
