@@ -1987,7 +1987,7 @@
     },
     "custom_liquid_tb6mWJ": {
       "type": "custom-liquid",
-      "name": "t:names.custom_liquid",
+      "name": "Shop by Concerns",
       "settings": {
         "custom_liquid": "{% render 'sheene-shop-by-concerns' %}",
         "background_color": "",
