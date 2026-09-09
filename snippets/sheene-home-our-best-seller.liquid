@@ -1,41 +1,50 @@
 {% comment %}
   ==========================================================
-  SHEENE - Best Sellers slider  (home page Custom Liquid)
+  SHEENE - Best Sellers  (home page Custom Liquid)
+  GRID VERSION - product slider hata diya gaya hai
   ==========================================================
 
-  Is version mein kya theek hua:
+  Is version mein kya badla:
 
-  1. IMAGE RATIO
-     Pehle box 2/3 par fix tha aur image par object-fit: contain.
-     420x630 images exactly 2:3 thin is liye box bhar jata tha.
-     1024x1024 square images aane par upar neeche grey patti aa gayi.
-     Ab ratio ek hi variable se control hota hai: --bs-image-ratio
-     Neeche section rule mein set karo, teenon breakpoints par lag jayega.
+  1. PRODUCT SLIDER KHATAM
+     Pehle desktop par 4 cards ek page mein aate thay aur baaki
+     neeche ke dots se. Ab poora grid hai, sab products ek saath
+     dikhte hain, dots ki zaroorat nahi.
+       Desktop  : 4 per row
+       Tablet   : 4 per row (chhota gap)
+       Mobile   : 2 per row
 
-  2. TOOTI HUI CSS LINE
-     ".sh image" rule mein "transition:" likhna reh gaya tha,
-     sirf "transform 0.38s ease;" tha. Is se hover animate nahi hota tha.
+  2. MOBILE PAR 4 PRODUCTS
+     Mobile par sirf pehle 4 products dikhte hain (2 rows of 2),
+     uske baad seedha View all button. Yeh CSS se hota hai
+     (.custom-best-sellers__card:nth-child(n+5)), Liquid dobara
+     render nahi hota.
 
-  3. RESPONSIVE IMAGES
-     Ab srcset + sizes hai, browser screen ke hisab se sahi size uthata hai.
-     Pehle har card 1200px ki image load karta tha.
+  3. CARD HEIGHT BARABAR
+     Har card grid cell ko poora bharta hai aur Add to cart button
+     card ke bottom par lagta hai (margin-top: auto), is liye ek
+     row ke saare buttons ek hi line par aate hain chahe title ek
+     line ka ho ya do line ka.
 
-  4. COMPARE PRICE
-     Pehle "Rs. 0.00" string se compare hota tha, jo currency format
-     badalne par toot jata. Ab khaali attribute se check hota hai.
+  ==========================================================
+  KNOBS - sirf yeh teen cheezein badalni parti hain
+  ==========================================================
 
-  5. RATING
-     Pehle har product par 4 stars hardcoded thay. Judge.me installed hai,
-     ab asli rating metafield se aati hai. Jis product par review nahi,
-     wahan stars chhup jati hain.
+  A) KITNE PRODUCTS
+     Neeche Liquid mein: {% raw %}{% assign product_limit = 8 %}{% endraw %}
+     Yeh desktop ka count hai. Mobile hamesha pehle 4 dikhata hai.
+     Agar mobile par 6 chahiye to CSS mein n+5 ko n+7 kar do.
 
-  IMAGE SIZE
-     --bs-image-ratio ko apni images ke ratio se match rakho:
+  B) IMAGE RATIO
+     --bs-image-ratio  (section rule mein, sabse upar)
        1024x1024  ->  1 / 1
-       1200x1800  ->  2 / 3   (portrait, cards zyada premium lagte hain)
+       1200x1800  ->  2 / 3
        1600x2000  ->  4 / 5
-     Product page snippet mein GALLERY_RATIO bhi wahi rakhna, warna
+     Product page snippet ka GALLERY_RATIO bhi wahi rakhna, warna
      same product home par aur PDP par alag dikhega.
+
+  C) ROW SPACING
+     --bs-row-gap  (rows ke beech ka faasla)
 {% endcomment %}
 
 <style>
@@ -43,15 +52,17 @@
    MAIN SECTION
    ========================================================= */
 .custom-best-sellers {
-  /* IMAGE RATIO — sirf yahan badlo, sab breakpoints par lag jayega */
+  /* IMAGE RATIO - sirf yahan badlo */
   --bs-image-ratio: 1 / 1;
+  /* GRID GAPS */
+  --bs-col-gap: 24px;
+  --bs-row-gap: 52px;
 
   width: 100%;
   max-width: 100%;
   margin: 0;
   padding: 40px 7px 8px;
   background: #fff;
-  overflow: hidden !important;
   box-sizing: border-box;
 }
 .custom-best-sellers *,
@@ -73,40 +84,29 @@
   letter-spacing: -0.5px;
 }
 /* =========================================================
-   PRODUCT VIEWPORT
+   PRODUCT GRID
+   Yahi slider ki jagah aaya hai.
    ========================================================= */
-.custom-best-sellers__viewport {
-  position: relative;
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden !important;
-}
-/* =========================================================
-   PRODUCT TRACK
-   ========================================================= */
-.custom-best-sellers__track {
-  display: flex;
-  flex-wrap: nowrap;
+.custom-best-sellers__grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: var(--bs-col-gap);
+  row-gap: var(--bs-row-gap);
   width: 100%;
   margin: 0;
   padding: 0;
-  gap: 24px;
-  transform: translate3d(0, 0, 0);
-  transition: transform 0.55s cubic-bezier(.22, .61, .36, 1);
-  will-change: transform;
+  align-items: stretch;
 }
 /* =========================================================
    PRODUCT CARD
    ========================================================= */
 .custom-best-sellers__card {
   position: relative;
-  flex: 0 0 calc((100% - 72px) / 4);
-  width: calc((100% - 72px) / 4);
   min-width: 0;
+  height: 100%;
   display: flex;
   flex-direction: column;
   background: #fff;
-  overflow: visible;
 }
 /* =========================================================
    PRODUCT IMAGE BOX
@@ -161,9 +161,8 @@
 }
 /* =========================================================
    PRODUCT IMAGE
-   contain = kuch crop nahi hota.
-   Agar image ka ratio --bs-image-ratio se match kare to
-   box poora bhar jata hai aur koi khaali patti nahi aati.
+   contain = kuch crop nahi hota. Agar image ka ratio
+   --bs-image-ratio se match kare to box poora bhar jata hai.
    ========================================================= */
 .custom-best-sellers__image {
   display: block;
@@ -179,7 +178,7 @@
   vertical-align: middle;
   user-select: none;
   -webkit-user-drag: none;
-  transition: transform 0.38s ease;   /* pehle "transition:" missing tha */
+  transition: transform 0.38s ease;
 }
 .custom-best-sellers__image:hover {
   transform: scale(1.025);
@@ -278,10 +277,13 @@
 .custom-best-sellers__image-dot.is-active { background: #000; }
 /* =========================================================
    PRODUCT CONTENT
+   flex: 1 se content card ki poori height leta hai, jis se
+   Add to cart neeche chipak jata hai.
    ========================================================= */
 .custom-best-sellers__content {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
   width: 100%;
   min-width: 0;
   padding-top: 17px;
@@ -419,10 +421,12 @@
 }
 /* =========================================================
    CART FORM
+   margin-top: auto se button card ke bottom par chala jata hai,
+   is liye ek row ke saare buttons ek line par aate hain.
    ========================================================= */
 .custom-best-sellers__cart-form {
   width: 100%;
-  margin: 0;
+  margin: auto 0 0;
   padding: 0;
 }
 /* =========================================================
@@ -461,42 +465,13 @@
   box-shadow: none !important;
 }
 /* =========================================================
-   BOTTOM SLIDER
-   ========================================================= */
-.custom-best-sellers__bottom {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  margin-top: 42px;
-}
-.custom-best-sellers__bottom-dots {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-}
-.custom-best-sellers__bottom-dot {
-  width: 24px;
-  height: 4px;
-  padding: 0;
-  margin: 0;
-  border: 0;
-  border-radius: 5px;
-  background: #e7e7e7;
-  cursor: pointer;
-  appearance: none;
-  -webkit-appearance: none;
-}
-.custom-best-sellers__bottom-dot.is-active { background: #000; }
-/* =========================================================
    VIEW ALL
    ========================================================= */
 .custom-best-sellers__view-all-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 20px;
+  margin-top: 48px;
 }
 .custom-best-sellers__view-all {
   display: inline-flex;
@@ -524,22 +499,27 @@
   box-shadow: none !important;
 }
 /* =========================================================
+   EMPTY STATE
+   ========================================================= */
+.custom-best-sellers__empty {
+  grid-column: 1 / -1;
+  padding: 50px 20px;
+  text-align: center;
+  font-size: 16px;
+}
+/* =========================================================
    TABLET
    ========================================================= */
 @media screen and (max-width: 989px) {
   .custom-best-sellers {
     padding-left: 12px;
     padding-right: 12px;
+    --bs-col-gap: 16px;
+    --bs-row-gap: 42px;
   }
-  .custom-best-sellers__track { gap: 16px; }
-  .custom-best-sellers__card {
-    flex: 0 0 calc((100% - 48px) / 4);
-    width: calc((100% - 48px) / 4);
-  }
-  /* aspect-ratio yahan set nahi karte, variable se aata hai */
 }
 /* =========================================================
-   MOBILE — EXACTLY 2 PRODUCTS
+   MOBILE - 2 PER ROW, SIRF 4 PRODUCTS
    ========================================================= */
 @media screen and (max-width: 749px) {
   .custom-best-sellers {
@@ -547,8 +527,8 @@
     max-width: 100% !important;
     padding: 28px 7px 12px !important;
     margin: 0 !important;
-    overflow-x: hidden !important;
-    overflow-y: visible !important;
+    --bs-col-gap: 12px;
+    --bs-row-gap: 34px;
   }
   .custom-best-sellers__heading {
     margin: 0 0 28px !important;
@@ -556,20 +536,12 @@
     font-size: 32px !important;
     line-height: 1.2;
   }
-  .custom-best-sellers__viewport {
-    width: 100% !important;
-    max-width: 100% !important;
-    overflow: hidden !important;
+  .custom-best-sellers__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .custom-best-sellers__track { gap: 12px; }
-  .custom-best-sellers__card {
-    flex: 0 0 calc((100% - 12px) / 2);
-    width: calc((100% - 12px) / 2);
-    min-width: 0;
-  }
-  .custom-best-sellers__image-box {
-    width: 100%;
-    overflow: hidden;
+  /* mobile par sirf pehle 4 cards - 6 chahiye to n+7 kar do */
+  .custom-best-sellers__card:nth-child(n + 5) {
+    display: none;
   }
   .custom-best-sellers__badge {
     top: 8px;
@@ -608,9 +580,7 @@
     min-height: 0;
     font-size: 16px !important;
   }
-  .custom-best-sellers__bottom { margin-top: 35px; }
-  .custom-best-sellers__bottom-dot { width: 22px; height: 4px; }
-  .custom-best-sellers__view-all-wrap { margin-top: 19px; }
+  .custom-best-sellers__view-all-wrap { margin-top: 34px; }
   .custom-best-sellers__view-all {
     min-width: 163px;
     min-height: 39px;
@@ -625,11 +595,7 @@
   .custom-best-sellers {
     padding-left: 6px !important;
     padding-right: 6px !important;
-  }
-  .custom-best-sellers__track { gap: 10px; }
-  .custom-best-sellers__card {
-    flex: 0 0 calc((100% - 10px) / 2);
-    width: calc((100% - 10px) / 2);
+    --bs-col-gap: 10px;
   }
   .custom-best-sellers__title { font-size: 18px !important; }
   .custom-best-sellers__description { font-size: 15px !important; }
@@ -640,17 +606,13 @@
 }
 /* =========================================================
    SAFETY
-   overflow-x: clip use kiya hai, hidden nahi.
-   hidden html/body par lagane se doosri jagah position: sticky
-   toot jati hai. clip wahi kaam karta hai bina sticky tore.
+   overflow-x: clip use kiya hai, hidden nahi. hidden html/body
+   par lagane se doosri jagah position: sticky toot jati hai.
    ========================================================= */
 html,
 body {
   max-width: 100%;
   overflow-x: clip;
-}
-.custom-best-sellers {
-  contain: layout paint;
 }
 </style>
 
@@ -662,206 +624,201 @@ body {
     Our Best Sellers
   </h2>
 
-  <div class="custom-best-sellers__viewport">
-    <div class="custom-best-sellers__track">
-      {% assign best_seller_collection = collections['best-sellers'] %}
-      {% assign product_limit = 8 %}
+  <div class="custom-best-sellers__grid">
+    {% assign best_seller_collection = collections['best-sellers'] %}
+    {% comment %} desktop count. mobile hamesha pehle 4 dikhata hai (CSS se) {% endcomment %}
+    {% assign product_limit = 8 %}
 
-      {% if best_seller_collection != blank and best_seller_collection.products_count > 0 %}
-        {% for product in best_seller_collection.products limit: product_limit %}
+    {% if best_seller_collection != blank and best_seller_collection.products_count > 0 %}
+      {% for product in best_seller_collection.products limit: product_limit %}
 
-          {% comment %} ---- asli rating, agar review app ne likhi hai ---- {% endcomment %}
-          {% liquid
-            assign rating_value = 0
-            assign rating_count = 0
-            if product.metafields.reviews.rating.value != blank
-              assign rating_value = product.metafields.reviews.rating.value.rating | times: 1.0
-              assign rating_count = product.metafields.reviews.rating_count.value | times: 1
-            elsif product.metafields.loox.avg_rating != blank
-              assign rating_value = product.metafields.loox.avg_rating.value | times: 1.0
-              assign rating_count = product.metafields.loox.num_reviews.value | times: 1
-            endif
-            assign rating_percent = rating_value | times: 20.0
-          %}
+        {% comment %} ---- asli rating, agar review app ne likhi hai ---- {% endcomment %}
+        {% liquid
+          assign rating_value = 0
+          assign rating_count = 0
+          if product.metafields.reviews.rating.value != blank
+            assign rating_value = product.metafields.reviews.rating.value.rating | times: 1.0
+            assign rating_count = product.metafields.reviews.rating_count.value | times: 1
+          elsif product.metafields.loox.avg_rating != blank
+            assign rating_value = product.metafields.loox.avg_rating.value | times: 1.0
+            assign rating_count = product.metafields.loox.num_reviews.value | times: 1
+          endif
+          assign rating_percent = rating_value | times: 20.0
+        %}
 
-          <article class="custom-best-sellers__card" data-product-card>
+        <article class="custom-best-sellers__card" data-product-card>
 
-            <div class="custom-best-sellers__image-box" data-image-slider>
+          <div class="custom-best-sellers__image-box" data-image-slider>
 
-              <span class="custom-best-sellers__badge">Best Seller</span>
+            <span class="custom-best-sellers__badge">Best Seller</span>
 
-              <a
-                href="{{ product.url }}"
-                class="custom-best-sellers__image-link"
-                aria-label="{{ product.title | escape }}"
-              >
-                <div class="custom-best-sellers__image-track" data-image-track>
-                  {% if product.images.size > 0 %}
-                    {% for image in product.images limit: 8 %}
-                      <div class="custom-best-sellers__image-slide">
-                        <img
-                          class="custom-best-sellers__image"
-                          src="{{ image | image_url: width: 800 }}"
-                          srcset="
-                            {{ image | image_url: width: 400 }} 400w,
-                            {{ image | image_url: width: 600 }} 600w,
-                            {{ image | image_url: width: 800 }} 800w,
-                            {{ image | image_url: width: 1200 }} 1200w
-                          "
-                          sizes="(min-width: 990px) 23vw, (min-width: 750px) 23vw, 48vw"
-                          alt="{{ image.alt | default: product.title | escape }}"
-                          loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
-                          width="{{ image.width }}"
-                          height="{{ image.height }}"
-                          draggable="false"
-                        >
-                      </div>
-                    {% endfor %}
-                  {% elsif product.featured_image %}
+            <a
+              href="{{ product.url }}"
+              class="custom-best-sellers__image-link"
+              aria-label="{{ product.title | escape }}"
+            >
+              <div class="custom-best-sellers__image-track" data-image-track>
+                {% if product.images.size > 0 %}
+                  {% for image in product.images limit: 8 %}
                     <div class="custom-best-sellers__image-slide">
                       <img
                         class="custom-best-sellers__image"
-                        src="{{ product.featured_image | image_url: width: 800 }}"
-                        alt="{{ product.featured_image.alt | default: product.title | escape }}"
-                        loading="lazy"
-                        width="{{ product.featured_image.width }}"
-                        height="{{ product.featured_image.height }}"
+                        src="{{ image | image_url: width: 800 }}"
+                        srcset="
+                          {{ image | image_url: width: 400 }} 400w,
+                          {{ image | image_url: width: 600 }} 600w,
+                          {{ image | image_url: width: 800 }} 800w,
+                          {{ image | image_url: width: 1200 }} 1200w
+                        "
+                        sizes="(min-width: 990px) 23vw, (min-width: 750px) 23vw, 48vw"
+                        alt="{{ image.alt | default: product.title | escape }}"
+                        loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                        width="{{ image.width }}"
+                        height="{{ image.height }}"
                         draggable="false"
                       >
                     </div>
-                  {% endif %}
-                </div>
-              </a>
-
-              <button
-                type="button"
-                class="custom-best-sellers__image-arrow custom-best-sellers__image-arrow--prev"
-                aria-label="Previous product image"
-                data-image-prev
-              >
-                <svg viewBox="0 0 24 24"><path d="M14.5 5L7.5 12L14.5 19"></path></svg>
-              </button>
-
-              <button
-                type="button"
-                class="custom-best-sellers__image-arrow custom-best-sellers__image-arrow--next"
-                aria-label="Next product image"
-                data-image-next
-              >
-                <svg viewBox="0 0 24 24"><path d="M9.5 5L16.5 12L9.5 19"></path></svg>
-              </button>
-
-              {% if product.images.size > 1 %}
-                <div class="custom-best-sellers__image-dots" data-image-dots>
-                  {% for image in product.images limit: 8 %}
-                    <span class="custom-best-sellers__image-dot{% if forloop.first %} is-active{% endif %}"></span>
                   {% endfor %}
-                </div>
-              {% endif %}
+                {% elsif product.featured_image %}
+                  <div class="custom-best-sellers__image-slide">
+                    <img
+                      class="custom-best-sellers__image"
+                      src="{{ product.featured_image | image_url: width: 800 }}"
+                      alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                      loading="lazy"
+                      width="{{ product.featured_image.width }}"
+                      height="{{ product.featured_image.height }}"
+                      draggable="false"
+                    >
+                  </div>
+                {% endif %}
+              </div>
+            </a>
+
+            <button
+              type="button"
+              class="custom-best-sellers__image-arrow custom-best-sellers__image-arrow--prev"
+              aria-label="Previous product image"
+              data-image-prev
+            >
+              <svg viewBox="0 0 24 24"><path d="M14.5 5L7.5 12L14.5 19"></path></svg>
+            </button>
+
+            <button
+              type="button"
+              class="custom-best-sellers__image-arrow custom-best-sellers__image-arrow--next"
+              aria-label="Next product image"
+              data-image-next
+            >
+              <svg viewBox="0 0 24 24"><path d="M9.5 5L16.5 12L9.5 19"></path></svg>
+            </button>
+
+            {% if product.images.size > 1 %}
+              <div class="custom-best-sellers__image-dots" data-image-dots>
+                {% for image in product.images limit: 8 %}
+                  <span class="custom-best-sellers__image-dot{% if forloop.first %} is-active{% endif %}"></span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+
+          <div class="custom-best-sellers__content">
+
+            <h3 class="custom-best-sellers__title">
+              <a href="{{ product.url }}">{{ product.title }}</a>
+            </h3>
+
+            <div class="custom-best-sellers__description">
+              {{ product.description | strip_html | truncate: 72 }}
             </div>
 
-            <div class="custom-best-sellers__content">
-
-              <h3 class="custom-best-sellers__title">
-                <a href="{{ product.url }}">{{ product.title }}</a>
-              </h3>
-
-              <div class="custom-best-sellers__description">
-                {{ product.description | strip_html | truncate: 72 }}
-              </div>
-
-              {% if rating_count > 0 %}
-                <a
-                  class="custom-best-sellers__rating"
-                  href="{{ product.url }}"
-                  aria-label="Rated {{ rating_value }} out of 5 from {{ rating_count }} reviews"
-                >
-                  <span class="custom-best-sellers__stars" style="--bs-rating: {{ rating_percent }}%;" aria-hidden="true">
-                    <span class="custom-best-sellers__stars-bg">★★★★★</span>
-                    <span class="custom-best-sellers__stars-fg">★★★★★</span>
-                  </span>
-                  <span class="custom-best-sellers__rating-count">({{ rating_count }})</span>
-                </a>
-              {% endif %}
-
-              <div class="custom-best-sellers__price-row">
-                {% assign available_variant = product.selected_or_first_available_variant %}
-                <span class="custom-best-sellers__price" data-product-price>
-                  {{ available_variant.price | money }}
+            {% if rating_count > 0 %}
+              <a
+                class="custom-best-sellers__rating"
+                href="{{ product.url }}"
+                aria-label="Rated {{ rating_value }} out of 5 from {{ rating_count }} reviews"
+              >
+                <span class="custom-best-sellers__stars" style="--bs-rating: {{ rating_percent }}%;" aria-hidden="true">
+                  <span class="custom-best-sellers__stars-bg">★★★★★</span>
+                  <span class="custom-best-sellers__stars-fg">★★★★★</span>
                 </span>
-                <span
-                  class="custom-best-sellers__compare"
-                  data-product-compare
-                  {% unless available_variant.compare_at_price > available_variant.price %}style="display:none;"{% endunless %}
-                >
-                  {%- if available_variant.compare_at_price > available_variant.price -%}
-                    {{ available_variant.compare_at_price | money }}
-                  {%- endif -%}
-                </span>
-              </div>
+                <span class="custom-best-sellers__rating-count">({{ rating_count }})</span>
+              </a>
+            {% endif %}
 
-              {% if product.variants.size > 1 %}
-                <div class="custom-best-sellers__variants" data-variant-selector>
-                  {% for variant in product.variants %}
-                    <button
-                      type="button"
-                      class="custom-best-sellers__variant{% if variant.id == available_variant.id %} is-selected{% endif %}"
-                      data-variant-id="{{ variant.id }}"
-                      data-variant-price="{{ variant.price | money | escape }}"
-                      data-variant-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | escape }}{% endif %}"
-                      data-variant-available="{{ variant.available }}"
-                      {% unless variant.available %}disabled{% endunless %}
-                    >{{ variant.title }}</button>
-                  {% endfor %}
-                </div>
-              {% elsif product.variants.first.title != 'Default Title' %}
-                <div class="custom-best-sellers__variants" data-variant-selector>
+            <div class="custom-best-sellers__price-row">
+              {% assign available_variant = product.selected_or_first_available_variant %}
+              <span class="custom-best-sellers__price" data-product-price>
+                {{ available_variant.price | money }}
+              </span>
+              <span
+                class="custom-best-sellers__compare"
+                data-product-compare
+                {% unless available_variant.compare_at_price > available_variant.price %}style="display:none;"{% endunless %}
+              >
+                {%- if available_variant.compare_at_price > available_variant.price -%}
+                  {{ available_variant.compare_at_price | money }}
+                {%- endif -%}
+              </span>
+            </div>
+
+            {% if product.variants.size > 1 %}
+              <div class="custom-best-sellers__variants" data-variant-selector>
+                {% for variant in product.variants %}
                   <button
                     type="button"
-                    class="custom-best-sellers__variant is-selected"
-                    data-variant-id="{{ product.variants.first.id }}"
-                    data-variant-price="{{ product.variants.first.price | money | escape }}"
-                    data-variant-compare="{% if product.variants.first.compare_at_price > product.variants.first.price %}{{ product.variants.first.compare_at_price | money | escape }}{% endif %}"
-                    data-variant-available="{{ product.variants.first.available }}"
-                    {% unless product.variants.first.available %}disabled{% endunless %}
-                  >{{ product.variants.first.title }}</button>
-                </div>
-              {% endif %}
-
-              <form
-                action="{{ routes.cart_add_url }}"
-                method="post"
-                class="custom-best-sellers__cart-form"
-                data-cart-form
-              >
-                <input
-                  type="hidden"
-                  name="id"
-                  value="{{ available_variant.id }}"
-                  data-selected-variant
-                >
+                    class="custom-best-sellers__variant{% if variant.id == available_variant.id %} is-selected{% endif %}"
+                    data-variant-id="{{ variant.id }}"
+                    data-variant-price="{{ variant.price | money | escape }}"
+                    data-variant-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | escape }}{% endif %}"
+                    data-variant-available="{{ variant.available }}"
+                    {% unless variant.available %}disabled{% endunless %}
+                  >{{ variant.title }}</button>
+                {% endfor %}
+              </div>
+            {% elsif product.variants.first.title != 'Default Title' %}
+              <div class="custom-best-sellers__variants" data-variant-selector>
                 <button
-                  type="submit"
-                  class="custom-best-sellers__add"
-                  {% unless available_variant.available %}disabled{% endunless %}
-                >
-                  {% if available_variant.available %}Add to cart{% else %}Sold out{% endif %}
-                </button>
-              </form>
+                  type="button"
+                  class="custom-best-sellers__variant is-selected"
+                  data-variant-id="{{ product.variants.first.id }}"
+                  data-variant-price="{{ product.variants.first.price | money | escape }}"
+                  data-variant-compare="{% if product.variants.first.compare_at_price > product.variants.first.price %}{{ product.variants.first.compare_at_price | money | escape }}{% endif %}"
+                  data-variant-available="{{ product.variants.first.available }}"
+                  {% unless product.variants.first.available %}disabled{% endunless %}
+                >{{ product.variants.first.title }}</button>
+              </div>
+            {% endif %}
 
-            </div>
-          </article>
-        {% endfor %}
-      {% else %}
-        <div style="width:100%;padding:50px 20px;text-align:center;font-size:16px;">
-          Please create a Shopify collection with handle <strong>best-sellers</strong>.
-        </div>
-      {% endif %}
-    </div>
-  </div>
+            <form
+              action="{{ routes.cart_add_url }}"
+              method="post"
+              class="custom-best-sellers__cart-form"
+              data-cart-form
+            >
+              <input
+                type="hidden"
+                name="id"
+                value="{{ available_variant.id }}"
+                data-selected-variant
+              >
+              <button
+                type="submit"
+                class="custom-best-sellers__add"
+                {% unless available_variant.available %}disabled{% endunless %}
+              >
+                {% if available_variant.available %}Add to cart{% else %}Sold out{% endif %}
+              </button>
+            </form>
 
-  <div class="custom-best-sellers__bottom">
-    <div class="custom-best-sellers__bottom-dots" data-product-slider-dots></div>
+          </div>
+        </article>
+      {% endfor %}
+    {% else %}
+      <div class="custom-best-sellers__empty">
+        Please create a Shopify collection with handle <strong>best-sellers</strong>.
+      </div>
+    {% endif %}
   </div>
 
   {% if best_seller_collection != blank %}
@@ -882,75 +839,8 @@ body {
       if (section.dataset.initialized === 'true') return;
       section.dataset.initialized = 'true';
 
-      var viewport = section.querySelector('.custom-best-sellers__viewport');
-      var track = section.querySelector('.custom-best-sellers__track');
       var cards = Array.from(section.querySelectorAll('.custom-best-sellers__card'));
-      var dotsContainer = section.querySelector('[data-product-slider-dots]');
-
-      if (!viewport || !track || !cards.length) return;
-
-      var currentPage = 0;
-
-      function getVisibleProducts() {
-        return window.innerWidth <= 749 ? 2 : 4;
-      }
-
-      function getGap() {
-        if (window.innerWidth <= 749) return window.innerWidth <= 380 ? 10 : 12;
-        if (window.innerWidth <= 989) return 16;
-        return 24;
-      }
-
-      function getTotalPages() {
-        return Math.max(1, Math.ceil(cards.length / getVisibleProducts()));
-      }
-
-      function buildBottomDots() {
-        if (!dotsContainer) return;
-        dotsContainer.innerHTML = '';
-        var totalPages = getTotalPages();
-
-        for (var i = 0; i < totalPages; i++) {
-          var button = document.createElement('button');
-          button.type = 'button';
-          button.className = 'custom-best-sellers__bottom-dot';
-          button.setAttribute('aria-label', 'Show product group ' + (i + 1));
-          button.dataset.page = i;
-          if (i === currentPage) button.classList.add('is-active');
-
-          button.addEventListener('click', function () {
-            var page = parseInt(this.dataset.page, 10);
-            if (isNaN(page)) return;
-            currentPage = Math.max(0, Math.min(page, getTotalPages() - 1));
-            updateProductSlider();
-          });
-
-          dotsContainer.appendChild(button);
-        }
-      }
-
-      function updateProductSlider() {
-        var visible = getVisibleProducts();
-        var gap = getGap();
-        var totalPages = getTotalPages();
-
-        if (currentPage >= totalPages) currentPage = totalPages - 1;
-        if (currentPage < 0) currentPage = 0;
-
-        var cardWidth = cards[0].getBoundingClientRect().width;
-        var moveDistance = currentPage * visible * (cardWidth + gap);
-        var maxMove = Math.max(0, track.scrollWidth - viewport.clientWidth);
-        moveDistance = Math.min(moveDistance, maxMove);
-
-        track.style.transform = 'translate3d(' + (-moveDistance) + 'px, 0, 0)';
-
-        if (dotsContainer) {
-          dotsContainer.querySelectorAll('.custom-best-sellers__bottom-dot')
-            .forEach(function (dot, index) {
-              dot.classList.toggle('is-active', index === currentPage);
-            });
-        }
-      }
+      if (!cards.length) return;
 
       /* ---------- per card image slider ---------- */
       cards.forEach(function (card) {
@@ -1076,20 +966,6 @@ body {
             event.preventDefault();
           }
         });
-      });
-
-      buildBottomDots();
-      setTimeout(updateProductSlider, 100);
-
-      var resizeTimer = null;
-      window.addEventListener('resize', function () {
-        clearTimeout(resizeTimer);
-        resizeTimer = setTimeout(function () {
-          var totalPages = getTotalPages();
-          if (currentPage >= totalPages) currentPage = Math.max(0, totalPages - 1);
-          buildBottomDots();
-          updateProductSlider();
-        }, 120);
       });
     });
   }
