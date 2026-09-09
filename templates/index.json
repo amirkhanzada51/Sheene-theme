@@ -35,7 +35,7 @@
       "type": "custom-liquid",
       "name": "Shop Bundles",
       "settings": {
-        "custom_liquid": "{% render 'sheene-home-product-slider' \ncollection: 'bundles',\n  heading: 'Shop Bundles',\n  badge_text: 'Bundle',\n  limit: 6,\n  mobile_limit: 4,\n  view_all_text: 'View all bundles',\n  assets: false\n%}",
+        "custom_liquid": "{% render 'sheene-home-product-slider' \ncollection: 'bundles',\n  heading: 'Shop Bundles',\n  badge_text: 'Bundle',\n  limit: 8,\n  mobile_limit: 4,\n  view_all_text: 'View all bundles',\n  assets: false\n%}",
         "background_color": "",
         "section_width": "page-width",
         "padding-block-start": 0,
@@ -1987,8 +1987,8 @@
   },
   "order": [
     "custom_liquid_HChwgB",
-    "custom_liquid_E4k7FY",
     "custom_liquid_RVWDg8",
+    "custom_liquid_E4k7FY",
     "custom_liquid_ePT4bq",
     "shop_by_category_bU8Mkd",
     "shop_by_concerns_KcpE9K",
