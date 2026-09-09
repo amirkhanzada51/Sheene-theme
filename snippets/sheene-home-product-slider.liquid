@@ -464,6 +464,7 @@
   line-height: 1.2;
   font-weight: 500;
   text-align: center;
+  text-decoration: none;
   cursor: pointer;
   appearance: none;
   -webkit-appearance: none;
@@ -473,10 +474,12 @@
 }
 .custom-best-sellers__add:hover,
 .custom-best-sellers__add:focus,
-.custom-best-sellers__add:active {
+.custom-best-sellers__add:active,
+.custom-best-sellers__add:visited {
   background: #000 !important;
   color: #fff !important;
   border-color: #000 !important;
+  text-decoration: none !important;
   box-shadow: none !important;
 }
 .custom-best-sellers__add:disabled {
@@ -1121,16 +1124,22 @@ body {
             </div>
 
             {% if has_options %}
-              {% comment %} Ek se zyada variant: popup kholne wala button {% endcomment %}
+              {% comment %}
+                Ek se zyada variant.
+                Ye asli link hai product page ka. Desktop par click
+                seedha product page kholta hai. Mobile par JS link
+                rok kar popup kholta hai.
+              {% endcomment %}
               <div class="custom-best-sellers__cart-form">
-                <button
-                  type="button"
-                  class="custom-best-sellers__add"
-                  data-shpg-open="{{ modal_id }}"
-                  {% unless product.available %}disabled{% endunless %}
-                >
-                  {% if product.available %}{{ btn_choose }}{% else %}Sold out{% endif %}
-                </button>
+                {% if product.available %}
+                  <a
+                    href="{{ product.url }}"
+                    class="custom-best-sellers__add"
+                    data-shpg-open="{{ modal_id }}"
+                  >{{ btn_choose }}</a>
+                {% else %}
+                  <button type="button" class="custom-best-sellers__add" disabled>Sold out</button>
+                {% endif %}
               </div>
             {% else %}
               {% comment %} Ek hi variant: seedha add to cart {% endcomment %}
@@ -1281,6 +1290,11 @@ body {
 (function () {
   'use strict';
 
+  /* Is width tak popup chalta hai. Isse upar "Choose options"
+     seedha product page par le jata hai.
+     CSS ke mobile breakpoint (749px) se match hona chahiye. */
+  var SHPG_MOBILE_MAX = 749;
+
   /* =======================================================
      CARD IMAGE SLIDER + CHOOSE OPTIONS POPUP
      ======================================================= */
@@ -1353,11 +1367,18 @@ body {
         }, { passive: true });
       });
 
-      /* ---------- Choose options buttons ---------- */
-      section.querySelectorAll('[data-shpg-open]').forEach(function (button) {
-        button.addEventListener('click', function () {
-          var modal = document.getElementById(button.getAttribute('data-shpg-open'));
+      /* ---------- Choose options ----------
+         Desktop (750px se upar): link apna kaam kare, yani
+         seedha product page khul jaye.
+         Mobile: link rok kar popup kholo. */
+      section.querySelectorAll('[data-shpg-open]').forEach(function (trigger) {
+        trigger.addEventListener('click', function (event) {
+          if (window.innerWidth > SHPG_MOBILE_MAX) return;
+
+          var modal = document.getElementById(trigger.getAttribute('data-shpg-open'));
           if (!modal) return;
+
+          event.preventDefault();
           if (typeof modal.showModal === 'function') {
             modal.showModal();
           } else {
