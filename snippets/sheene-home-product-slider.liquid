@@ -8,10 +8,25 @@
   collection, alag title, alag View all link.
 
   ----------------------------------------------------------
+  IS VERSION MEIN NAYA KYA HAI
+  ----------------------------------------------------------
+  Card se lambi variant pills hata di gayi hain. Ab:
+
+    Ek hi variant           ->  seedha "Add to cart"
+    Ek se zyada variants    ->  "Choose options" button, jo ek
+                                popup kholta hai. Popup mein
+                                image, title, price, options,
+                                quantity aur Add to cart hai.
+
+  Popup har product ke liye pehle se render hota hai (hidden),
+  is liye khulne mein koi delay ya loading nahi hai. Koi
+  external library nahi, native <dialog> use hua hai.
+
+  ----------------------------------------------------------
   KAISE CALL KARO (Custom Liquid block mein)
   ----------------------------------------------------------
 
-  Best Sellers (assets ke saath, yeh page par pehla hona chahiye):
+  Best Sellers (assets ke saath, page par pehla hona chahiye):
 
     {% raw %}{% render 'sheene-product-grid',
       collection: 'best-sellers',
@@ -53,15 +68,12 @@
   limit            desktop par kitne products. Default 8.
 
   mobile_limit     mobile par kitne products. Default 4.
-                   Ye Liquid se class lagti hai, is liye har instance
-                   ka apna alag number ho sakta hai.
 
   badge_text       card ke corner ka badge. Default 'Best Seller'.
   show_badge       false bhejo to badge bilkul nahi aayega.
 
   view_all_url     View all button kahan jaye.
                    Default: usi collection ka page.
-                   Koi bhi URL de sakte ho, jaise '/pages/shop-bundles'
   view_all_text    button ka text. Default 'View all products'.
   show_view_all    false bhejo to button hi nahi aayega.
 
@@ -72,17 +84,18 @@
 
   columns          desktop par kitne per row. Default 4.
 
+  choose_text      multi variant button ka text. Default 'Choose options'.
+  add_text         single variant button ka text. Default 'Add to cart'.
+
   assets           CSS aur JS include karna hai ya nahi. Default true.
                    IMPORTANT: ek page par sirf PEHLE render mein true
-                   rakho, baaki sab mein assets: false. Warna wahi CSS
-                   aur JS do teen baar load hoga.
+                   rakho, baaki sab mein assets: false.
 
   ----------------------------------------------------------
   NOTE
   ----------------------------------------------------------
   Rating asli hai. Jis product par Judge.me ya Loox ka rating
-  metafield nahi, us card par stars nahi aati. Koi hardcoded
-  stars nahi hain.
+  metafield nahi, us card par stars nahi aati.
 {% endcomment %}
 
 {% liquid
@@ -111,6 +124,9 @@
   if show_view_all == false
     assign va_on = false
   endif
+
+  assign btn_choose = choose_text | default: 'Choose options'
+  assign btn_add = add_text | default: 'Add to cart'
 
   assign assets_on = true
   if assets == false
@@ -403,60 +419,13 @@
   color: #888;
   text-decoration: line-through;
 }
-/* ---------------- VARIANTS ---------------- */
-.custom-best-sellers__variants {
-  display: flex;
-  align-items: stretch;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-top: 10px;
-  min-height: 30px;
-  width: 100%;
-  min-width: 0;
-}
-/* Lambe variant names ("50ml tubes and 30ml serums") ke liye:
-   nowrap hata diya hai, ab pill card ke andar rehti hai aur
-   zaroorat par apni line le leti hai. Chhote names (S, M, L)
-   phir bhi ek hi line mein saath saath rehte hain. */
-.custom-best-sellers__variant {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  max-width: 100%;
-  min-width: 0;
-  min-height: 30px;
-  padding: 6px 12px;
-  border: 1px solid #bdbdbd;
-  border-radius: 15px;
-  background: #fff;
-  color: #222;
+.custom-best-sellers__from {
   font-size: 15px;
-  line-height: 1.25;
+  line-height: 1.35;
   font-weight: 400;
-  text-align: center;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  cursor: pointer;
-  font-family: inherit;
-  appearance: none;
-  -webkit-appearance: none;
-  outline: none;
-  transition:
-    background .15s ease,
-    color .15s ease,
-    border-color .15s ease;
+  color: #858585;
 }
-.custom-best-sellers__variant.is-selected {
-  background: #000;
-  border-color: #000;
-  color: #fff;
-  font-weight: 600;
-}
-.custom-best-sellers__variant:disabled {
-  opacity: .4;
-  cursor: not-allowed;
-}
-/* ---------------- CART ---------------- */
+/* ---------------- CART / BUTTON ---------------- */
 .custom-best-sellers__cart-form {
   width: 100%;
   margin: auto 0 0;
@@ -467,7 +436,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 10px;
+  margin-top: 14px;
   padding: 14px 15px;
   min-height: 48px;
   border: 1px solid #000;
@@ -493,6 +462,11 @@
   color: #fff !important;
   border-color: #000 !important;
   box-shadow: none !important;
+}
+.custom-best-sellers__add:disabled {
+  background: #8d8d8d !important;
+  border-color: #8d8d8d !important;
+  cursor: not-allowed;
 }
 /* ---------------- VIEW ALL ---------------- */
 .custom-best-sellers__view-all-wrap {
@@ -532,6 +506,238 @@
   padding: 50px 20px;
   text-align: center;
   font-size: 16px;
+}
+
+/* =========================================================
+   CHOOSE OPTIONS POPUP
+   Native <dialog>, koi library nahi.
+   ========================================================= */
+.shpg-modal {
+  width: min(940px, calc(100vw - 40px));
+  max-width: 940px;
+  max-height: min(86vh, 720px);
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: #fff;
+  color: #111;
+  font-family: Jost, sans-serif;
+  overflow: visible;
+}
+.shpg-modal::backdrop {
+  background: rgba(0, 0, 0, 0.45);
+}
+.shpg-modal__inner {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  max-height: min(86vh, 720px);
+  overflow: hidden;
+  border-radius: 6px;
+}
+.shpg-modal__media {
+  position: relative;
+  background: #f2f4f5;
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+}
+.shpg-modal__media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+}
+.shpg-modal__info {
+  padding: 34px 34px 34px 32px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.shpg-modal__title {
+  margin: 0;
+  font-size: 26px;
+  line-height: 1.18;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+  color: #111;
+}
+.shpg-modal__title a {
+  color: inherit;
+  text-decoration: none;
+}
+.shpg-modal__price-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-top: 14px;
+  min-height: 24px;
+}
+.shpg-modal__price {
+  font-size: 19px;
+  font-weight: 500;
+  color: #111;
+}
+.shpg-modal__compare {
+  font-size: 17px;
+  font-weight: 400;
+  color: #8a8a8a;
+  text-decoration: line-through;
+}
+.shpg-modal__option {
+  margin-top: 24px;
+}
+.shpg-modal__option-label {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #6e6e6e;
+  margin-bottom: 10px;
+}
+.shpg-modal__pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.shpg-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  min-height: 40px;
+  padding: 9px 18px;
+  border: 1px solid #c9c9c9;
+  border-radius: 22px;
+  background: #fff;
+  color: #222;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.25;
+  font-weight: 400;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.shpg-pill.is-selected {
+  background: #111;
+  border-color: #111;
+  color: #fff;
+  font-weight: 500;
+}
+.shpg-pill.is-unavailable {
+  opacity: .4;
+  text-decoration: line-through;
+}
+.shpg-modal__qty-label {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #6e6e6e;
+  margin: 24px 0 10px;
+}
+.shpg-qty {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid #c9c9c9;
+  border-radius: 22px;
+  overflow: hidden;
+  height: 44px;
+}
+.shpg-qty button {
+  width: 42px;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: #111;
+  font-family: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.shpg-qty input {
+  width: 46px;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  color: #111;
+  font-family: inherit;
+  font-size: 16px;
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.shpg-qty input::-webkit-outer-spin-button,
+.shpg-qty input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.shpg-modal__submit {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 28px;
+  padding: 15px;
+  min-height: 52px;
+  border: 1px solid #000;
+  border-radius: 0;
+  background: #000;
+  color: #fff;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.shpg-modal__submit:disabled {
+  background: #8d8d8d;
+  border-color: #8d8d8d;
+  cursor: not-allowed;
+}
+.shpg-modal__details {
+  margin-top: 16px;
+  font-size: 15px;
+  color: #6e6e6e;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  align-self: flex-start;
+}
+.shpg-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 5;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #dcdcdc;
+  border-radius: 50%;
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.shpg-modal__close svg {
+  width: 15px;
+  height: 15px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+/* popup khulne par background scroll band */
+body.shpg-modal-open {
+  overflow: hidden;
 }
 /* ---------------- TABLET ---------------- */
 @media screen and (max-width: 989px) {
@@ -591,18 +797,13 @@
   .custom-best-sellers__stars { font-size: 15px; }
   .custom-best-sellers__price-row { margin-top: 7px; gap: 5px; }
   .custom-best-sellers__price,
-  .custom-best-sellers__compare { font-size: 15px !important; }
-  .custom-best-sellers__variants { gap: 6px; margin-top: 9px; }
-  .custom-best-sellers__variant {
-    font-size: 14px !important;
-    padding: 6px 10px;
-    min-height: 28px;
-  }
+  .custom-best-sellers__compare,
+  .custom-best-sellers__from { font-size: 15px !important; }
   .custom-best-sellers__add {
-    margin-top: 9px;
-    padding: 14px 15px !important;
-    min-height: 0;
-    font-size: 16px !important;
+    margin-top: 12px;
+    padding: 13px 10px !important;
+    min-height: 46px;
+    font-size: 15px !important;
   }
   .custom-best-sellers__view-all-wrap { margin-top: 34px; }
   .custom-best-sellers__view-all {
@@ -611,6 +812,26 @@
     padding: 14px 30px;
     font-size: 18px;
   }
+  /* popup mobile par: image upar, details neeche */
+  .shpg-modal {
+    width: calc(100vw - 24px);
+    max-height: 90vh;
+  }
+  .shpg-modal__inner {
+    grid-template-columns: 1fr;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+  .shpg-modal__media {
+    aspect-ratio: 4 / 3;
+  }
+  .shpg-modal__info {
+    padding: 22px 20px 26px;
+    overflow: visible;
+  }
+  .shpg-modal__title { font-size: 22px; }
+  .shpg-modal__price { font-size: 18px; }
+  .shpg-modal__submit { margin-top: 22px; }
 }
 /* ---------------- SMALL MOBILE ---------------- */
 @media screen and (max-width: 380px) {
@@ -619,11 +840,7 @@
     padding-right: 6px !important;
     --bs-col-gap: 10px;
   }
-  .custom-best-sellers__variant {
-    padding-left: 8px;
-    padding-right: 8px;
-    font-size: 13px !important;
-  }
+  .custom-best-sellers__add { font-size: 14px !important; }
 }
 /* ---------------- SAFETY ----------------
    overflow-x: clip use kiya hai, hidden nahi. hidden html/body
@@ -666,6 +883,13 @@ body {
           if forloop.index > grid_mobile_limit
             assign mobile_hide = ' custom-best-sellers__card--mobile-hide'
           endif
+
+          assign available_variant = product.selected_or_first_available_variant
+          assign has_options = false
+          if product.variants.size > 1
+            assign has_options = true
+          endif
+          assign modal_id = 'ShPgModal-' | append: uid | append: '-' | append: product.id
         %}
 
         <article class="custom-best-sellers__card{{ mobile_hide }}" data-product-card>
@@ -771,72 +995,145 @@ body {
             {% endif %}
 
             <div class="custom-best-sellers__price-row">
-              {% assign available_variant = product.selected_or_first_available_variant %}
-              <span class="custom-best-sellers__price" data-product-price>
-                {{ available_variant.price | money }}
+              {%- if has_options and product.price_varies -%}
+                <span class="custom-best-sellers__from">From</span>
+              {%- endif -%}
+              <span class="custom-best-sellers__price">
+                {{ product.price_min | money }}
               </span>
-              <span
-                class="custom-best-sellers__compare"
-                data-product-compare
-                {% unless available_variant.compare_at_price > available_variant.price %}style="display:none;"{% endunless %}
-              >
-                {%- if available_variant.compare_at_price > available_variant.price -%}
-                  {{ available_variant.compare_at_price | money }}
-                {%- endif -%}
-              </span>
+              {%- if product.compare_at_price_max > product.price_min -%}
+                <span class="custom-best-sellers__compare">
+                  {{ product.compare_at_price_max | money }}
+                </span>
+              {%- endif -%}
             </div>
 
-            {% if product.variants.size > 1 %}
-              <div class="custom-best-sellers__variants" data-variant-selector>
-                {% for variant in product.variants %}
-                  <button
-                    type="button"
-                    class="custom-best-sellers__variant{% if variant.id == available_variant.id %} is-selected{% endif %}"
-                    data-variant-id="{{ variant.id }}"
-                    data-variant-price="{{ variant.price | money | escape }}"
-                    data-variant-compare="{% if variant.compare_at_price > variant.price %}{{ variant.compare_at_price | money | escape }}{% endif %}"
-                    data-variant-available="{{ variant.available }}"
-                    {% unless variant.available %}disabled{% endunless %}
-                  >{{ variant.title }}</button>
-                {% endfor %}
-              </div>
-            {% elsif product.variants.first.title != 'Default Title' %}
-              <div class="custom-best-sellers__variants" data-variant-selector>
+            {% if has_options %}
+              {% comment %} Ek se zyada variant: popup kholne wala button {% endcomment %}
+              <div class="custom-best-sellers__cart-form">
                 <button
                   type="button"
-                  class="custom-best-sellers__variant is-selected"
-                  data-variant-id="{{ product.variants.first.id }}"
-                  data-variant-price="{{ product.variants.first.price | money | escape }}"
-                  data-variant-compare="{% if product.variants.first.compare_at_price > product.variants.first.price %}{{ product.variants.first.compare_at_price | money | escape }}{% endif %}"
-                  data-variant-available="{{ product.variants.first.available }}"
-                  {% unless product.variants.first.available %}disabled{% endunless %}
-                >{{ product.variants.first.title }}</button>
+                  class="custom-best-sellers__add"
+                  data-shpg-open="{{ modal_id }}"
+                  {% unless product.available %}disabled{% endunless %}
+                >
+                  {% if product.available %}{{ btn_choose }}{% else %}Sold out{% endif %}
+                </button>
               </div>
+            {% else %}
+              {% comment %} Ek hi variant: seedha add to cart {% endcomment %}
+              <form
+                action="{{ routes.cart_add_url }}"
+                method="post"
+                class="custom-best-sellers__cart-form"
+                data-cart-form
+              >
+                <input type="hidden" name="id" value="{{ available_variant.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button
+                  type="submit"
+                  class="custom-best-sellers__add"
+                  {% unless available_variant.available %}disabled{% endunless %}
+                >
+                  {% if available_variant.available %}{{ btn_add }}{% else %}Sold out{% endif %}
+                </button>
+              </form>
             {% endif %}
-
-            <form
-              action="{{ routes.cart_add_url }}"
-              method="post"
-              class="custom-best-sellers__cart-form"
-              data-cart-form
-            >
-              <input
-                type="hidden"
-                name="id"
-                value="{{ available_variant.id }}"
-                data-selected-variant
-              >
-              <button
-                type="submit"
-                class="custom-best-sellers__add"
-                {% unless available_variant.available %}disabled{% endunless %}
-              >
-                {% if available_variant.available %}Add to cart{% else %}Sold out{% endif %}
-              </button>
-            </form>
 
           </div>
         </article>
+
+        {%- comment -%}
+          ==========================================================
+          CHOOSE OPTIONS POPUP (sirf multi variant products ke liye)
+          ==========================================================
+        {%- endcomment -%}
+        {% if has_options %}
+          <dialog class="shpg-modal" id="{{ modal_id }}" data-shpg-modal aria-label="{{ product.title | escape }}">
+            <button type="button" class="shpg-modal__close" data-shpg-close aria-label="Close">
+              <svg viewBox="0 0 24 24"><path d="M5 5L19 19M19 5L5 19"></path></svg>
+            </button>
+
+            <div class="shpg-modal__inner">
+              <div class="shpg-modal__media">
+                <img
+                  data-shpg-image
+                  src="{{ product.featured_image | image_url: width: 900 }}"
+                  alt="{{ product.title | escape }}"
+                  loading="lazy"
+                >
+              </div>
+
+              <div class="shpg-modal__info">
+                <h3 class="shpg-modal__title">
+                  <a href="{{ product.url }}">{{ product.title }}</a>
+                </h3>
+
+                <div class="shpg-modal__price-row">
+                  <span class="shpg-modal__price" data-shpg-price>{{ available_variant.price | money }}</span>
+                  <span
+                    class="shpg-modal__compare"
+                    data-shpg-compare
+                    {% unless available_variant.compare_at_price > available_variant.price %}style="display:none;"{% endunless %}
+                  >
+                    {%- if available_variant.compare_at_price > available_variant.price -%}
+                      {{ available_variant.compare_at_price | money }}
+                    {%- endif -%}
+                  </span>
+                </div>
+
+                <form action="{{ routes.cart_add_url }}" method="post" data-shpg-form>
+                  <input type="hidden" name="id" value="{{ available_variant.id }}" data-shpg-variant-id>
+
+                  {% for option in product.options_with_values %}
+                    <div class="shpg-modal__option">
+                      <div class="shpg-modal__option-label">{{ option.name }}</div>
+                      <div class="shpg-modal__pills">
+                        {% for value in option.values %}
+                          <button
+                            type="button"
+                            class="shpg-pill{% if available_variant.options[forloop.parentloop.index0] == value %} is-selected{% endif %}"
+                            data-shpg-option-index="{{ forloop.parentloop.index0 }}"
+                            data-shpg-value="{{ value | escape }}"
+                          >{{ value }}</button>
+                        {% endfor %}
+                      </div>
+                    </div>
+                  {% endfor %}
+
+                  <div class="shpg-modal__qty-label">Quantity</div>
+                  <div class="shpg-qty">
+                    <button type="button" data-shpg-qty="-" aria-label="Decrease quantity">&minus;</button>
+                    <input type="number" name="quantity" value="1" min="1" inputmode="numeric" data-shpg-qty-input>
+                    <button type="button" data-shpg-qty="+" aria-label="Increase quantity">+</button>
+                  </div>
+
+                  <button type="submit" class="shpg-modal__submit" data-shpg-submit>
+                    {% if available_variant.available %}Add to cart{% else %}Sold out{% endif %}
+                  </button>
+                </form>
+
+                <a class="shpg-modal__details" href="{{ product.url }}">View full details</a>
+              </div>
+            </div>
+
+            <script type="application/json" data-shpg-variants>
+              [
+                {%- for v in product.variants -%}
+                {
+                  "id": {{ v.id }},
+                  "options": {{ v.options | json }},
+                  "available": {{ v.available }},
+                  "price": {{ v.price | money | json }},
+                  "compare": {% if v.compare_at_price > v.price %}{{ v.compare_at_price | money | json }}{% else %}null{% endif %},
+                  "image": {% if v.featured_image %}{{ v.featured_image | image_url: width: 900 | json }}{% else %}null{% endif %}
+                }{%- unless forloop.last -%},{%- endunless -%}
+                {%- endfor -%}
+              ]
+            </script>
+          </dialog>
+        {% endif %}
+
       {% endfor %}
     {% else %}
       <div class="custom-best-sellers__empty">
@@ -857,13 +1154,16 @@ body {
 (function () {
   'use strict';
 
+  /* =======================================================
+     CARD IMAGE SLIDER + CHOOSE OPTIONS POPUP
+     ======================================================= */
+
   function initShProductGrid() {
     document.querySelectorAll('.custom-best-sellers').forEach(function (section) {
       if (section.dataset.initialized === 'true') return;
       section.dataset.initialized = 'true';
 
       var cards = Array.from(section.querySelectorAll('.custom-best-sellers__card'));
-      if (!cards.length) return;
 
       /* ---------- per card image slider ---------- */
       cards.forEach(function (card) {
@@ -913,9 +1213,7 @@ body {
         }
         [prevButton, nextButton].forEach(function (button) {
           if (!button) return;
-          button.addEventListener('mousedown', function (event) {
-            event.preventDefault();
-          });
+          button.addEventListener('mousedown', function (event) { event.preventDefault(); });
         });
 
         var startX = 0;
@@ -928,61 +1226,180 @@ body {
         }, { passive: true });
       });
 
-      /* ---------- variant selector ---------- */
-      cards.forEach(function (card) {
-        var selector = card.querySelector('[data-variant-selector]');
-        var hiddenInput = card.querySelector('[data-selected-variant]');
-        var addButton = card.querySelector('.custom-best-sellers__add');
-        var priceElement = card.querySelector('[data-product-price]');
-        var compareElement = card.querySelector('[data-product-compare]');
-
-        if (!selector || !hiddenInput) return;
-
-        var variants = Array.from(selector.querySelectorAll('.custom-best-sellers__variant'));
-
-        variants.forEach(function (variant) {
-          variant.addEventListener('click', function (event) {
-            event.preventDefault();
-            if (variant.disabled) return;
-
-            variants.forEach(function (item) { item.classList.remove('is-selected'); });
-            variant.classList.add('is-selected');
-
-            var variantId = variant.getAttribute('data-variant-id');
-            if (variantId) hiddenInput.value = variantId;
-
-            var variantPrice = variant.getAttribute('data-variant-price');
-            if (priceElement && variantPrice) priceElement.textContent = variantPrice;
-
-            var variantCompare = variant.getAttribute('data-variant-compare');
-            if (compareElement) {
-              if (variantCompare) {
-                compareElement.textContent = variantCompare;
-                compareElement.style.display = '';
-              } else {
-                compareElement.textContent = '';
-                compareElement.style.display = 'none';
-              }
-            }
-
-            if (addButton) {
-              addButton.disabled = false;
-              addButton.textContent = 'Add to cart';
-            }
-          });
+      /* ---------- Choose options buttons ---------- */
+      section.querySelectorAll('[data-shpg-open]').forEach(function (button) {
+        button.addEventListener('click', function () {
+          var modal = document.getElementById(button.getAttribute('data-shpg-open'));
+          if (!modal) return;
+          if (typeof modal.showModal === 'function') {
+            modal.showModal();
+          } else {
+            modal.setAttribute('open', '');
+          }
+          document.body.classList.add('shpg-modal-open');
         });
       });
 
-      /* ---------- cart form ---------- */
-      section.querySelectorAll('[data-cart-form]').forEach(function (form) {
-        form.addEventListener('submit', function (event) {
-          var selectedVariant = form.querySelector('[data-selected-variant]');
-          if (!selectedVariant || !selectedVariant.value) {
-            event.preventDefault();
-          }
+      /* ---------- popups ---------- */
+      section.querySelectorAll('[data-shpg-modal]').forEach(initModal);
+    });
+  }
+
+  /* =======================================================
+     POPUP LOGIC
+     ======================================================= */
+  function initModal(modal) {
+    if (modal.dataset.shpgReady === 'true') return;
+    modal.dataset.shpgReady = 'true';
+
+    var dataTag = modal.querySelector('[data-shpg-variants]');
+    var variants = [];
+    try {
+      variants = JSON.parse(dataTag.textContent);
+    } catch (e) {
+      variants = [];
+    }
+
+    var pills = Array.from(modal.querySelectorAll('.shpg-pill'));
+    var priceEl = modal.querySelector('[data-shpg-price]');
+    var compareEl = modal.querySelector('[data-shpg-compare]');
+    var imageEl = modal.querySelector('[data-shpg-image]');
+    var idInput = modal.querySelector('[data-shpg-variant-id]');
+    var submit = modal.querySelector('[data-shpg-submit]');
+    var qtyInput = modal.querySelector('[data-shpg-qty-input]');
+    var form = modal.querySelector('[data-shpg-form]');
+
+    /* har option index ke liye abhi kya selected hai */
+    var selected = [];
+    pills.forEach(function (pill) {
+      var index = parseInt(pill.getAttribute('data-shpg-option-index'), 10);
+      if (pill.classList.contains('is-selected')) {
+        selected[index] = pill.getAttribute('data-shpg-value');
+      }
+    });
+    /* jo option abhi tak khaali hai, uski pehli value le lo */
+    pills.forEach(function (pill) {
+      var index = parseInt(pill.getAttribute('data-shpg-option-index'), 10);
+      if (selected[index] === undefined) {
+        selected[index] = pill.getAttribute('data-shpg-value');
+        pill.classList.add('is-selected');
+      }
+    });
+
+    function findVariant() {
+      return variants.find(function (v) {
+        return v.options.every(function (value, index) {
+          return value === selected[index];
         });
+      });
+    }
+
+    /* jo combination kisi available variant se nahi banta,
+       us pill par line laga do */
+    function markUnavailable() {
+      pills.forEach(function (pill) {
+        var index = parseInt(pill.getAttribute('data-shpg-option-index'), 10);
+        var value = pill.getAttribute('data-shpg-value');
+        var possible = variants.some(function (v) {
+          if (v.options[index] !== value) return false;
+          return v.options.every(function (optionValue, i) {
+            if (i === index) return true;
+            return optionValue === selected[i];
+          }) && v.available;
+        });
+        pill.classList.toggle('is-unavailable', !possible);
+      });
+    }
+
+    function refresh() {
+      var variant = findVariant();
+
+      pills.forEach(function (pill) {
+        var index = parseInt(pill.getAttribute('data-shpg-option-index'), 10);
+        pill.classList.toggle(
+          'is-selected',
+          pill.getAttribute('data-shpg-value') === selected[index]
+        );
+      });
+
+      markUnavailable();
+
+      if (!variant) {
+        if (submit) {
+          submit.disabled = true;
+          submit.textContent = 'Unavailable';
+        }
+        return;
+      }
+
+      if (idInput) idInput.value = variant.id;
+      if (priceEl) priceEl.textContent = variant.price;
+
+      if (compareEl) {
+        if (variant.compare) {
+          compareEl.textContent = variant.compare;
+          compareEl.style.display = '';
+        } else {
+          compareEl.textContent = '';
+          compareEl.style.display = 'none';
+        }
+      }
+
+      if (imageEl && variant.image) imageEl.src = variant.image;
+
+      if (submit) {
+        submit.disabled = !variant.available;
+        submit.textContent = variant.available ? 'Add to cart' : 'Sold out';
+      }
+    }
+
+    pills.forEach(function (pill) {
+      pill.addEventListener('click', function () {
+        var index = parseInt(pill.getAttribute('data-shpg-option-index'), 10);
+        selected[index] = pill.getAttribute('data-shpg-value');
+        refresh();
       });
     });
+
+    /* quantity */
+    modal.querySelectorAll('[data-shpg-qty]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        if (!qtyInput) return;
+        var current = parseInt(qtyInput.value, 10) || 1;
+        var next = button.getAttribute('data-shpg-qty') === '+' ? current + 1 : current - 1;
+        qtyInput.value = Math.max(1, next);
+      });
+    });
+
+    /* close */
+    modal.querySelectorAll('[data-shpg-close]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        if (typeof modal.close === 'function') {
+          modal.close();
+        } else {
+          modal.removeAttribute('open');
+        }
+      });
+    });
+
+    /* backdrop par click se band */
+    modal.addEventListener('click', function (event) {
+      if (event.target === modal && typeof modal.close === 'function') modal.close();
+    });
+
+    /* band hone par body scroll wapas */
+    modal.addEventListener('close', function () {
+      document.body.classList.remove('shpg-modal-open');
+    });
+
+    /* variant resolve na ho to submit rok do */
+    if (form) {
+      form.addEventListener('submit', function (event) {
+        if (!idInput || !idInput.value) event.preventDefault();
+      });
+    }
+
+    refresh();
   }
 
   if (document.readyState === 'loading') {
