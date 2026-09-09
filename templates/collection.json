@@ -288,6 +288,9 @@
           ]
         }
       },
+      "custom_css": [
+        "quick-add-component,.quick-add {display: none !important;}"
+      ],
       "settings": {
         "layout_type": "grid",
         "product_card_size": "medium",
