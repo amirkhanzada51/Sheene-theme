@@ -136,6 +136,7 @@
     },
     "shop_by_concerns_KcpE9K": {
       "type": "shop-by-concerns",
+      "disabled": true,
       "name": "Shop by Concerns",
       "settings": {}
     },
@@ -1983,6 +1984,17 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "custom_liquid_tb6mWJ": {
+      "type": "custom-liquid",
+      "name": "t:names.custom_liquid",
+      "settings": {
+        "custom_liquid": "{% render 'sheene-shop-by-concerns' %}",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
     }
   },
   "order": [
@@ -2002,6 +2014,7 @@
     "collection_list_qamaz9",
     "product_list_WE4T79",
     "media_with_content_ekjjdF",
-    "featured_blog_posts_cwhnPB"
+    "featured_blog_posts_cwhnPB",
+    "custom_liquid_tb6mWJ"
   ]
 }
