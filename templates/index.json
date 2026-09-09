@@ -24,7 +24,7 @@
       "type": "custom-liquid",
       "name": "our best sellers",
       "settings": {
-        "custom_liquid": "{% render 'sheene-home-our-best-seller' %}",
+        "custom_liquid": "{% render 'sheene-home-product-slider' \n  collection: 'best-sellers',\n  heading: 'Our Best Sellers',\n  badge_text: 'Best Seller'%}",
         "background_color": "",
         "section_width": "page-width",
         "padding-block-start": 0,
