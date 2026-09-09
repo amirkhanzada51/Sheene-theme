@@ -31,6 +31,17 @@
         "padding-block-end": 0
       }
     },
+    "custom_liquid_tb6mWJ": {
+      "type": "custom-liquid",
+      "name": "Shop by Concerns",
+      "settings": {
+        "custom_liquid": "{% render 'sheene-shop-by-concerns' %}",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "custom_liquid_E4k7FY": {
       "type": "custom-liquid",
       "name": "our best sellers",
@@ -139,17 +150,6 @@
       "disabled": true,
       "name": "Shop by Concerns",
       "settings": {}
-    },
-    "custom_liquid_tb6mWJ": {
-      "type": "custom-liquid",
-      "name": "Shop by Concerns",
-      "settings": {
-        "custom_liquid": "{% render 'sheene-shop-by-concerns' %}",
-        "background_color": "",
-        "section_width": "page-width",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
     },
     "review_tUyjPU": {
       "type": "review",
@@ -2000,11 +2000,11 @@
   "order": [
     "custom_liquid_HChwgB",
     "custom_liquid_RVWDg8",
+    "custom_liquid_tb6mWJ",
     "custom_liquid_E4k7FY",
     "custom_liquid_ePT4bq",
     "shop_by_category_bU8Mkd",
     "shop_by_concerns_KcpE9K",
-    "custom_liquid_tb6mWJ",
     "review_tUyjPU",
     "section_VUTVxT",
     "section_MicGRT",
