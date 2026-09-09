@@ -1,0 +1,344 @@
+<style>
+/* =========================================================
+   SHOP BY CONCERNS
+   STATIC 4 COLUMN — NO DYNAMIC / NO CAROUSEL
+   ========================================================= */
+
+.soc-static,
+.soc-static * {
+  box-sizing: border-box;
+}
+
+.soc-static {
+  width: 100%;
+  background: #ffffff;
+  font-family: "Jost", sans-serif;
+  overflow: hidden;
+}
+
+.soc-static-container {
+  width: calc(100% - 76px);
+  margin: 0 auto;
+}
+
+
+/* =========================================================
+   HEADING
+   ========================================================= */
+
+.soc-static-heading {
+  margin: 0 0 34px;
+  padding: 0;
+
+  color: #080808;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 32px;
+  line-height: 1.15;
+
+  font-weight: 500;
+
+  letter-spacing: -1.2px;
+}
+
+
+/* =========================================================
+   4 COLUMN GRID
+   ========================================================= */
+
+.soc-static-grid {
+  width: 100%;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(4, minmax(0, 1fr));
+
+  column-gap: 37px;
+
+  row-gap: 45px;
+}
+
+
+/* =========================================================
+   CARD
+   ========================================================= */
+
+.soc-static-card {
+  width: 100%;
+
+  display: block;
+
+  text-decoration: none;
+
+  color: #111111;
+
+  font-family: "Jost", sans-serif;
+}
+
+
+/* =========================================================
+   IMAGE
+   ========================================================= */
+
+.soc-static-image {
+  width: 100%;
+
+  aspect-ratio: 1.42 / 1;
+
+  display: block;
+
+  overflow: hidden;
+
+  background: #eeeeee;
+}
+
+.soc-static-image img {
+  width: 100%;
+  height: 100%;
+
+  display: block;
+
+  object-fit: cover;
+
+  transition: transform 0.35s ease;
+}
+
+
+/* Very subtle hover — same clean look */
+
+.soc-static-card:hover .soc-static-image img {
+  transform: scale(1.02);
+}
+
+
+/* =========================================================
+   STATIC TEXT
+   ========================================================= */
+
+.soc-static-title {
+  width: 100%;
+
+  margin-top: 27px;
+
+  padding: 0;
+
+  text-align: center;
+
+  color: #111111;
+
+  font-family: "Jost", sans-serif;
+
+  font-size: 16px;
+
+  line-height: 1.25;
+
+  font-weight: 400;
+
+  letter-spacing: 0;
+
+  white-space: nowrap;
+
+  overflow: hidden;
+
+  text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media screen and (max-width: 1100px) {
+
+  .soc-static-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+
+    gap: 35px 25px;
+  }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 749px) {
+
+  .soc-static {
+    padding: 48px 0;
+  }
+
+  .soc-static-container {
+    width: calc(100% - 32px);
+  }
+
+  .soc-static-heading {
+    margin-bottom: 30px;
+
+    font-size: 30px;
+
+    letter-spacing: -0.8px;
+  }
+
+  .soc-static-grid {
+    grid-template-columns: 1fr 1fr;
+
+    column-gap: 16px;
+
+    row-gap: 30px;
+  }
+
+  .soc-static-title {
+    margin-top: 18px;
+
+    font-size: 16px;
+  }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+   ========================================================= */
+
+@media screen and (max-width: 480px) {
+
+  .soc-static-container {
+    width: calc(100% - 24px);
+  }
+
+  .soc-static-grid {
+    column-gap: 12px;
+    row-gap: 25px;
+  }
+
+  .soc-static-title {
+    font-size: 17px;
+  }
+
+}
+</style>
+
+
+<section class="soc-static">
+
+  <div class="soc-static-container">
+
+
+    <!-- =====================================================
+         STATIC HEADING
+         ===================================================== -->
+
+    <h2 class="soc-static-heading">
+      Shop by Concerns
+    </h2>
+
+
+    <!-- =====================================================
+         STATIC 4 COLUMNS
+         ===================================================== -->
+
+    <div class="soc-static-grid">
+
+
+      <!-- ===================================================
+           COLUMN 1
+           =================================================== -->
+
+      <div class="soc-static-card">
+
+        <div class="soc-static-image">
+
+          <img
+            src="https://beminimalist.co/cdn/shop/files/Uneven_Tone_or_Pigmentation-min.png"
+            alt="Dry Skin"
+            loading="lazy"
+          >
+
+        </div>
+
+        <div class="soc-static-title">
+          Uneven Tone
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================
+           COLUMN 2
+           =================================================== -->
+
+      <div class="soc-static-card">
+
+        <div class="soc-static-image">
+
+          <img
+            src="https://beminimalist.co/cdn/shop/files/Acne-min.png"
+            alt="Acne"
+            loading="lazy"
+          >
+
+        </div>
+
+        <div class="soc-static-title">
+          Acne Control
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================
+           COLUMN 3
+           =================================================== -->
+
+      <div class="soc-static-card">
+
+        <div class="soc-static-image">
+
+          <img
+            src="https://beminimalist.co/cdn/shop/files/Oiliness-min.png"
+            alt="Dull Skin"
+            loading="lazy"
+          >
+
+        </div>
+
+        <div class="soc-static-title">
+         Oiliness
+        </div>
+
+      </div>
+
+
+      <!-- ===================================================
+           COLUMN 4
+           =================================================== -->
+
+      <div class="soc-static-card">
+
+        <div class="soc-static-image">
+
+          <img
+            src="https://beminimalist.co/cdn/shop/files/Fine_Lines_Wrinkles-min.png"
+            alt="Sensitive Skin"
+            loading="lazy"
+          >
+
+        </div>
+
+        <div class="soc-static-title">
+          Fine Line / Wrinkles
+        </div>
+
+      </div>
+
+
+    </div>
+
+  </div>
+
+</section>
