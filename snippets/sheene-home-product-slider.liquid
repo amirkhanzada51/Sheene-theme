@@ -547,14 +547,24 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0;
-  max-height: min(86vh, 720px);
+  align-items: stretch;
+  max-height: min(86vh, 760px);
+  min-height: 480px;
   overflow: hidden;
   border-radius: 6px;
 }
+/* Media column ab poori row bharta hai, is liye neeche khali
+   safed patti nahi aati. Image contain rehti hai aur padding
+   ki wajah se kinaron se chipakti nahi. */
 .shpg-modal__media {
   position: relative;
-  background: #f2f4f5;
-  aspect-ratio: 1 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+  padding: 30px;
+  background: #f4f5f6;
   overflow: hidden;
 }
 .shpg-modal__media img {
@@ -562,9 +572,11 @@
   height: 100%;
   display: block;
   object-fit: contain;
+  object-position: center center;
 }
 .shpg-modal__info {
   padding: 34px 34px 34px 32px;
+  min-height: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -881,18 +893,32 @@ body.shpg-modal-open {
   /* popup mobile par: image upar, details neeche */
   .shpg-modal {
     width: calc(100vw - 24px);
-    max-height: 90vh;
+    max-height: 88vh;
+  }
+  .shpg-modal__close {
+    top: 10px;
+    right: 10px;
+    width: 34px;
+    height: 34px;
   }
   .shpg-modal__inner {
     grid-template-columns: 1fr;
-    max-height: 90vh;
+    grid-template-rows: auto 1fr;
+    max-height: 88vh;
+    min-height: 0;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
+  /* Mobile par image screen ka teesra hissa se zyada na le,
+     warna variants aur button fold ke neeche chale jate hain. */
   .shpg-modal__media {
-    aspect-ratio: 4 / 3;
+    height: 32vh;
+    max-height: 32vh;
+    min-height: 180px;
+    padding: 14px;
   }
   .shpg-modal__info {
-    padding: 22px 20px 26px;
+    padding: 20px 18px 24px;
     overflow: visible;
   }
   .shpg-modal__title { font-size: 22px; }
