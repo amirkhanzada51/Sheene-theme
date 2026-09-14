@@ -51,12 +51,8 @@
 
   TRUST ROW
   ---------
-  Price ke neeche teen promises: Free Delivery, Cash on Delivery,
-  7 Days Return & Exchange. Text neeche knobs se badalta hai.
-  Yaad rakhna ye customer se kiye gaye waade hain:
-    - Shipping settings mein free rate honi chahiye
-    - Payments mein COD enable hona chahiye
-    - Return policy page par wahi 7 din likhe hon
+  Price ke neeche teen promises: Free Delivery on 2500 PKR or above,
+  Cash on Delivery, Automatic 10% more discount on order above 2500 PKR.
 {% endcomment %}
 
 {% liquid
@@ -76,9 +72,9 @@
   assign HIDE_ARROWS_MOBILE = true
   assign MOBILE_GALLERY_GAP = '1.75rem'
 
-  assign TRUST_1 = 'Free Delivery'
+  assign TRUST_1 = 'Free Delivery on 2500 PKR or above'
   assign TRUST_2 = 'Cash on Delivery'
-  assign TRUST_3 = '7 Days Return & Exchange'
+  assign TRUST_3 = 'Automatic 10% more discount on order above 2500 PKR'
 
   assign SHOW_EMPTY_STATE = false
   assign REVIEWS_ANCHOR = '#sh-reviews'
@@ -332,8 +328,6 @@
     min-inline-size: 0;
   }
 
-  /* legend ka treatment bilkul "GOES WELL WITH" jaisa,
-     lekin theme ke asli font variable ke saath */
   .sh-variants-legend {
     padding: 0 0.5rem;
     margin-inline-start: 0.25rem;
@@ -348,7 +342,6 @@
 
   .sh-option + .sh-option { margin-top: 1.25rem; }
 
-  /* "Select Size" — GWW title jaise size aur weight par */
   .sh-option-label {
     display: block;
     margin: 0 0 0.75rem;
@@ -387,7 +380,6 @@
     outline-offset: var(--focus-outline-offset, 2px);
   }
 
-  /* selected: moti black outline, bina layout shift ke */
   .sh-pill.is-selected {
     border-color: var(--color-foreground, #111111);
     box-shadow: inset 0 0 0 1px var(--color-foreground, #111111);
@@ -407,34 +399,23 @@
   /* ---------- mobile ---------- */
   @media screen and (max-width: 749px) {
     {% if HIDE_ARROWS_MOBILE %}
-    /* mobile par swipe kaafi hai, arrows image ko dhak lete hain */
     .sh-gallery-arrow { display: none; }
     {% endif %}
 
-    /* gallery aur title ke beech saans */
     .sh-gallery { margin-bottom: {{ MOBILE_GALLERY_GAP }}; }
   }
 
   /* ---------- section layout ---------- */
   @media screen and (min-width: 750px) {
-    /* theme ka media column hidden hai, uski khaali jagah hatao */
     .product-information__grid { grid-template-columns: 1fr !important; }
     .product-information__media { display: none !important; }
 
-    /* poori page width mat lo */
     .product-details {
       width: 100%;
       max-width: {{ MAX_WIDTH }};
       margin-inline: auto;
     }
 
-    /* --- SETUP A: ek hi block (part omitted) ---
-       Custom Liquid block ke wrapper ko transparent bana kar gallery aur
-       info ko parent panel ka seedha grid item bana dete hain. Us se
-       gallery left column mein poori height leti hai, aur Body ke baad
-       aane wale theme blocks (Buy buttons, Goes Well With, Accordion)
-       khud ba khud right column mein stack ho jate hain. Group ko
-       horizontal karne ki zaroorat nahi. */
     .layout-panel-flex > *:has(> .sh-gallery),
     .layout-panel-flex > *:has(> .sh-pdp) {
       display: contents;
@@ -449,7 +430,6 @@
       align-content: start;
     }
 
-    /* row-gap 0 hai, is liye info column ko apna gap chahiye */
     .layout-panel-flex:has(> * > .sh-gallery) > .sh-pdp,
     .layout-panel-flex:has(> * > .sh-gallery) .sh-pdp {
       margin-block-end: var(--gap-lg, 1rem);
@@ -462,7 +442,6 @@
       {% if STICKY_MEDIA %}position: sticky; top: calc(var(--header-height, 0px) + 1.5rem);{% endif %}
     }
 
-    /* --- SETUP B: do alag blocks ek horizontal group ke andar --- */
     .layout-panel-flex--row:has(.sh-gallery) { align-items: flex-start; }
     .layout-panel-flex--row > *:has(> .sh-gallery) {
       flex: 0 0 {{ MEDIA_WIDTH }};
@@ -663,9 +642,11 @@
 
       <div class="sh-trust__item">
         <span class="sh-trust__icon" aria-hidden="true">
+          <!-- Discount / Percentage Icon -->
           <svg viewBox="0 0 24 24">
-            <path d="M3.5 9.5h11a5.5 5.5 0 1 1 0 11H9.5"/>
-            <path d="M7 5.5 3.5 9.5 7 13.5"/>
+            <line x1="19" y1="5" x2="5" y2="19"/>
+            <circle cx="7" cy="7" r="2.5"/>
+            <circle cx="17" cy="17" r="2.5"/>
           </svg>
         </span>
         <span class="sh-trust__label">{{ TRUST_3 }}</span>
