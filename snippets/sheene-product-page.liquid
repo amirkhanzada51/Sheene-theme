@@ -20,9 +20,21 @@
          {% render 'sheene-product-page', part: 'goes_well' %}
        Recommend Instead ya Goes Well With.
 
-    3. Main section ke NEECHE naye section mein:
+    3. Main section ke BAHAR, neeche naye section mein:
          {% render 'sheene-product-page', part: 'extras' %}
-       Expert quote, Ingredients, Results. Jiska data ho woh aata hai.
+       Ingredients + Results, full width. Jiska data ho woh aata hai.
+
+  EXPERT QUOTE
+    EXPERT_UNDER_SLIDER = true         desktop par image slider ke theek
+                                       neeche (block 1 khud lagata hai).
+                                       Tab slider sticky nahi rehta, warna
+                                       quote scroll mein kat jata.
+    EXPERT_MOBILE_UNDER_SLIDER = false mobile par slider ke neeche nahi,
+                                       extras section ke top par aata hai,
+                                       taake title aur price upar rahen.
+                                       true = mobile par bhi slider ke neeche.
+    EXPERT_UNDER_SLIDER = false        quote extras section mein, desktop
+                                       aur mobile dono.
 
   Accordion expert quote ke saath (quote left, accordion right) chahiye to
   EXPERT_WITH_ACCORDION = true, aur main column wala "Dynamic Accordian"
@@ -159,12 +171,113 @@
   comment
     ================= EXPERT / INGREDIENTS / RESULTS =================
   endcomment
+  assign EXPERT_UNDER_SLIDER = true
+  assign EXPERT_MOBILE_UNDER_SLIDER = false
   assign EXPERT_WITH_ACCORDION = false
   assign INGREDIENTS_HEADING = 'Ingredients that make a difference'
   assign RESULTS_HEADING = 'Results you can trust'
   assign RESULTS_SUBHEADING = 'Real customers. Unedited photos.'
   assign BEFORE_TEXT = 'Before'
   assign AFTER_TEXT = 'After'
+%}
+
+{% comment %} ================================================================
+     EXPERT QUOTE (ek dafa banta hai, slider ke neeche ya extras mein lagta hai)
+   ================================================================ {% endcomment %}
+{% assign expert_html = '' %}
+{% if part == 'slider' or part == 'all' or part == 'extras' or part == 'expert' %}
+  {% liquid
+    assign ex_field = product.metafields.custom.pp_expert
+    if ex_field == blank
+      assign ex_field = product.metafields.custom.expert_quote
+    endif
+    assign ex = nil
+    if ex_field.type contains 'list.'
+      for e in ex_field.value limit: 1
+        assign ex = e
+      endfor
+    else
+      assign ex = ex_field.value
+    endif
+  %}
+  {% if ex != blank and ex.quote.value != blank %}
+    {% capture expert_html %}
+      <figure class="sh-expert">
+        {% if ex.photo.value != blank %}
+          {% assign ex_alt = ex.name.value | escape %}
+          <div class="sh-expert__photo">
+            {{ ex.photo.value | image_url: width: 200 | image_tag: loading: 'lazy', alt: ex_alt }}
+          </div>
+        {% endif %}
+        <span class="sh-expert__mark" aria-hidden="true">&rdquo;</span>
+        <div>
+          <blockquote class="sh-expert__quote">{{ ex.quote.value | escape | newline_to_br }}</blockquote>
+          {% if ex.name.value != blank %}
+            <figcaption class="sh-expert__by">
+              {{ ex.name.value | escape }}
+              {% if ex.credentials.value != blank %}<span class="sh-expert__cred">{{ ex.credentials.value | escape }}</span>{% endif %}
+            </figcaption>
+          {% endif %}
+        </div>
+      </figure>
+    {% endcapture %}
+    <style>
+  .sh-expert {
+    position: relative;
+    display: flex;
+    gap: 1.1rem;
+    align-items: flex-start;
+    margin: 0;
+    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
+    background: #F7F7F5;
+    border-radius: 16px;
+    font-family: var(--font-body--family, system-ui, sans-serif);
+    color: var(--color-foreground, #111111);
+  }
+  .sh-expert__photo {
+    flex: 0 0 auto;
+    width: clamp(64px, 56px + 2vw, 88px);
+    height: clamp(64px, 56px + 2vw, 88px);
+    border-radius: 50%;
+    overflow: hidden;
+    background: #E8E8E5;
+  }
+  .sh-expert__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sh-expert__mark {
+    position: absolute;
+    top: 0.75rem;
+    right: 1.1rem;
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: 700;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.12);
+  }
+  .sh-expert__quote {
+    margin: 0;
+    font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+    line-height: 1.55;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.82);
+  }
+  .sh-expert__by { margin: 0.9rem 0 0; font-weight: 600; font-size: clamp(0.9rem, 0.86rem + 0.15vw, 1rem); }
+  .sh-expert__cred { display: block; font-weight: 400; font-size: 0.88em; color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.65); margin-top: 0.15rem; }
+  .sh-expert-wrap { display: grid; gap: 1.5rem; align-items: start; }
+  @media (min-width: 750px) {
+    .sh-expert-wrap--split { grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 1rem + 2vw, 3rem); }
+  }
+  .sh-gallery-expert { margin-top: 1.5rem; }
+  {% unless EXPERT_MOBILE_UNDER_SLIDER %}
+  @media (max-width: 749px) { .sh-gallery-expert { display: none; } }
+  {% endunless %}
+  @media (min-width: 750px) { .sh-expert-mobile { display: none; } }
+</style>
+  {% endif %}
+{% endif %}
+
+{% liquid
+  assign sticky_on = STICKY_MEDIA
+  if EXPERT_UNDER_SLIDER and expert_html != blank
+    assign sticky_on = false
+  endif
 %}
 
 {% comment %} ================================================================
@@ -680,14 +793,14 @@
     .layout-panel-flex:has(> * > .sh-gallery) .sh-gallery {
       grid-column: 1;
       grid-row: 1 / span 50;
-      {% if STICKY_MEDIA %}position: sticky; top: calc(var(--header-height, 0px) + 1.5rem);{% endif %}
+      {% if sticky_on %}position: sticky; top: calc(var(--header-height, 0px) + 1.5rem);{% endif %}
     }
 
     .layout-panel-flex--row:has(.sh-gallery) { align-items: flex-start; }
     .layout-panel-flex--row > *:has(> .sh-gallery) {
       flex: 0 0 {{ MEDIA_WIDTH }};
       min-width: 0;
-      {% if STICKY_MEDIA %}position: sticky; top: calc(var(--header-height, 0px) + 1.5rem);{% endif %}
+      {% if sticky_on %}position: sticky; top: calc(var(--header-height, 0px) + 1.5rem);{% endif %}
     }
     .layout-panel-flex--row > *:has(> .sh-pdp) {
       flex: 1 1 0;
@@ -750,6 +863,10 @@
           <button type="button" class="sh-gallery-dot" data-goto="{{ forloop.index0 }}" aria-label="Go to image {{ forloop.index }}"></button>
         {% endfor %}
       </div>
+    {% endif %}
+
+    {% if EXPERT_UNDER_SLIDER and expert_html != blank %}
+      <div class="sh-gallery-expert">{{ expert_html }}</div>
     {% endif %}
   </div>
 
@@ -1598,47 +1715,6 @@
   }
   .sh-x-sub { margin: 0.4rem 0 0; font-size: clamp(0.9rem, 0.86rem + 0.15vw, 1rem); color: var(--sh-x-muted); }
 
-  /* ---------- expert ---------- */
-  .sh-expert-wrap { display: grid; gap: 1.5rem; align-items: start; }
-  @media (min-width: 750px) {
-    .sh-expert-wrap--split { grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 1rem + 2vw, 3rem); }
-  }
-  .sh-expert {
-    position: relative;
-    display: flex;
-    gap: 1.1rem;
-    align-items: flex-start;
-    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
-    background: #F7F7F5;
-    border-radius: 16px;
-  }
-  .sh-expert__photo {
-    flex: 0 0 auto;
-    width: clamp(64px, 56px + 2vw, 88px);
-    height: clamp(64px, 56px + 2vw, 88px);
-    border-radius: 50%;
-    overflow: hidden;
-    background: #E8E8E5;
-  }
-  .sh-expert__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .sh-expert__mark {
-    position: absolute;
-    top: 0.75rem;
-    right: 1.1rem;
-    font-size: 3rem;
-    line-height: 1;
-    font-weight: 700;
-    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.12);
-  }
-  .sh-expert__quote {
-    margin: 0;
-    font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
-    line-height: 1.55;
-    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.82);
-  }
-  .sh-expert__by { margin: 0.9rem 0 0; font-weight: 600; font-size: clamp(0.9rem, 0.86rem + 0.15vw, 1rem); }
-  .sh-expert__cred { display: block; font-weight: 400; font-size: 0.88em; color: var(--sh-x-muted); margin-top: 0.15rem; }
-
   /* ---------- ingredients ---------- */
   .sh-ingr-grid { display: grid; gap: 0.9rem; }
   @media (min-width: 750px) { .sh-ingr-grid { grid-template-columns: 1fr 1fr; gap: 1rem; } }
@@ -1712,50 +1788,23 @@
 </style>
 {% endif %}
 
-{% comment %} ============ EXPERT ============ {% endcomment %}
+{% comment %} ============ EXPERT (extras section mein) ============ {% endcomment %}
 {% if part == 'extras' or part == 'expert' %}
-  {% liquid
-    assign ex_field = product.metafields.custom.pp_expert
-    if ex_field == blank
-      assign ex_field = product.metafields.custom.expert_quote
-    endif
-    assign ex = nil
-    if ex_field.type contains 'list.'
-      for e in ex_field.value limit: 1
-        assign ex = e
-      endfor
-    else
-      assign ex = ex_field.value
-    endif
-  %}
-  <!-- sheene expert: type={{ ex_field.type | default: 'none' }} entry={{ ex.system.handle | default: 'none' }} quote={% if ex.quote.value != blank %}yes{% else %}no{% endif %} -->
-  {% if ex != blank and ex.quote.value != blank %}
-    <div class="sh-x">
-      <div class="sh-expert-wrap{% if EXPERT_WITH_ACCORDION %} sh-expert-wrap--split{% endif %}">
-        <figure class="sh-expert" style="margin:0;">
-          {% if ex.photo.value != blank %}
-            {% assign ex_alt = ex.name.value | escape %}
-            <div class="sh-expert__photo">
-              {{ ex.photo.value | image_url: width: 200 | image_tag: loading: 'lazy', alt: ex_alt }}
-            </div>
+  {% if expert_html != blank %}
+    {% if part == 'extras' and EXPERT_UNDER_SLIDER %}
+      {% unless EXPERT_MOBILE_UNDER_SLIDER %}
+        <div class="sh-x sh-expert-mobile">{{ expert_html }}</div>
+      {% endunless %}
+    {% else %}
+      <div class="sh-x">
+        <div class="sh-expert-wrap{% if EXPERT_WITH_ACCORDION %} sh-expert-wrap--split{% endif %}">
+          {{ expert_html }}
+          {% if EXPERT_WITH_ACCORDION %}
+            <div>{% render 'sheene-product-accordion' %}</div>
           {% endif %}
-          <span class="sh-expert__mark" aria-hidden="true">&rdquo;</span>
-          <div>
-            <blockquote class="sh-expert__quote">{{ ex.quote.value | escape | newline_to_br }}</blockquote>
-            {% if ex.name.value != blank %}
-              <figcaption class="sh-expert__by">
-                {{ ex.name.value | escape }}
-                {% if ex.credentials.value != blank %}<span class="sh-expert__cred">{{ ex.credentials.value | escape }}</span>{% endif %}
-              </figcaption>
-            {% endif %}
-          </div>
-        </figure>
-
-        {% if EXPERT_WITH_ACCORDION %}
-          <div>{% render 'sheene-product-accordion' %}</div>
-        {% endif %}
+        </div>
       </div>
-    </div>
+    {% endif %}
   {% endif %}
 {% endif %}
 
