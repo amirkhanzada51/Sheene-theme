@@ -75,7 +75,14 @@
 
   ESTIMATED DELIVERY
   ------------------
-  Aaj (Karachi time) + DELIVERY_MIN_DAYS se DELIVERY_MAX_DAYS, JS se.
+  Countdown line + black timeline card (Purchased > Processing > Delivered).
+    DELIVERY_MIN_DAYS / MAX_DAYS   delivery window, aaj se kitne din
+    ETA_PROCESS_DAYS               processing kitne din (Processing step)
+    ETA_CUTOFF_HOUR                is ghante tak order = aaj ka order
+                                   (24 = raat 12 baje, 14 = 2 PM)
+  Cutoff guzar jaye to countdown aur saari dates agle din par shift.
+  Sab Karachi time par, har 30 second update. JS se, taake cache purani
+  date na dikhaye.
 
   REVIEW STARS
   ------------
@@ -140,7 +147,13 @@
   assign SHOW_DELIVERY = true
   assign DELIVERY_MIN_DAYS = 2
   assign DELIVERY_MAX_DAYS = 4
-  assign DELIVERY_LABEL = 'Estimated delivery:'
+  assign ETA_CUTOFF_HOUR = 24
+  assign ETA_PROCESS_DAYS = 1
+  assign ETA_LINE_1 = 'Order today within'
+  assign ETA_LINE_2 = ", you'll receive your package between"
+  assign ETA_STEP_1 = 'Purchased'
+  assign ETA_STEP_2 = 'Processing'
+  assign ETA_STEP_3 = 'Delivered'
 
   comment
     ================= GOES WELL / REFER =================
@@ -466,19 +479,69 @@
   }
 
   /* ---------- delivery estimate ---------- */
-  .sh-eta {
-    display: inline-flex;
+  .sh-eta { width: 100%; }
+  .sh-eta__line {
+    margin: 0 0 0.85rem;
+    font-size: clamp(0.92rem, 0.88rem + 0.18vw, 1.02rem);
+    line-height: 1.5;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.8);
+  }
+  .sh-eta__line strong { color: var(--color-foreground, #111111); font-weight: 700; white-space: nowrap; }
+  .sh-eta__clock {
+    display: inline-block;
+    width: 1.05em;
+    height: 1.05em;
+    vertical-align: -0.16em;
+    margin-right: 0.35em;
+  }
+  .sh-eta__clock svg { width: 100%; height: 100%; display: block; fill: none; stroke: currentColor; stroke-width: 1.8px; stroke-linecap: round; stroke-linejoin: round; }
+
+  .sh-eta__card {
+    background: var(--color-foreground, #111111);
+    color: var(--color-background, #FFFFFF);
+    border-radius: 14px;
+    padding: clamp(1rem, 0.85rem + 0.6vw, 1.4rem) clamp(1rem, 0.8rem + 0.9vw, 1.6rem);
+  }
+  .sh-eta__track {
+    display: grid;
+    grid-template-columns: auto 1fr auto 1fr auto;
     align-items: center;
     gap: 0.6rem;
-    padding: 0.65rem 1rem;
-    background: #F7F7F5;
-    border-radius: 999px;
-    font-size: clamp(0.85rem, 0.82rem + 0.12vw, 0.95rem);
-    line-height: 1.3;
-    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.78);
   }
-  .sh-eta .sh-ico { width: 1.1rem; height: 1.1rem; flex: 0 0 auto; display: block; }
-  .sh-eta strong { color: var(--color-foreground, #111111); font-weight: 600; }
+  .sh-eta__icon { width: clamp(26px, 22px + 1vw, 34px); height: clamp(26px, 22px + 1vw, 34px); display: block; }
+  .sh-eta__icon svg { width: 100%; height: 100%; display: block; fill: none; stroke: currentColor; stroke-width: 1.6px; stroke-linecap: round; stroke-linejoin: round; }
+  .sh-eta__bar {
+    position: relative;
+    height: 2px;
+    background: currentColor;
+    border-radius: 2px;
+    margin-inline: 0.35rem;
+  }
+  .sh-eta__bar::before,
+  .sh-eta__bar::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+    transform: translateY(-50%);
+  }
+  .sh-eta__bar::before { left: -3px; }
+  .sh-eta__bar::after { right: -3px; }
+
+  .sh-eta__steps {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.7rem;
+  }
+  .sh-eta__step { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+  .sh-eta__step:nth-child(2) { text-align: center; align-items: center; }
+  .sh-eta__step:nth-child(3) { text-align: right; align-items: flex-end; }
+  .sh-eta__date { font-weight: 700; font-size: clamp(0.8rem, 0.76rem + 0.18vw, 0.92rem); line-height: 1.2; white-space: nowrap; }
+  .sh-eta__label { font-size: clamp(0.8rem, 0.76rem + 0.18vw, 0.95rem); line-height: 1.2; opacity: 0.85; }
 
   /* ---------- perks ---------- */
   .sh-perks {
@@ -594,7 +657,6 @@
   @media screen and (max-width: 749px) {
     {% if HIDE_ARROWS_MOBILE %}.sh-gallery-arrow { display: none; }{% endif %}
     .sh-gallery { margin-bottom: {{ MOBILE_GALLERY_GAP }}; }
-    .sh-eta { border-radius: 12px; }
   }
 
   /* ---------- section layout ---------- */
@@ -946,15 +1008,30 @@
     {% endif %}
 
     {% if SHOW_DELIVERY %}
-      {% liquid
-        assign now_s = 'now' | date: '%s' | times: 1
-        assign eta_a = DELIVERY_MIN_DAYS | times: 86400 | plus: now_s | date: '%-d %B'
-        assign eta_b = DELIVERY_MAX_DAYS | times: 86400 | plus: now_s | date: '%-d %B'
-      %}
-      <p class="sh-eta" data-sh-eta data-min="{{ DELIVERY_MIN_DAYS }}" data-max="{{ DELIVERY_MAX_DAYS }}">
-        <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg></span>
-        <span>{{ DELIVERY_LABEL }} <strong data-sh-eta-text>{{ eta_a }} to {{ eta_b }}</strong></span>
-      </p>
+      <div class="sh-eta" data-sh-eta
+           data-min="{{ DELIVERY_MIN_DAYS }}"
+           data-max="{{ DELIVERY_MAX_DAYS }}"
+           data-process="{{ ETA_PROCESS_DAYS }}"
+           data-cutoff="{{ ETA_CUTOFF_HOUR }}">
+        <p class="sh-eta__line">
+          <span class="sh-eta__clock" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></span>{{ ETA_LINE_1 }} <strong data-eta-countdown>&nbsp;</strong>{{ ETA_LINE_2 }} <strong data-eta-from>&nbsp;</strong> to <strong data-eta-to>&nbsp;</strong>
+        </p>
+
+        <div class="sh-eta__card">
+          <div class="sh-eta__track" aria-hidden="true">
+            <span class="sh-eta__icon"><svg viewBox="0 0 24 24"><path d="M5.5 8h13l-1 12.5h-11z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg></span>
+            <span class="sh-eta__bar"></span>
+            <span class="sh-eta__icon"><svg viewBox="0 0 24 24"><path d="M2.75 6.25h10.5v9.5H2.75z"/><path d="M13.25 9.75h3.4l3.6 3.4v2.6h-7z"/><circle cx="6.75" cy="17.75" r="1.6"/><circle cx="16.75" cy="17.75" r="1.6"/></svg></span>
+            <span class="sh-eta__bar"></span>
+            <span class="sh-eta__icon"><svg viewBox="0 0 24 24"><path d="M12 21s-6.5-6.2-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 14.8 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.4"/></svg></span>
+          </div>
+          <div class="sh-eta__steps">
+            <div class="sh-eta__step"><span class="sh-eta__date" data-eta-s1>&nbsp;</span><span class="sh-eta__label">{{ ETA_STEP_1 }}</span></div>
+            <div class="sh-eta__step"><span class="sh-eta__date" data-eta-s2>&nbsp;</span><span class="sh-eta__label">{{ ETA_STEP_2 }}</span></div>
+            <div class="sh-eta__step"><span class="sh-eta__date" data-eta-s3>&nbsp;</span><span class="sh-eta__label">{{ ETA_STEP_3 }}</span></div>
+          </div>
+        </div>
+      </div>
     {% endif %}
 
     <div class="sh-perks" data-sh-perks>
@@ -1135,29 +1212,55 @@
       var MET_TEXT = {{ PERK_MET_TEXT | json }};
       var ALWAYS_TEXT = {{ PERK_ALWAYS_TEXT | json }};
 
-      /* ---- delivery estimate, Karachi date ---- */
+      /* ---- delivery estimate + countdown, Karachi time (UTC+5, no DST) ---- */
       var eta = root.querySelector('[data-sh-eta]');
       if (eta) {
-        var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-        var ord = function (n) {
-          var s = ['th','st','nd','rd'], v = n % 100;
-          return n + (s[(v - 20) % 10] || s[v] || s[0]);
-        };
-        var today;
-        try {
-          var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Karachi', year: 'numeric', month: '2-digit', day: '2-digit' })
-            .format(new Date()).split('-');
-          today = new Date(+parts[0], +parts[1] - 1, +parts[2]);
-        } catch (e) { today = new Date(); }
+        var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        var PKT = 5 * 3600 * 1000;
+        var minD = parseInt(eta.dataset.min, 10) || 2;
+        var maxD = parseInt(eta.dataset.max, 10) || 4;
+        var procD = parseInt(eta.dataset.process, 10);
+        if (isNaN(procD)) procD = 1;
+        var cutoff = parseInt(eta.dataset.cutoff, 10);
+        if (isNaN(cutoff) || cutoff < 1 || cutoff > 24) cutoff = 24;
 
-        var add = function (d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; };
-        var a = add(today, parseInt(eta.dataset.min, 10) || 2);
-        var b = add(today, parseInt(eta.dataset.max, 10) || 4);
-        var text = a.getMonth() === b.getMonth()
-          ? ord(a.getDate()) + ' to ' + ord(b.getDate()) + ' ' + MONTHS[b.getMonth()]
-          : ord(a.getDate()) + ' ' + MONTHS[a.getMonth()] + ' to ' + ord(b.getDate()) + ' ' + MONTHS[b.getMonth()];
-        var etaText = eta.querySelector('[data-sh-eta-text]');
-        if (etaText) etaText.textContent = text;
+        var q = function (s) { return eta.querySelector(s); };
+        var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+        var day = function (base, n) { return new Date(base + n * 86400000); };
+        var short = function (d) { return MON[d.getUTCMonth()] + ' ' + d.getUTCDate(); };
+        var full = function (d) { return pad(d.getUTCDate()) + '/' + pad(d.getUTCMonth() + 1) + '/' + d.getUTCFullYear(); };
+        var range = function (a, b) {
+          if (a.getTime() === b.getTime()) return short(a);
+          return a.getUTCMonth() === b.getUTCMonth()
+            ? short(a) + ' - ' + b.getUTCDate()
+            : short(a) + ' - ' + short(b);
+        };
+
+        var renderEta = function () {
+          var pk = Date.now() + PKT;
+          var midnight = Math.floor(pk / 86400000) * 86400000;
+          var cut = midnight + cutoff * 3600000;
+          var base = midnight;
+          if (pk >= cut) { cut += 86400000; base += 86400000; }
+
+          var left = Math.max(0, cut - pk);
+          var h = Math.floor(left / 3600000);
+          var m = Math.floor((left % 3600000) / 60000);
+
+          var d0 = day(base, 0);
+          var pEnd = day(base, Math.max(0, Math.min(procD, minD - 1)));
+          var dA = day(base, minD);
+          var dB = day(base, maxD);
+
+          q('[data-eta-countdown]').textContent = h + 'h ' + pad(m) + 'min';
+          q('[data-eta-from]').textContent = full(dA);
+          q('[data-eta-to]').textContent = full(dB);
+          q('[data-eta-s1]').textContent = short(d0);
+          q('[data-eta-s2]').textContent = range(d0, pEnd);
+          q('[data-eta-s3]').textContent = range(dA, dB);
+        };
+        renderEta();
+        setInterval(renderEta, 30000);
       }
 
       /* ---- money ---- */
