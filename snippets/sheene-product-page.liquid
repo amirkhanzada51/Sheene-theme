@@ -69,8 +69,11 @@
   ------------------
     expert_quote     name, credentials, quote (multi line), photo (image)
     ingredient_card  name, description (multi line), image (image)
-    result_card      name, duration, quote (multi line), before_image,
-                     after_image, product (product ref, optional)
+    product_result_card  name, duration, quote (multi line),
+                         image (file, before/after ek hi photo mein),
+                         product (product ref, optional)
+                         Purani entries mein image khali ho to before_image
+                         wali photo lag jati hai.
 
   PERKS ROW
   ---------
@@ -178,8 +181,7 @@
   assign INGREDIENTS_HEADING = 'Ingredients that make a difference'
   assign RESULTS_HEADING = 'Results you can trust'
   assign RESULTS_SUBHEADING = 'Real customers. Unedited photos.'
-  assign BEFORE_TEXT = 'Before'
-  assign AFTER_TEXT = 'After'
+  assign RESULT_IMAGE_RATIO = '1 / 1'
 %}
 
 {% comment %} ================================================================
@@ -1782,8 +1784,7 @@
   }
   @media (min-width: 750px) { .sh-res { flex-basis: calc((100% - 2 * var(--sh-res-gap)) / 3); } }
   @media (min-width: 1100px) { .sh-res { flex-basis: calc((100% - 3 * var(--sh-res-gap)) / 4); } }
-  .sh-res__imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #FFFFFF; }
-  .sh-res__img { position: relative; aspect-ratio: 3 / 4; background: #F2F2F0; overflow: hidden; }
+  .sh-res__img { position: relative; aspect-ratio: {{ RESULT_IMAGE_RATIO }}; background: #F2F2F0; overflow: hidden; }
   .sh-res__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
   .sh-res__tag {
     position: absolute;
@@ -1873,46 +1874,65 @@
 {% comment %} ============ RESULTS ============ {% endcomment %}
 {% if part == 'extras' or part == 'results' %}
   {% liquid
+    assign results = ''
     if source == 'all'
-      assign results = shop.metaobjects.result_card.values
+      assign results = shop.metaobjects.product_result_card.values
+      if results == blank or results.size == 0
+        assign results = shop.metaobjects.result_card.values
+      endif
     else
-      assign results = product.metafields.custom.pp_results.value
+      assign res_field = product.metafields.custom.pp_results
+      if res_field.type contains 'list.'
+        assign results = res_field.value
+      elsif res_field != blank
+        assign results = res_field.value | sort
+      endif
     endif
   %}
-  {% if results != blank and results.size > 0 %}
+  {% capture res_cards %}
+    {% for r in results limit: limit %}
+      {% liquid
+        assign r_img = r.image.value
+        if r_img == blank
+          assign r_img = r.before_image.value
+        endif
+        assign r_prod = nil
+        if r.product.value != blank
+          for p in r.product.value limit: 1
+            assign r_prod = p
+          endfor
+          if r_prod == blank
+            assign r_prod = r.product.value
+          endif
+        endif
+        assign r_alt = r.name.value | default: RESULTS_HEADING | escape
+      %}
+      {% if r_img != blank %}
+        <article class="sh-res">
+          <div class="sh-res__img">
+            {{ r_img | image_url: width: 900 | image_tag: loading: 'lazy', alt: r_alt, widths: '360,540,720,900', sizes: '(min-width: 1100px) 24vw, (min-width: 750px) 32vw, 80vw' }}
+          </div>
+          <div class="sh-res__body">
+            <div class="sh-res__top">
+              {% if r.name.value != blank %}<h3 class="sh-res__name">{{ r.name.value | escape }}</h3>{% endif %}
+              {% if r.duration.value != blank %}<span class="sh-res__dur">{{ r.duration.value | escape }}</span>{% endif %}
+            </div>
+            {% if r.quote.value != blank %}<p class="sh-res__quote">{{ r.quote.value | escape }}</p>{% endif %}
+            {% if source == 'all' and r_prod != blank and r_prod.url != blank %}
+              <a class="sh-res__prod" href="{{ r_prod.url }}">{{ r_prod.title }}</a>
+            {% endif %}
+          </div>
+        </article>
+      {% endif %}
+    {% endfor %}
+  {% endcapture %}
+  {% if res_cards contains 'sh-res__img' %}
     <section class="sh-x" aria-labelledby="ShRes-{{ product.id | default: 'home' }}">
       <div class="sh-x-head">
         <h2 class="sh-x-title" id="ShRes-{{ product.id | default: 'home' }}">{{ RESULTS_HEADING }}</h2>
         {% if RESULTS_SUBHEADING != blank %}<p class="sh-x-sub">{{ RESULTS_SUBHEADING }}</p>{% endif %}
       </div>
-      <div class="sh-res-track">
-        {% for r in results limit: limit %}
-          {% if r.before_image.value != blank and r.after_image.value != blank %}
-            <article class="sh-res">
-              <div class="sh-res__imgs">
-                <div class="sh-res__img">
-                  {{ r.before_image.value | image_url: width: 500 | image_tag: loading: 'lazy', alt: 'Before', widths: '250,350,500', sizes: '(min-width: 1100px) 12vw, (min-width: 750px) 16vw, 40vw' }}
-                  <span class="sh-res__tag">{{ BEFORE_TEXT }}</span>
-                </div>
-                <div class="sh-res__img">
-                  {{ r.after_image.value | image_url: width: 500 | image_tag: loading: 'lazy', alt: 'After', widths: '250,350,500', sizes: '(min-width: 1100px) 12vw, (min-width: 750px) 16vw, 40vw' }}
-                  <span class="sh-res__tag">{{ AFTER_TEXT }}</span>
-                </div>
-              </div>
-              <div class="sh-res__body">
-                <div class="sh-res__top">
-                  {% if r.name.value != blank %}<h3 class="sh-res__name">{{ r.name.value | escape }}</h3>{% endif %}
-                  {% if r.duration.value != blank %}<span class="sh-res__dur">{{ r.duration.value | escape }}</span>{% endif %}
-                </div>
-                {% if r.quote.value != blank %}<p class="sh-res__quote">{{ r.quote.value | escape }}</p>{% endif %}
-                {% if source == 'all' and r.product.value != blank %}
-                  <a class="sh-res__prod" href="{{ r.product.value.url }}">{{ r.product.value.title }}</a>
-                {% endif %}
-              </div>
-            </article>
-          {% endif %}
-        {% endfor %}
-      </div>
+      <div class="sh-res-track">{{ res_cards }}</div>
     </section>
   {% endif %}
 {% endif %}
