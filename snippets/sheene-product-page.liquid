@@ -104,6 +104,9 @@
   assign limit = limit | default: 8
 
   # ================= BODY / SLIDER =================
+  # SAFE_MODE = true: sticky JS, cart watcher aur extras mover band. Debug ke liye.
+  assign SAFE_MODE = false
+
   assign GALLERY_RATIO = '1 / 1'
   assign MEDIA_WIDTH = '52%'
   assign MAX_WIDTH = '1240px'
@@ -900,7 +903,7 @@
 
       goTo(0);
 
-      {% if sticky_on %}
+      {% if sticky_on and SAFE_MODE == false %}
       /* Sticky left column jo viewport se lamba ho: pehle scroll hota hai,
          bottom tak pohanch kar chipak jata hai, jaise jenpharm par. */
       var GAP = 24;
@@ -1427,7 +1430,7 @@
       }
 
       if (perks.length) {
-        if (!window.__shCartWatch) {
+        if (!window.__shCartWatch && !{{ SAFE_MODE | json }}) {
           window.__shCartWatch = true;
           var origFetch = window.fetch;
           window.fetch = function () {
@@ -1952,6 +1955,7 @@
 
 {% if part == 'extras' %}
   </div>
+  {% unless SAFE_MODE %}
   <script>
     (function () {
       /* Extras block galti se product ke right column mein ho to bhi
@@ -1964,4 +1968,5 @@
       if (!el.children.length || !el.textContent.trim()) el.remove();
     })();
   </script>
+  {% endunless %}
 {% endif %}
