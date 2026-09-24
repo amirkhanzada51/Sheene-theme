@@ -245,7 +245,7 @@
                     },
                     "custom_liquid_dqgyJX": {
                       "type": "custom-liquid",
-                      "name": "Product Title",
+                      "name": "Extra",
                       "settings": {
                         "custom_liquid": "{% render 'sheene-product-page', part: 'extras' %}"
                       },
