@@ -1,99 +1,97 @@
 {% comment %}
 ==========================================================================
-  SHEENE - Product page (gallery + info) - ONE FILE
+  SHEENE - Product page, POORA EK FILE MEIN
 ==========================================================================
 
   Snippet ka naam:  sheene-product-page
 
-  ISTEMAAL
-  --------
-  Do Custom Liquid blocks, dono isi file ko call karte hain:
+  PARTS (har Custom Liquid block isi file ko call karta hai)
+  ----------------------------------------------------------
+    part: 'slider'        Left column image slider
+    part: 'body'          Right column: tags, title, rating, price, intro,
+                          benefits, delivery, perks, variants
+    part: 'all'           slider + body upar neeche (ek hi block mein)
+    part: 'goes_well'     Goes Well With / Recommend Instead box
+    part: 'expert'        Doctor / expert quote card
+    part: 'ingredients'   Ingredients that make a difference
+    part: 'results'       Before / After result cards
 
-    Slider block (left):   {% render 'sheene-product-page', part: 'slider' %}
-    Body block (right):    {% render 'sheene-product-page', part: 'body' %}
+  Extra params:
+    part: 'expert', layout: 'split'
+        Quote left, accordion right (desktop). Split use karo to main column
+        wala "Dynamic Accordian" block band kar do, warna do dafa aayega.
+    part: 'results', source: 'all', limit: 8
+        Saare result cards (home page ke liye), product se nahi.
 
-  Agar dono ek hi block mein chahiye (upar neeche stack honge):
-
-                           {% render 'sheene-product-page' %}
-
-  BLOCK STRUCTURE (theme editor mein)
-  -----------------------------------
+  BLOCK STRUCTURE (theme editor)
+  ------------------------------
     Product details
-    └─ Group  (Direction: Horizontal, Stack on mobile: on)
-       ├─ Slider block
-       └─ Group  (Direction: Vertical)
-          ├─ Body block
+    └─ Group  (Horizontal, Stack on mobile: on)
+       ├─ Custom Liquid   {% render 'sheene-product-page', part: 'slider' %}
+       └─ Group  (Vertical)
+          ├─ Custom Liquid   {% render 'sheene-product-page', part: 'body' %}
           ├─ Buy buttons
-          ├─ Goes Well With
-          ├─ Description
-          └─ Accordion
+          ├─ Custom Liquid   {% render 'sheene-product-page', part: 'goes_well' %}
+          └─ Custom Liquid   {% render 'sheene-product-accordion' %}
 
-  Layout ki saari CSS is file ke andar hai. Theme ki files chherne
-  ki zaroorat nahi.
+    Main section ke neeche naya section, usme Custom Liquid blocks:
+          {% render 'sheene-product-page', part: 'expert', layout: 'split' %}
+          {% render 'sheene-product-page', part: 'ingredients' %}
+          {% render 'sheene-product-page', part: 'results' %}
 
-  KNOBS (neeche wale liquid block mein)
-  -------------------------------------
-    GALLERY_RATIO   image ka shape: '1 / 1', '4 / 5', '3 / 4'
-    MEDIA_WIDTH     desktop par gallery column ka hissa
-    MAX_WIDTH       poore product area ki max width
-    COLUMN_GAP      dono columns ke beech ka gap
-    STICKY_MEDIA    scroll par gallery chipki rahe ya nahi
-    TRUST_1/2/3     price ke neeche wali trust row ka text
+  Har part ki CSS sirf usi part ke saath load hoti hai.
+  Jis part ka admin data khali ho, woh kuch render nahi karta.
 
-  TAGS (title ke upar)
-  --------------------
-  Metafield:  custom.pp_badges
-  Type:       List of single line text  (multi line text bhi chalega,
-              har line ek tag)
+  ADMIN: PRODUCT METAFIELDS (namespace custom)
+  --------------------------------------------
+    pp_badges           List of single line text   Tags. Text | color | icon
+                        color: neutral, blue, yellow, purple, green, pink,
+                        orange, dark, ya hex (#A98BDE ya #FAF6C8/#2F5E8C)
+                        icon: truck, check, sparkle, drop, leaf
+    pp_subtitle         Single line text           "Includes 5 Products"
+    sold_count          Integer                    Asli units sold
+    pp_intro            Rich text                  Price ke neeche text
+    pp_benefits         List of single line text   Check wali pills
+    goes_well_products  List of product refs       Goes Well With (pehle se bani)
+    pp_refer_products   List of product refs       Bhara ho to Goes Well ki
+                                                   jagah "We recommend instead"
+    pp_refer_heading    Single line text           optional
+    pp_refer_note       Single line text           optional
+    pp_expert           Metaobject ref > expert_quote
+    pp_ingredients      List of metaobject refs > ingredient_card
+    pp_results          List of metaobject refs > result_card
 
-  Har entry ka format:   Text | color | icon
-    color aur icon optional hain.
+  ADMIN: METAOBJECTS
+  ------------------
+    expert_quote     name, credentials, quote (multi line), photo (image)
+    ingredient_card  name, description (multi line), image (image)
+    result_card      name, duration, quote (multi line), before_image,
+                     after_image, product (product ref, optional)
 
-  Colors:  neutral (default), blue, yellow, purple, green, pink,
-           orange, dark
-           Ya hex:  #A98BDE           (text color khud banta hai:
-                                       light bg par usi ka dark shade,
-                                       dark bg par white)
-                    #FAF6C8/#2F5E8C   (bg/text dono khud do)
-  Icons:   truck, check, sparkle, drop, leaf
+  PERKS ROW
+  ---------
+  Teen conditional perks cart subtotal se green ya red. Threshold 0 ho to
+  hamesha green ("On all orders"). Cart kahin se bhi badle, row khud update.
 
-  Misaal:
-    Exfoliating | blue
-    Instant Brightening | yellow
-    Free Shipping | purple | truck
-
-  Metafield khali ho to poori row render hi nahi hoti.
-
-  SOLD COUNT (title ke neeche, rating ke saath)
-  ---------------------------------------------
-  Metafield:  custom.sold_count
-  Type:       Integer
-
-  Format:  999 tak exact ("320 Sold"), 1000 se upar neeche round
-           ("1.2K+ Sold", "50K+ Sold"). Floor round hota hai taake
-           "+" hamesha sach rahe.
-  Khali ya SOLD_MIN se kam ho to sold hissa nahi dikhta.
-  Ye number asli orders se aana chahiye (Analytics > units sold).
+  ESTIMATED DELIVERY
+  ------------------
+  Aaj (Karachi time) + DELIVERY_MIN_DAYS se DELIVERY_MAX_DAYS, JS se.
 
   REVIEW STARS
   ------------
-  Asli review data padhta hai:
-    1. product.metafields.reviews.rating   (Judge.me, Okendo, Stamped)
-    2. product.metafields.loox.avg_rating  (Loox)
-  Judge.me installed hai. Jis product par reviews aayenge, wahan stars
-  khud dikhne lag jayengi. Reviews na hone par stars chhup jati hain.
-  Neutral "Be the first to review" chahiye to SHOW_EMPTY_STATE true kar do.
-
-  TRUST ROW
-  ---------
-  Price ke neeche teen promises: Free Delivery on 2500 PKR or above,
-  Cash on Delivery, Automatic 10% more discount on order above 2500 PKR.
+  Judge.me (reviews.rating) ya Loox. Click Judge.me widget tak le jata hai.
 {% endcomment %}
 
 {% liquid
   assign part = part | default: 'all'
   assign product = product | default: closest.product
+  assign layout = layout | default: 'single'
+  assign source = source | default: 'product'
+  assign limit = limit | default: 8
 
+  comment
+    ================= BODY / SLIDER =================
+  endcomment
   assign GALLERY_RATIO = '1 / 1'
   assign MEDIA_WIDTH = '52%'
   assign MAX_WIDTH = '1240px'
@@ -107,21 +105,68 @@
   assign HIDE_ARROWS_MOBILE = true
   assign MOBILE_GALLERY_GAP = '1.75rem'
 
-  assign TRUST_1 = 'Free Delivery on 2500 PKR or above'
-  assign TRUST_2 = 'Cash on Delivery'
-  assign TRUST_3 = 'Automatic 10% more discount on order above 2500 PKR'
-
   assign SHOW_EMPTY_STATE = false
-  assign REVIEWS_ANCHOR = '#sh-reviews'
+  assign REVIEWS_ANCHOR = '#judgeme_product_reviews'
 
   assign TAG_RADIUS = '8px'
   assign STAR_COLOR = '#F2C230'
   assign SHOW_REVIEW_COUNT = true
   assign SOLD_MIN = 1
   assign SOLD_SUFFIX = 'Sold'
+
+  comment
+    ---- perks: thresholds PKR mein ----
+  endcomment
+  assign FREE_DELIVERY_MIN = 2500
+  assign TESTERS_MIN = 4000
+  assign DISCOUNT_MIN = 2500
+
+  assign FREE_DELIVERY_LABEL = 'Free Delivery'
+  assign TESTERS_LABEL = 'Free 5 ml tester bottles'
+  assign DISCOUNT_LABEL = 'Extra 10% off'
+  assign PERK_MET_TEXT = 'Unlocked'
+  assign PERK_ALWAYS_TEXT = 'On all orders'
+
+  assign SHOW_DERMATOLOGIST = true
+  assign DERMATOLOGIST_LABEL = 'Dermatologist Trusted Brand'
+  assign RETURNS_LABEL = 'Easy Returns, 3 days'
+
+  assign COLOR_MET = '#2E7D4F'
+  assign COLOR_UNMET = '#C0392B'
+
+  comment
+    ---- delivery estimate ----
+  endcomment
+  assign SHOW_DELIVERY = true
+  assign DELIVERY_MIN_DAYS = 2
+  assign DELIVERY_MAX_DAYS = 4
+  assign DELIVERY_LABEL = 'Estimated delivery:'
+
+  comment
+    ================= GOES WELL / REFER =================
+  endcomment
+  assign GWW_HEADING = 'Goes well with'
+  assign REFER_HEADING = 'We recommend instead'
+  assign REFER_BUTTON = 'View product'
+  assign ADD_TEXT = 'Add to cart'
+  assign SELECT_TEXT = 'Select size'
+  assign SOLD_OUT_TEXT = 'Sold out'
+  assign MAX_ITEMS = 7
+
+  comment
+    ================= EXPERT / INGREDIENTS / RESULTS =================
+  endcomment
+  assign INGREDIENTS_HEADING = 'Ingredients that make a difference'
+  assign RESULTS_HEADING = 'Results you can trust'
+  assign RESULTS_SUBHEADING = 'Real customers. Unedited photos.'
+  assign BEFORE_TEXT = 'Before'
+  assign AFTER_TEXT = 'After'
 %}
 
-{% comment %} ---------- shared layout + design CSS ---------- {% endcomment %}
+{% comment %} ================================================================
+     SLIDER + BODY
+   ================================================================ {% endcomment %}
+{% if part == 'slider' or part == 'body' or part == 'all' %}
 <style>
   .sh-gallery {
     width: 100%;
@@ -222,6 +267,9 @@
     --sh-gap: var(--margin-lg, 1rem);
     --sh-muted: rgb(var(--color-foreground-rgb, 17 17 17) / var(--opacity-muted-text, 0.6));
     --sh-line: rgb(var(--color-foreground-rgb, 17 17 17) / 0.22);
+    --sh-hair: rgb(var(--color-border-rgb, 17 17 17) / 0.14);
+    --sh-ok: {{ COLOR_MET }};
+    --sh-no: {{ COLOR_UNMET }};
 
     display: flex;
     flex-direction: column;
@@ -234,7 +282,7 @@
   .sh-pdp > * { margin: 0; }
   .sh-pdp > * + * { margin-top: var(--sh-gap); }
 
-  /* ---------- tags above title ---------- */
+  /* ---------- tags ---------- */
   .sh-tags {
     display: flex;
     flex-wrap: wrap;
@@ -270,13 +318,9 @@
   .sh-tag--orange  { --sh-tag-bg: #FCE9DB; --sh-tag-fg: #8A4618; }
   .sh-tag--dark    { --sh-tag-bg: var(--color-foreground, #111111); --sh-tag-fg: var(--color-background, #FFFFFF); }
 
-  .sh-tag__icon {
-    display: block;
-    width: 1.25em;
-    height: 1.25em;
-    flex: 0 0 auto;
-  }
-  .sh-tag__icon svg {
+  .sh-tag__icon { display: block; width: 1.25em; height: 1.25em; flex: 0 0 auto; }
+  .sh-tag__icon svg,
+  .sh-ico svg {
     width: 100%;
     height: 100%;
     display: block;
@@ -287,6 +331,7 @@
     stroke-linejoin: round;
   }
 
+  /* ---------- title / subtitle ---------- */
   .sh-title {
     font-family: var(--font-h1--family, var(--font-heading--family, system-ui, sans-serif));
     font-style: var(--font-h1--style, normal);
@@ -299,22 +344,28 @@
     text-wrap: balance;
   }
 
-  /* ---------- rating + sold row ---------- */
-  .sh-pdp > .sh-title + .sh-meta { margin-top: 0.75rem; }
+  .sh-pdp > .sh-title + .sh-meta,
+  .sh-pdp > .sh-title + .sh-subtitle,
+  .sh-pdp > .sh-meta + .sh-subtitle,
+  .sh-pdp > .sh-subtitle + .sh-meta { margin-top: 0.6rem; }
 
+  .sh-subtitle {
+    font-size: clamp(0.9rem, 0.86rem + 0.15vw, 1rem);
+    line-height: 1.3;
+    color: var(--sh-muted);
+  }
+
+  /* ---------- rating + sold ---------- */
   .sh-meta {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: 0.35rem 0.75rem;
-    font-family: var(--font-body--family, system-ui, sans-serif);
-    font-style: var(--font-body--style, normal);
     font-weight: var(--font-body--weight, 400);
     font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
     line-height: 1;
     color: var(--sh-muted);
   }
-
   .sh-rating {
     display: inline-flex;
     align-items: center;
@@ -340,9 +391,6 @@
     width: var(--sh-rating, 0%);
     color: {{ STAR_COLOR }};
   }
-  .sh-rating-value { color: var(--sh-muted); }
-  .sh-rating-count { color: var(--sh-muted); }
-
   .sh-sold { display: inline-flex; align-items: center; gap: 0.75rem; }
   .sh-sold__sep {
     display: inline-block;
@@ -352,6 +400,7 @@
     opacity: 0.6;
   }
 
+  /* ---------- price ---------- */
   .sh-price {
     display: flex;
     align-items: center;
@@ -380,66 +429,109 @@
   }
   .sh-price [hidden] { display: none !important; }
 
-  /* ---------- trust row ---------- */
-  .sh-trust {
+  /* ---------- intro + benefits ---------- */
+  .sh-intro {
+    font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+    line-height: 1.55;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.78);
+    max-width: 60ch;
+  }
+  .sh-intro p { margin: 0; }
+  .sh-intro p + p { margin-top: 0.6em; }
+  .sh-intro strong, .sh-intro b { color: var(--color-foreground, #111111); font-weight: 600; }
+
+  .sh-benefits {
+    list-style: none;
+    padding: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  .sh-benefit {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    padding: 0.7rem 1rem;
+    border: 1px solid var(--sh-hair);
+    border-radius: 999px;
+    font-size: clamp(0.88rem, 0.84rem + 0.15vw, 0.95rem);
+    line-height: 1.3;
+  }
+  .sh-benefit .sh-ico {
+    width: 1.15rem;
+    height: 1.15rem;
+    flex: 0 0 auto;
+    display: block;
+  }
+
+  /* ---------- delivery estimate ---------- */
+  .sh-eta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1rem;
+    background: #F7F7F5;
+    border-radius: 999px;
+    font-size: clamp(0.85rem, 0.82rem + 0.12vw, 0.95rem);
+    line-height: 1.3;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.78);
+  }
+  .sh-eta .sh-ico { width: 1.1rem; height: 1.1rem; flex: 0 0 auto; display: block; }
+  .sh-eta strong { color: var(--color-foreground, #111111); font-weight: 600; }
+
+  /* ---------- perks ---------- */
+  .sh-perks {
+    width: 100%;
+    padding: 1.1rem 0;
+    border-top: 1px solid var(--sh-hair);
+    border-bottom: 1px solid var(--sh-hair);
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .sh-perks__row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 0.75rem;
-    width: 100%;
-    margin-top: 1.25rem;
-    padding: 1.15rem 0;
-    border-top: 1px solid rgb(var(--color-border-rgb, 17 17 17) / 0.14);
-    border-bottom: 1px solid rgb(var(--color-border-rgb, 17 17 17) / 0.14);
   }
+  .sh-perks__row--static { grid-template-columns: repeat(2, 1fr); }
+  .sh-perks__row--static:has(> :only-child) { grid-template-columns: 1fr; }
 
-  .sh-trust__item {
+  .sh-perk {
     display: flex;
     flex-direction: column;
     align-items: center;
     text-align: center;
-    gap: 0.5rem;
+    gap: 0.35rem;
     min-width: 0;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.75);
+    transition: color 0.2s ease;
   }
-
-  .sh-trust__icon {
-    display: block;
-    width: 22px;
-    height: 22px;
-    flex: 0 0 auto;
-    color: var(--color-foreground, #111111);
-  }
-  .sh-trust__icon svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-    fill: none;
-    stroke: currentColor;
-    stroke-width: var(--icon-stroke-width, 1.5px);
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .sh-trust__label {
-    font-family: var(--font-body--family, system-ui, sans-serif);
-    font-style: var(--font-body--style, normal);
-    font-weight: 500;
-    font-size: clamp(0.7rem, 0.66rem + 0.15vw, 0.8rem);
-    line-height: 1.3;
-    letter-spacing: 0.01em;
-    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.7);
+  .sh-perk .sh-ico { width: 22px; height: 22px; display: block; }
+  .sh-perk .sh-ico svg { stroke-width: var(--icon-stroke-width, 1.5px); }
+  .sh-perk__label {
+    font-weight: 600;
+    font-size: clamp(0.72rem, 0.68rem + 0.15vw, 0.82rem);
+    line-height: 1.25;
     text-wrap: balance;
   }
+  .sh-perk__status {
+    font-size: clamp(0.68rem, 0.65rem + 0.1vw, 0.76rem);
+    line-height: 1.2;
+    font-weight: 500;
+  }
+  .sh-perk.is-met { color: var(--sh-ok); }
+  .sh-perk.is-unmet { color: var(--sh-no); }
 
   @media screen and (max-width: 400px) {
-    .sh-trust { gap: 0.4rem; padding: 1rem 0; }
-    .sh-trust__icon { width: 20px; height: 20px; }
+    .sh-perks__row { gap: 0.4rem; }
+    .sh-perk .sh-ico { width: 20px; height: 20px; }
     .sh-tags { gap: 0.45rem; }
   }
 
-  .sh-variants {
-    width: 100%;
-  }
-
+  /* ---------- variants ---------- */
+  .sh-variants { width: 100%; }
   .sh-variants-box {
     width: 100%;
     margin: 0;
@@ -448,43 +540,30 @@
     border-radius: 12px;
     min-inline-size: 0;
   }
-
   .sh-variants-legend {
     padding: 0 0.5rem;
     margin-inline-start: 0.25rem;
-    font-family: var(--font-body--family, system-ui, sans-serif);
-    font-style: var(--font-body--style, normal);
     font-weight: 600;
     font-size: clamp(0.75rem, 0.7rem + 0.15vw, 0.85rem);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.75);
   }
-
   .sh-option + .sh-option { margin-top: 1.25rem; }
-
   .sh-option-label {
     display: block;
     margin: 0 0 0.75rem;
-    font-family: var(--font-body--family, system-ui, sans-serif);
-    font-style: var(--font-body--style, normal);
     font-weight: 600;
     font-size: clamp(0.95rem, 0.88rem + 0.25vw, 1.05rem);
-    letter-spacing: 0;
-    text-transform: none;
     color: var(--color-foreground, #111111);
   }
-
   .sh-option-values { display: flex; flex-wrap: wrap; gap: 0.6rem; }
-
   .sh-pill {
     font-family: var(--font-body--family, system-ui, sans-serif);
     font-style: var(--font-body--style, normal);
     font-weight: var(--font-body--weight, 400);
     font-size: clamp(0.85rem, 0.8rem + 0.15vw, 0.95rem);
     line-height: 1;
-    letter-spacing: 0;
-    text-transform: none;
     color: var(--color-foreground, #111111);
     background: transparent;
     border: 1px solid rgb(var(--color-border-rgb, 17 17 17) / 0.22);
@@ -492,38 +571,30 @@
     padding: 0.85em 1.5em;
     min-height: var(--minimum-touch-target, 44px);
     cursor: pointer;
-    transition: border-color var(--animation-speed, 0.15s) ease,
-                box-shadow var(--animation-speed, 0.15s) ease;
+    transition: border-color var(--animation-speed, 0.15s) ease, box-shadow var(--animation-speed, 0.15s) ease;
   }
   .sh-pill:hover { border-color: rgb(var(--color-border-rgb, 17 17 17) / 0.5); }
   .sh-pill:focus-visible {
     outline: var(--focus-outline-width, 2px) solid var(--color-foreground, #111111);
     outline-offset: var(--focus-outline-offset, 2px);
   }
-
   .sh-pill.is-selected {
     border-color: var(--color-foreground, #111111);
     box-shadow: inset 0 0 0 1px var(--color-foreground, #111111);
     font-weight: 600;
   }
-
   .sh-pill.is-unavailable {
     color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.4);
     border-color: rgb(var(--color-border-rgb, 17 17 17) / 0.1);
     text-decoration: line-through;
   }
-  .sh-pill.is-unavailable.is-selected {
-    box-shadow: none;
-    font-weight: var(--font-body--weight, 400);
-  }
+  .sh-pill.is-unavailable.is-selected { box-shadow: none; font-weight: var(--font-body--weight, 400); }
 
   /* ---------- mobile ---------- */
   @media screen and (max-width: 749px) {
-    {% if HIDE_ARROWS_MOBILE %}
-    .sh-gallery-arrow { display: none; }
-    {% endif %}
-
+    {% if HIDE_ARROWS_MOBILE %}.sh-gallery-arrow { display: none; }{% endif %}
     .sh-gallery { margin-bottom: {{ MOBILE_GALLERY_GAP }}; }
+    .sh-eta { border-radius: 12px; }
   }
 
   /* ---------- section layout ---------- */
@@ -538,9 +609,7 @@
     }
 
     .layout-panel-flex > *:has(> .sh-gallery),
-    .layout-panel-flex > *:has(> .sh-pdp) {
-      display: contents;
-    }
+    .layout-panel-flex > *:has(> .sh-pdp) { display: contents; }
 
     .layout-panel-flex:has(> * > .sh-gallery) {
       display: grid !important;
@@ -552,9 +621,7 @@
     }
 
     .layout-panel-flex:has(> * > .sh-gallery) > .sh-pdp,
-    .layout-panel-flex:has(> * > .sh-gallery) .sh-pdp {
-      margin-block-end: var(--gap-lg, 1rem);
-    }
+    .layout-panel-flex:has(> * > .sh-gallery) .sh-pdp { margin-block-end: var(--gap-lg, 1rem); }
 
     .layout-panel-flex:has(> * > .sh-gallery) > .sh-gallery,
     .layout-panel-flex:has(> * > .sh-gallery) .sh-gallery {
@@ -575,9 +642,8 @@
       padding-left: {{ COLUMN_GAP }};
     }
   }
-
 </style>
-
+{% endif %}
 
 {% comment %} ============ GALLERY ============ {% endcomment %}
 {% if part == 'slider' or part == 'all' %}
@@ -696,9 +762,6 @@
     assign rating_percent = rating_value | times: 20.0
     assign rating_display = rating_value | round: 1
 
-    comment
-      ---- tags (custom.pp_badges) ----
-    endcomment
     assign badge_field = product.metafields.custom.pp_badges
     assign badge_list = ''
     if badge_field != blank
@@ -708,12 +771,8 @@
         assign badge_list = badge_field.value | newline_to_br | split: '<br />'
       endif
     endif
-
     assign allowed_colors = 'neutral,blue,yellow,purple,green,pink,orange,dark' | split: ','
 
-    comment
-      ---- sold count (custom.sold_count) ----
-    endcomment
     assign sold = product.metafields.custom.sold_count.value | default: 0 | times: 1
     assign sold_label = ''
     if sold >= SOLD_MIN
@@ -737,6 +796,15 @@
     if rating_count > 0 or SHOW_EMPTY_STATE
       assign show_stars = true
     endif
+
+    assign subtitle = product.metafields.custom.pp_subtitle.value
+    assign intro_field = product.metafields.custom.pp_intro
+    assign benefits = product.metafields.custom.pp_benefits.value
+
+    assign cart_cents = cart.items_subtotal_price | default: 0
+    assign fd_cents = FREE_DELIVERY_MIN | times: 100
+    assign ts_cents = TESTERS_MIN | times: 100
+    assign dc_cents = DISCOUNT_MIN | times: 100
 
     assign has_real_options = false
     for option in product.options_with_values
@@ -776,10 +844,10 @@
                 assign tag_style = '--sh-tag-bg:' | append: hex_bg | append: ';--sh-tag-fg:' | append: hex_fg | append: ';'
               endif
               assign tag_color = 'neutral'
-            elsif allowed_colors contains tag_color
-              assign tag_color = tag_color
             else
-              assign tag_color = 'neutral'
+              unless allowed_colors contains tag_color
+                assign tag_color = 'neutral'
+              endunless
             endif
           %}
           {% if tag_text != blank %}
@@ -839,6 +907,10 @@
       </div>
     {% endif %}
 
+    {% if subtitle != blank %}
+      <p class="sh-subtitle">{{ subtitle | escape }}</p>
+    {% endif %}
+
     <div class="sh-price">
       <span class="sh-price-compare" data-sh-compare
         {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>
@@ -849,41 +921,74 @@
         {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>Sale</span>
     </div>
 
-    <div class="sh-trust">
-      <div class="sh-trust__item">
-        <span class="sh-trust__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M2.75 6.25h10.5v9.5H2.75z"/>
-            <path d="M13.25 9.75h3.4l3.6 3.4v2.6h-7z"/>
-            <circle cx="6.75" cy="17.75" r="1.6"/>
-            <circle cx="16.75" cy="17.75" r="1.6"/>
-            <path d="M8.35 17.75h6.8"/>
-          </svg>
-        </span>
-        <span class="sh-trust__label">{{ TRUST_1 }}</span>
+    {% if intro_field != blank %}
+      <div class="sh-intro">
+        {% if intro_field.type == 'rich_text_field' %}
+          {{ intro_field | metafield_tag }}
+        {% else %}
+          <p>{{ intro_field.value | escape | newline_to_br }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if benefits != blank and benefits.size > 0 %}
+      <ul class="sh-benefits">
+        {% for b in benefits %}
+          {% assign b_text = b | strip %}
+          {% if b_text != blank %}
+            <li class="sh-benefit">
+              <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.2 12.3 2.6 2.6 5-5.2"/></svg></span>
+              <span>{{ b_text | escape }}</span>
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    {% if SHOW_DELIVERY %}
+      {% liquid
+        assign now_s = 'now' | date: '%s' | times: 1
+        assign eta_a = DELIVERY_MIN_DAYS | times: 86400 | plus: now_s | date: '%-d %B'
+        assign eta_b = DELIVERY_MAX_DAYS | times: 86400 | plus: now_s | date: '%-d %B'
+      %}
+      <p class="sh-eta" data-sh-eta data-min="{{ DELIVERY_MIN_DAYS }}" data-max="{{ DELIVERY_MAX_DAYS }}">
+        <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg></span>
+        <span>{{ DELIVERY_LABEL }} <strong data-sh-eta-text>{{ eta_a }} to {{ eta_b }}</strong></span>
+      </p>
+    {% endif %}
+
+    <div class="sh-perks" data-sh-perks>
+      <div class="sh-perks__row">
+        <div class="sh-perk {% if cart_cents >= fd_cents %}is-met{% else %}is-unmet{% endif %}" data-sh-perk data-min="{{ fd_cents }}">
+          <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.75 6.25h10.5v9.5H2.75z"/><path d="M13.25 9.75h3.4l3.6 3.4v2.6h-7z"/><circle cx="6.75" cy="17.75" r="1.6"/><circle cx="16.75" cy="17.75" r="1.6"/><path d="M8.35 17.75h6.8"/></svg></span>
+          <span class="sh-perk__label">{{ FREE_DELIVERY_LABEL }}</span>
+          <span class="sh-perk__status" data-sh-perk-status>{% if fd_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= fd_cents %}{{ PERK_MET_TEXT }}{% else %}Above {{ fd_cents | money_without_trailing_zeros }}{% endif %}</span>
+        </div>
+
+        <div class="sh-perk {% if cart_cents >= ts_cents %}is-met{% else %}is-unmet{% endif %}" data-sh-perk data-min="{{ ts_cents }}">
+          <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9.5 3h5M10.5 3v3.5h3V3"/><path d="M9 6.5h6a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1z"/><path d="M8 12h8"/></svg></span>
+          <span class="sh-perk__label">{{ TESTERS_LABEL }}</span>
+          <span class="sh-perk__status" data-sh-perk-status>{% if ts_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= ts_cents %}{{ PERK_MET_TEXT }}{% else %}Above {{ ts_cents | money_without_trailing_zeros }}{% endif %}</span>
+        </div>
+
+        <div class="sh-perk {% if cart_cents >= dc_cents %}is-met{% else %}is-unmet{% endif %}" data-sh-perk data-min="{{ dc_cents }}">
+          <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></span>
+          <span class="sh-perk__label">{{ DISCOUNT_LABEL }}</span>
+          <span class="sh-perk__status" data-sh-perk-status>{% if dc_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= dc_cents %}{{ PERK_MET_TEXT }}{% else %}Above {{ dc_cents | money_without_trailing_zeros }}{% endif %}</span>
+        </div>
       </div>
 
-      <div class="sh-trust__item">
-        <span class="sh-trust__icon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <rect x="2.5" y="6" width="19" height="12" rx="1.5"/>
-            <circle cx="12" cy="12" r="2.6"/>
-            <path d="M6 9.6v4.8M18 9.6v4.8"/>
-          </svg>
-        </span>
-        <span class="sh-trust__label">{{ TRUST_2 }}</span>
-      </div>
-
-      <div class="sh-trust__item">
-        <span class="sh-trust__icon" aria-hidden="true">
-          <!-- Discount / Percentage Icon -->
-          <svg viewBox="0 0 24 24">
-            <line x1="19" y1="5" x2="5" y2="19"/>
-            <circle cx="7" cy="7" r="2.5"/>
-            <circle cx="17" cy="17" r="2.5"/>
-          </svg>
-        </span>
-        <span class="sh-trust__label">{{ TRUST_3 }}</span>
+      <div class="sh-perks__row sh-perks__row--static">
+        {% if SHOW_DERMATOLOGIST %}
+          <div class="sh-perk">
+            <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5.5c0 4.4 3 8 7 9.5 4-1.5 7-5.1 7-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span>
+            <span class="sh-perk__label">{{ DERMATOLOGIST_LABEL }}</span>
+          </div>
+        {% endif %}
+        <div class="sh-perk">
+          <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9h11a5 5 0 0 1 0 10H9"/><path d="M8 5 4 9l4 4"/></svg></span>
+          <span class="sh-perk__label">{{ RETURNS_LABEL }}</span>
+        </div>
       </div>
     </div>
 
@@ -927,6 +1032,7 @@
     </script>
   </div>
 
+  {% comment %} ---------- variants ---------- {% endcomment %}
   <script>
     (function () {
       var root = document.getElementById('ShPdp-{{ product.id }}');
@@ -976,7 +1082,6 @@
         var opts = selectedOptions();
         var variant = match(opts);
         markAvailability(opts);
-
         if (!variant) return;
 
         if (priceCurrent) priceCurrent.innerHTML = variant.price;
@@ -1018,4 +1123,609 @@
       apply();
     })();
   </script>
+
+  {% comment %} ---------- delivery estimate + live perks ---------- {% endcomment %}
+  <script>
+    (function () {
+      var root = document.getElementById('ShPdp-{{ product.id }}');
+      if (!root || root.dataset.shLiveInit) return;
+      root.dataset.shLiveInit = '1';
+
+      var MONEY_FORMAT = {{ shop.money_format | strip_html | json }};
+      var MET_TEXT = {{ PERK_MET_TEXT | json }};
+      var ALWAYS_TEXT = {{ PERK_ALWAYS_TEXT | json }};
+
+      /* ---- delivery estimate, Karachi date ---- */
+      var eta = root.querySelector('[data-sh-eta]');
+      if (eta) {
+        var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        var ord = function (n) {
+          var s = ['th','st','nd','rd'], v = n % 100;
+          return n + (s[(v - 20) % 10] || s[v] || s[0]);
+        };
+        var today;
+        try {
+          var parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Karachi', year: 'numeric', month: '2-digit', day: '2-digit' })
+            .format(new Date()).split('-');
+          today = new Date(+parts[0], +parts[1] - 1, +parts[2]);
+        } catch (e) { today = new Date(); }
+
+        var add = function (d, n) { var x = new Date(d); x.setDate(x.getDate() + n); return x; };
+        var a = add(today, parseInt(eta.dataset.min, 10) || 2);
+        var b = add(today, parseInt(eta.dataset.max, 10) || 4);
+        var text = a.getMonth() === b.getMonth()
+          ? ord(a.getDate()) + ' to ' + ord(b.getDate()) + ' ' + MONTHS[b.getMonth()]
+          : ord(a.getDate()) + ' ' + MONTHS[a.getMonth()] + ' to ' + ord(b.getDate()) + ' ' + MONTHS[b.getMonth()];
+        var etaText = eta.querySelector('[data-sh-eta-text]');
+        if (etaText) etaText.textContent = text;
+      }
+
+      /* ---- money ---- */
+      function num(n, dec, th, ds) {
+        var p = n.toFixed(dec).split('.');
+        p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, th);
+        return p.join(ds);
+      }
+      function money(cents) {
+        var v = cents / 100;
+        return MONEY_FORMAT.replace(/\{\{\s*(\w+)\s*\}\}/, function (_, k) {
+          switch (k) {
+            case 'amount_no_decimals': return num(v, 0, ',', '.');
+            case 'amount_with_comma_separator': return num(v, 2, '.', ',');
+            case 'amount_no_decimals_with_comma_separator': return num(v, 0, '.', ',');
+            default: return num(v, 2, ',', '.').replace(/\.00$/, '');
+          }
+        });
+      }
+
+      /* ---- perks ---- */
+      var perks = root.querySelectorAll('[data-sh-perk]');
+      function paint(subtotal) {
+        perks.forEach(function (el) {
+          var min = parseInt(el.dataset.min, 10) || 0;
+          var met = subtotal >= min;
+          el.classList.toggle('is-met', met);
+          el.classList.toggle('is-unmet', !met);
+          var st = el.querySelector('[data-sh-perk-status]');
+          if (!st) return;
+          if (min === 0) st.textContent = ALWAYS_TEXT;
+          else if (met) st.textContent = MET_TEXT;
+          else st.textContent = 'Add ' + money(Math.ceil((min - subtotal) / 100) * 100) + ' more';
+        });
+      }
+
+      function refresh() {
+        fetch('/cart.js', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+          .then(function (r) { return r.json(); })
+          .then(function (c) { paint(c.items_subtotal_price || 0); })
+          .catch(function () {});
+      }
+
+      if (perks.length) {
+        if (!window.__shCartWatch) {
+          window.__shCartWatch = true;
+          var origFetch = window.fetch;
+          window.fetch = function () {
+            var args = arguments;
+            var input = args[0];
+            var url = typeof input === 'string' ? input : (input && input.url) || '';
+            return origFetch.apply(window, args).then(function (res) {
+              if (/\/cart\/(add|change|update|clear)/.test(url)) {
+                setTimeout(function () { document.dispatchEvent(new CustomEvent('sheene:cart-changed')); }, 60);
+              }
+              return res;
+            });
+          };
+        }
+        document.addEventListener('sheene:cart-changed', refresh);
+        document.addEventListener('cart:update', refresh);
+        window.addEventListener('pageshow', function (e) { if (e.persisted) refresh(); });
+        refresh();
+      }
+    })();
+  </script>
+{% endif %}
+
+
+{% comment %} ================================================================
+     GOES WELL WITH / RECOMMEND INSTEAD
+   ================================================================ {% endcomment %}
+{% if part == 'goes_well' %}
+  {% liquid
+  assign refer_list = product.metafields.custom.pp_refer_products.value
+  assign gww_list = product.metafields.custom.goes_well_products.value
+
+  assign mode = ''
+  if refer_list != blank and refer_list.size > 0
+    assign mode = 'refer'
+    assign items = refer_list
+    assign heading = product.metafields.custom.pp_refer_heading.value | default: REFER_HEADING
+    assign note = product.metafields.custom.pp_refer_note.value
+  elsif gww_list != blank and gww_list.size > 0
+    assign mode = 'gww'
+    assign items = gww_list
+    assign heading = GWW_HEADING
+  endif
+  %}
+
+{% if mode != blank %}
+  <div class="sh-gww sh-gww--{{ mode }}" id="ShGww-{{ product.id }}">
+    <div class="sh-gww-label">{{ heading | escape }}</div>
+    {% if mode == 'refer' and note != blank %}
+      <p class="sh-gww-note">{{ note | escape }}</p>
+    {% endif %}
+
+    {% for item in items limit: MAX_ITEMS %}
+      {% liquid
+        assign iv = item.selected_or_first_available_variant | default: item.variants.first
+        assign item_title = item.title | escape
+        assign item_on_sale = false
+        if iv.compare_at_price > iv.price
+          assign item_on_sale = true
+        endif
+        assign multi = false
+        if item.variants.size > 1
+          assign multi = true
+        endif
+      %}
+
+      <div class="sh-gww-card">
+        <a href="{{ item.url }}" class="sh-gww-image">
+          {% if item.featured_image %}
+            {{ item.featured_image | image_url: width: 300 | image_tag: loading: 'lazy', alt: item_title, sizes: '120px', widths: '120,180,240,300' }}
+          {% endif %}
+        </a>
+
+        <div class="sh-gww-details">
+          <div class="sh-gww-price">
+            <span class="sh-gww-price-current" data-current-price>{{ iv.price | money }}</span>
+            <span class="sh-gww-price-compare" data-compare-price {% unless item_on_sale %}hidden{% endunless %}>{{ iv.compare_at_price | money }}</span>
+          </div>
+
+          <a href="{{ item.url }}" class="sh-gww-title">{{ item.title }}</a>
+
+          {% if mode == 'refer' %}
+            <a href="{{ item.url }}" class="sh-gww-add sh-gww-add--link">{{ REFER_BUTTON }}</a>
+          {% else %}
+            {% if multi %}
+              <div class="sh-gww-variants">
+                {% for v in item.variants %}
+                  <button
+                    type="button"
+                    class="sh-gww-variant-btn"
+                    data-variant-id="{{ v.id }}"
+                    data-price="{{ v.price | money | escape }}"
+                    data-compare="{{ v.compare_at_price | money | escape }}"
+                    data-on-sale="{% if v.compare_at_price > v.price %}true{% else %}false{% endif %}"
+                    {% unless v.available %}disabled{% endunless %}
+                  >{{ v.title }}</button>
+                {% endfor %}
+              </div>
+            {% endif %}
+
+            <button
+              type="button"
+              class="sh-gww-add{% if multi %} needs-selection{% endif %}"
+              data-add-to-cart
+              data-variant-id="{{ iv.id }}"
+              {% unless item.available %}disabled{% endunless %}
+            >
+              {% if item.available == false %}{{ SOLD_OUT_TEXT }}{% elsif multi %}{{ SELECT_TEXT }}{% else %}{{ ADD_TEXT }}{% endif %}
+            </button>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <style>
+    .sh-gww {
+      width: 100%;
+      border: 1px solid rgb(var(--color-border-rgb, 17 17 17) / 0.22);
+      padding: clamp(1rem, 0.85rem + 0.5vw, 1.5rem);
+      margin: clamp(0.5rem, 0.4rem + 0.4vw, 1rem) 0;
+      font-family: var(--font-body--family, system-ui, sans-serif);
+      color: var(--color-foreground, #111111);
+    }
+    .sh-gww-label {
+      font-weight: 600;
+      font-size: clamp(0.75rem, 0.7rem + 0.15vw, 0.85rem);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding-bottom: clamp(0.75rem, 0.6rem + 0.4vw, 1.1rem);
+      border-bottom: 1px solid var(--color-foreground, #111111);
+      margin-bottom: clamp(0.9rem, 0.75rem + 0.4vw, 1.25rem);
+    }
+    .sh-gww-note {
+      margin: -0.35rem 0 1rem;
+      font-size: clamp(0.88rem, 0.84rem + 0.12vw, 0.95rem);
+      color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.65);
+    }
+    .sh-gww-card {
+      display: flex;
+      gap: clamp(0.85rem, 0.7rem + 0.4vw, 1.25rem);
+      align-items: flex-start;
+    }
+    .sh-gww-card + .sh-gww-card {
+      margin-top: clamp(0.9rem, 0.75rem + 0.4vw, 1.25rem);
+      padding-top: clamp(0.9rem, 0.75rem + 0.4vw, 1.25rem);
+      border-top: 1px solid var(--color-foreground, #111111);
+    }
+    .sh-gww-image {
+      flex: 0 0 clamp(88px, 70px + 5vw, 140px);
+      display: block;
+      background: #F2F2F0;
+    }
+    .sh-gww-image img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      display: block;
+    }
+    .sh-gww-details {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: clamp(0.35rem, 0.3rem + 0.15vw, 0.55rem);
+    }
+    .sh-gww-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.5rem; }
+    .sh-gww-price-current { font-weight: 600; font-size: clamp(1rem, 0.92rem + 0.3vw, 1.2rem); }
+    .sh-gww-price-compare {
+      font-size: clamp(0.85rem, 0.8rem + 0.15vw, 0.95rem);
+      color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.45);
+      text-decoration: line-through;
+    }
+    .sh-gww-price-compare[hidden] { display: none; }
+    .sh-gww-title {
+      font-weight: 600;
+      font-size: clamp(0.95rem, 0.88rem + 0.25vw, 1.1rem);
+      line-height: 1.25;
+      color: inherit;
+      text-decoration: none;
+    }
+    .sh-gww-variants { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .sh-gww-variant-btn {
+      background: none;
+      border: 1px solid rgb(var(--color-border-rgb, 17 17 17) / 0.25);
+      border-radius: 4px;
+      padding: 0.45rem 0.7rem;
+      font: inherit;
+      font-size: clamp(0.78rem, 0.75rem + 0.1vw, 0.86rem);
+      color: inherit;
+      cursor: pointer;
+      min-height: 36px;
+    }
+    .sh-gww-variant-btn.is-active { border-color: var(--color-foreground, #111111); box-shadow: inset 0 0 0 1px var(--color-foreground, #111111); font-weight: 600; }
+    .sh-gww-variant-btn:disabled { opacity: 0.4; cursor: not-allowed; text-decoration: line-through; }
+
+    .sh-gww-add {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 44px;
+      margin-top: 0.2rem;
+      padding: 0.7rem 1rem;
+      background: var(--color-foreground, #111111);
+      color: var(--color-background, #FFFFFF);
+      font: inherit;
+      font-weight: 600;
+      font-size: clamp(0.9rem, 0.85rem + 0.15vw, 1rem);
+      border: 0;
+      border-radius: 0;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.2s ease;
+    }
+    .sh-gww-add:disabled { opacity: 0.5; cursor: not-allowed; }
+    .sh-gww-add:not(:disabled):hover { opacity: 0.85; }
+    .sh-gww-add.needs-selection { background: transparent; color: var(--color-foreground, #111111); box-shadow: inset 0 0 0 1px var(--color-foreground, #111111); }
+  </style>
+
+  {% if mode == 'gww' %}
+    <script>
+      (function () {
+        var root = document.getElementById('ShGww-{{ product.id }}');
+        if (!root || root.dataset.shInit) return;
+        root.dataset.shInit = '1';
+        var ADD_TEXT = {{ ADD_TEXT | json }};
+
+        root.querySelectorAll('.sh-gww-card').forEach(function (card) {
+          var vBtns = card.querySelectorAll('.sh-gww-variant-btn');
+          var add = card.querySelector('[data-add-to-cart]');
+          var cur = card.querySelector('[data-current-price]');
+          var cmp = card.querySelector('[data-compare-price]');
+
+          vBtns.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              if (btn.disabled) return;
+              vBtns.forEach(function (b) { b.classList.remove('is-active'); });
+              btn.classList.add('is-active');
+              cur.textContent = btn.dataset.price;
+              cmp.textContent = btn.dataset.compare;
+              cmp.hidden = btn.dataset.onSale !== 'true';
+              add.dataset.variantId = btn.dataset.variantId;
+              add.textContent = ADD_TEXT;
+              add.classList.remove('needs-selection');
+            });
+          });
+
+          if (!add) return;
+          add.addEventListener('click', function () {
+            if (add.disabled || add.classList.contains('needs-selection')) return;
+            var label = add.textContent;
+            add.disabled = true;
+            add.textContent = 'Adding...';
+            fetch('/cart/add.js', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+              body: JSON.stringify({ items: [{ id: add.dataset.variantId, quantity: 1 }] })
+            })
+              .then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+              .then(function () { add.textContent = 'Added'; window.location.reload(); })
+              .catch(function () {
+                add.textContent = label;
+                add.disabled = false;
+                alert('Could not add this to your cart. Please try again.');
+              });
+          });
+        });
+      })();
+    </script>
+  {% endif %}
+{% endif %}
+{% endif %}
+
+
+{% comment %} ================================================================
+     EXPERT / INGREDIENTS / RESULTS
+   ================================================================ {% endcomment %}
+{% if part == 'expert' or part == 'ingredients' or part == 'results' %}
+<style>
+  .sh-x {
+    --sh-x-hair: rgb(var(--color-border-rgb, 17 17 17) / 0.14);
+    --sh-x-muted: rgb(var(--color-foreground-rgb, 17 17 17) / 0.65);
+    font-family: var(--font-body--family, system-ui, sans-serif);
+    color: var(--color-foreground, #111111);
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    padding-block: clamp(2rem, 1.5rem + 2vw, 3.5rem);
+  }
+  .sh-x-head { text-align: center; margin-bottom: clamp(1.25rem, 1rem + 1vw, 2rem); }
+  .sh-x-title {
+    margin: 0;
+    font-family: var(--font-h2--family, var(--font-heading--family, system-ui, sans-serif));
+    font-weight: var(--font-h2--weight, 700);
+    font-size: clamp(1.4rem, 1.1rem + 1.1vw, 2rem);
+    line-height: 1.2;
+    letter-spacing: -0.01em;
+  }
+  .sh-x-sub { margin: 0.4rem 0 0; font-size: clamp(0.9rem, 0.86rem + 0.15vw, 1rem); color: var(--sh-x-muted); }
+
+  /* ---------- expert ---------- */
+  .sh-expert-wrap { display: grid; gap: 1.5rem; align-items: start; }
+  @media (min-width: 750px) {
+    .sh-expert-wrap--split { grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 1rem + 2vw, 3rem); }
+  }
+  .sh-expert {
+    position: relative;
+    display: flex;
+    gap: 1.1rem;
+    align-items: flex-start;
+    padding: clamp(1.25rem, 1rem + 1vw, 2rem);
+    background: #F7F7F5;
+    border-radius: 16px;
+  }
+  .sh-expert__photo {
+    flex: 0 0 auto;
+    width: clamp(64px, 56px + 2vw, 88px);
+    height: clamp(64px, 56px + 2vw, 88px);
+    border-radius: 50%;
+    overflow: hidden;
+    background: #E8E8E5;
+  }
+  .sh-expert__photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sh-expert__mark {
+    position: absolute;
+    top: 0.75rem;
+    right: 1.1rem;
+    font-size: 3rem;
+    line-height: 1;
+    font-weight: 700;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.12);
+  }
+  .sh-expert__quote {
+    margin: 0;
+    font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+    line-height: 1.55;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.82);
+  }
+  .sh-expert__by { margin: 0.9rem 0 0; font-weight: 600; font-size: clamp(0.9rem, 0.86rem + 0.15vw, 1rem); }
+  .sh-expert__cred { display: block; font-weight: 400; font-size: 0.88em; color: var(--sh-x-muted); margin-top: 0.15rem; }
+
+  /* ---------- ingredients ---------- */
+  .sh-ingr-grid { display: grid; gap: 0.9rem; }
+  @media (min-width: 750px) { .sh-ingr-grid { grid-template-columns: 1fr 1fr; gap: 1rem; } }
+  .sh-ingr {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--sh-x-hair);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--color-background, #FFFFFF);
+  }
+  .sh-ingr__img { flex: 0 0 clamp(88px, 70px + 5vw, 120px); background: #F2F2F0; }
+  .sh-ingr__img img { width: 100%; height: 100%; min-height: 96px; object-fit: cover; display: block; }
+  .sh-ingr__body { padding: 0.9rem 1rem; display: flex; flex-direction: column; justify-content: center; gap: 0.3rem; }
+  .sh-ingr__name { margin: 0; font-weight: 600; font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem); }
+  .sh-ingr__desc { margin: 0; font-size: clamp(0.85rem, 0.82rem + 0.12vw, 0.93rem); line-height: 1.45; color: var(--sh-x-muted); }
+
+  /* ---------- results ---------- */
+  .sh-res-track {
+    --sh-res-gap: 1rem;
+    display: flex;
+    gap: var(--sh-res-gap);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 0.25rem;
+  }
+  .sh-res-track::-webkit-scrollbar { display: none; }
+  .sh-res {
+    flex: 0 0 78%;
+    scroll-snap-align: start;
+    border: 1px solid var(--sh-x-hair);
+    border-radius: 16px;
+    overflow: hidden;
+    background: var(--color-background, #FFFFFF);
+    display: flex;
+    flex-direction: column;
+  }
+  @media (min-width: 750px) { .sh-res { flex-basis: calc((100% - 2 * var(--sh-res-gap)) / 3); } }
+  @media (min-width: 1100px) { .sh-res { flex-basis: calc((100% - 3 * var(--sh-res-gap)) / 4); } }
+  .sh-res__imgs { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; background: #FFFFFF; }
+  .sh-res__img { position: relative; aspect-ratio: 3 / 4; background: #F2F2F0; overflow: hidden; }
+  .sh-res__img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sh-res__tag {
+    position: absolute;
+    left: 0.5rem;
+    bottom: 0.5rem;
+    padding: 0.25em 0.6em;
+    border-radius: 999px;
+    background: rgb(17 17 17 / 0.72);
+    color: #FFFFFF;
+    font-size: 0.72rem;
+    font-weight: 600;
+    line-height: 1.2;
+  }
+  .sh-res__body { padding: 0.9rem 1rem 1.1rem; display: flex; flex-direction: column; gap: 0.5rem; flex: 1; }
+  .sh-res__top { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .sh-res__name { margin: 0; font-weight: 600; font-size: clamp(0.95rem, 0.9rem + 0.15vw, 1.02rem); }
+  .sh-res__dur {
+    padding: 0.2em 0.65em;
+    border-radius: 999px;
+    background: var(--color-foreground, #111111);
+    color: var(--color-background, #FFFFFF);
+    font-size: 0.72rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .sh-res__quote { margin: 0; font-size: clamp(0.85rem, 0.82rem + 0.12vw, 0.93rem); line-height: 1.5; color: var(--sh-x-muted); }
+  .sh-res__prod { margin-top: auto; font-size: 0.85rem; font-weight: 600; color: inherit; text-decoration: underline; text-underline-offset: 3px; }
+</style>
+{% endif %}
+
+{% comment %} ============ EXPERT ============ {% endcomment %}
+{% if part == 'expert' %}
+  {% assign ex = product.metafields.custom.pp_expert.value %}
+  {% if ex != blank and ex.quote.value != blank %}
+    <div class="sh-x">
+      <div class="sh-expert-wrap{% if layout == 'split' %} sh-expert-wrap--split{% endif %}">
+        <figure class="sh-expert" style="margin:0;">
+          {% if ex.photo.value != blank %}
+            {% assign ex_alt = ex.name.value | escape %}
+            <div class="sh-expert__photo">
+              {{ ex.photo.value | image_url: width: 200 | image_tag: loading: 'lazy', alt: ex_alt }}
+            </div>
+          {% endif %}
+          <span class="sh-expert__mark" aria-hidden="true">&rdquo;</span>
+          <div>
+            <blockquote class="sh-expert__quote">{{ ex.quote.value | escape | newline_to_br }}</blockquote>
+            {% if ex.name.value != blank %}
+              <figcaption class="sh-expert__by">
+                {{ ex.name.value | escape }}
+                {% if ex.credentials.value != blank %}<span class="sh-expert__cred">{{ ex.credentials.value | escape }}</span>{% endif %}
+              </figcaption>
+            {% endif %}
+          </div>
+        </figure>
+
+        {% if layout == 'split' %}
+          <div>{% render 'sheene-product-accordion' %}</div>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+{% endif %}
+
+{% comment %} ============ INGREDIENTS ============ {% endcomment %}
+{% if part == 'ingredients' %}
+  {% assign ingr = product.metafields.custom.pp_ingredients.value %}
+  {% if ingr != blank and ingr.size > 0 %}
+    <section class="sh-x" aria-labelledby="ShIngr-{{ product.id }}">
+      <div class="sh-x-head">
+        <h2 class="sh-x-title" id="ShIngr-{{ product.id }}">{{ INGREDIENTS_HEADING }}</h2>
+      </div>
+      <div class="sh-ingr-grid">
+        {% for it in ingr %}
+          {% if it.name.value != blank %}
+            <article class="sh-ingr">
+              {% if it.image.value != blank %}
+                {% assign it_alt = it.name.value | escape %}
+                <div class="sh-ingr__img">
+                  {{ it.image.value | image_url: width: 300 | image_tag: loading: 'lazy', alt: it_alt, widths: '150,240,300', sizes: '120px' }}
+                </div>
+              {% endif %}
+              <div class="sh-ingr__body">
+                <h3 class="sh-ingr__name">{{ it.name.value | escape }}</h3>
+                {% if it.description.value != blank %}
+                  <p class="sh-ingr__desc">{{ it.description.value | escape | newline_to_br }}</p>
+                {% endif %}
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+{% endif %}
+
+{% comment %} ============ RESULTS ============ {% endcomment %}
+{% if part == 'results' %}
+  {% liquid
+    if source == 'all'
+      assign results = shop.metaobjects.result_card.values
+    else
+      assign results = product.metafields.custom.pp_results.value
+    endif
+  %}
+  {% if results != blank and results.size > 0 %}
+    <section class="sh-x" aria-labelledby="ShRes-{{ product.id | default: 'home' }}">
+      <div class="sh-x-head">
+        <h2 class="sh-x-title" id="ShRes-{{ product.id | default: 'home' }}">{{ RESULTS_HEADING }}</h2>
+        {% if RESULTS_SUBHEADING != blank %}<p class="sh-x-sub">{{ RESULTS_SUBHEADING }}</p>{% endif %}
+      </div>
+      <div class="sh-res-track">
+        {% for r in results limit: limit %}
+          {% if r.before_image.value != blank and r.after_image.value != blank %}
+            <article class="sh-res">
+              <div class="sh-res__imgs">
+                <div class="sh-res__img">
+                  {{ r.before_image.value | image_url: width: 500 | image_tag: loading: 'lazy', alt: 'Before', widths: '250,350,500', sizes: '(min-width: 1100px) 12vw, (min-width: 750px) 16vw, 40vw' }}
+                  <span class="sh-res__tag">{{ BEFORE_TEXT }}</span>
+                </div>
+                <div class="sh-res__img">
+                  {{ r.after_image.value | image_url: width: 500 | image_tag: loading: 'lazy', alt: 'After', widths: '250,350,500', sizes: '(min-width: 1100px) 12vw, (min-width: 750px) 16vw, 40vw' }}
+                  <span class="sh-res__tag">{{ AFTER_TEXT }}</span>
+                </div>
+              </div>
+              <div class="sh-res__body">
+                <div class="sh-res__top">
+                  {% if r.name.value != blank %}<h3 class="sh-res__name">{{ r.name.value | escape }}</h3>{% endif %}
+                  {% if r.duration.value != blank %}<span class="sh-res__dur">{{ r.duration.value | escape }}</span>{% endif %}
+                </div>
+                {% if r.quote.value != blank %}<p class="sh-res__quote">{{ r.quote.value | escape }}</p>{% endif %}
+                {% if source == 'all' and r.product.value != blank %}
+                  <a class="sh-res__prod" href="{{ r.product.value.url }}">{{ r.product.value.title }}</a>
+                {% endif %}
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
 {% endif %}
