@@ -40,13 +40,48 @@
     STICKY_MEDIA    scroll par gallery chipki rahe ya nahi
     TRUST_1/2/3     price ke neeche wali trust row ka text
 
+  TAGS (title ke upar)
+  --------------------
+  Metafield:  custom.pp_badges
+  Type:       List of single line text  (multi line text bhi chalega,
+              har line ek tag)
+
+  Har entry ka format:   Text | color | icon
+    color aur icon optional hain.
+
+  Colors:  neutral (default), blue, yellow, purple, green, pink,
+           orange, dark
+           Ya hex:  #A98BDE           (text color khud banta hai:
+                                       light bg par usi ka dark shade,
+                                       dark bg par white)
+                    #FAF6C8/#2F5E8C   (bg/text dono khud do)
+  Icons:   truck, check, sparkle, drop, leaf
+
+  Misaal:
+    Exfoliating | blue
+    Instant Brightening | yellow
+    Free Shipping | purple | truck
+
+  Metafield khali ho to poori row render hi nahi hoti.
+
+  SOLD COUNT (title ke neeche, rating ke saath)
+  ---------------------------------------------
+  Metafield:  custom.sold_count
+  Type:       Integer
+
+  Format:  999 tak exact ("320 Sold"), 1000 se upar neeche round
+           ("1.2K+ Sold", "50K+ Sold"). Floor round hota hai taake
+           "+" hamesha sach rahe.
+  Khali ya SOLD_MIN se kam ho to sold hissa nahi dikhta.
+  Ye number asli orders se aana chahiye (Analytics > units sold).
+
   REVIEW STARS
   ------------
   Asli review data padhta hai:
     1. product.metafields.reviews.rating   (Judge.me, Okendo, Stamped)
     2. product.metafields.loox.avg_rating  (Loox)
   Judge.me installed hai. Jis product par reviews aayenge, wahan stars
-  khud dikhne lag jayengi. Reviews na hone par block chhup jata hai.
+  khud dikhne lag jayengi. Reviews na hone par stars chhup jati hain.
   Neutral "Be the first to review" chahiye to SHOW_EMPTY_STATE true kar do.
 
   TRUST ROW
@@ -78,6 +113,12 @@
 
   assign SHOW_EMPTY_STATE = false
   assign REVIEWS_ANCHOR = '#sh-reviews'
+
+  assign TAG_RADIUS = '8px'
+  assign STAR_COLOR = '#F2C230'
+  assign SHOW_REVIEW_COUNT = true
+  assign SOLD_MIN = 1
+  assign SOLD_SUFFIX = 'Sold'
 %}
 
 {% comment %} ---------- shared layout + design CSS ---------- {% endcomment %}
@@ -193,6 +234,59 @@
   .sh-pdp > * { margin: 0; }
   .sh-pdp > * + * { margin-top: var(--sh-gap); }
 
+  /* ---------- tags above title ---------- */
+  .sh-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    list-style: none;
+    padding: 0;
+  }
+  .sh-pdp > .sh-tags + .sh-title { margin-top: 0.85rem; }
+
+  .sh-tag {
+    --sh-tag-bg: #F2F2F0;
+    --sh-tag-fg: var(--color-foreground, #111111);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+    padding: 0.5em 0.95em;
+    border-radius: {{ TAG_RADIUS }};
+    background: var(--sh-tag-bg);
+    color: var(--sh-tag-fg);
+    font-family: var(--font-body--family, system-ui, sans-serif);
+    font-style: var(--font-body--style, normal);
+    font-weight: 600;
+    font-size: clamp(0.8rem, 0.76rem + 0.15vw, 0.9rem);
+    line-height: 1.1;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .sh-tag--blue    { --sh-tag-bg: #E3EEFB; --sh-tag-fg: #2F5E8C; }
+  .sh-tag--yellow  { --sh-tag-bg: #FAF6C8; --sh-tag-fg: #6B5A0E; }
+  .sh-tag--purple  { --sh-tag-bg: #A98BDE; --sh-tag-fg: #FFFFFF; }
+  .sh-tag--green   { --sh-tag-bg: #E1F2EA; --sh-tag-fg: #2F6B55; }
+  .sh-tag--pink    { --sh-tag-bg: #FBE4EA; --sh-tag-fg: #8C3450; }
+  .sh-tag--orange  { --sh-tag-bg: #FCE9DB; --sh-tag-fg: #8A4618; }
+  .sh-tag--dark    { --sh-tag-bg: var(--color-foreground, #111111); --sh-tag-fg: var(--color-background, #FFFFFF); }
+
+  .sh-tag__icon {
+    display: block;
+    width: 1.25em;
+    height: 1.25em;
+    flex: 0 0 auto;
+  }
+  .sh-tag__icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
   .sh-title {
     font-family: var(--font-h1--family, var(--font-heading--family, system-ui, sans-serif));
     font-style: var(--font-h1--style, normal);
@@ -205,21 +299,37 @@
     text-wrap: balance;
   }
 
+  /* ---------- rating + sold row ---------- */
+  .sh-pdp > .sh-title + .sh-meta { margin-top: 0.75rem; }
+
+  .sh-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.75rem;
+    font-family: var(--font-body--family, system-ui, sans-serif);
+    font-style: var(--font-body--style, normal);
+    font-weight: var(--font-body--weight, 400);
+    font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem);
+    line-height: 1;
+    color: var(--sh-muted);
+  }
+
   .sh-rating {
     display: inline-flex;
     align-items: center;
-    gap: var(--gap-xs, 0.5rem);
+    gap: 0.6rem;
     text-decoration: none;
     color: inherit;
     line-height: 1;
   }
-  .sh-rating:hover .sh-rating-count { text-decoration: underline; }
+  .sh-rating:hover .sh-rating-value { text-decoration: underline; }
   .sh-rating-stars {
     position: relative;
     display: inline-block;
-    font-size: var(--font-size--lg, 1.125rem);
+    font-size: 1.35em;
     line-height: 1;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.04em;
     white-space: nowrap;
   }
   .sh-rating-stars-bg { color: var(--sh-line); }
@@ -228,9 +338,19 @@
     inset: 0;
     overflow: hidden;
     width: var(--sh-rating, 0%);
-    color: var(--color-foreground, #111111);
+    color: {{ STAR_COLOR }};
   }
-  .sh-rating-count { font-size: var(--font-size--sm, 0.875rem); color: var(--sh-muted); }
+  .sh-rating-value { color: var(--sh-muted); }
+  .sh-rating-count { color: var(--sh-muted); }
+
+  .sh-sold { display: inline-flex; align-items: center; gap: 0.75rem; }
+  .sh-sold__sep {
+    display: inline-block;
+    width: 1px;
+    height: 1.05em;
+    background: currentColor;
+    opacity: 0.6;
+  }
 
   .sh-price {
     display: flex;
@@ -313,6 +433,7 @@
   @media screen and (max-width: 400px) {
     .sh-trust { gap: 0.4rem; padding: 1rem 0; }
     .sh-trust__icon { width: 20px; height: 20px; }
+    .sh-tags { gap: 0.45rem; }
   }
 
   .sh-variants {
@@ -573,6 +694,49 @@
       assign rating_count = product.metafields.loox.num_reviews.value | times: 1
     endif
     assign rating_percent = rating_value | times: 20.0
+    assign rating_display = rating_value | round: 1
+
+    comment
+      ---- tags (custom.pp_badges) ----
+    endcomment
+    assign badge_field = product.metafields.custom.pp_badges
+    assign badge_list = ''
+    if badge_field != blank
+      if badge_field.type contains 'list.'
+        assign badge_list = badge_field.value
+      else
+        assign badge_list = badge_field.value | newline_to_br | split: '<br />'
+      endif
+    endif
+
+    assign allowed_colors = 'neutral,blue,yellow,purple,green,pink,orange,dark' | split: ','
+
+    comment
+      ---- sold count (custom.sold_count) ----
+    endcomment
+    assign sold = product.metafields.custom.sold_count.value | default: 0 | times: 1
+    assign sold_label = ''
+    if sold >= SOLD_MIN
+      if sold >= 1000000
+        assign sold_tenths = sold | divided_by: 100000
+        assign sold_num = sold_tenths | divided_by: 10.0 | append: '' | remove: '.0'
+        assign sold_label = sold_num | append: 'M+ ' | append: SOLD_SUFFIX
+      elsif sold >= 10000
+        assign sold_num = sold | divided_by: 1000
+        assign sold_label = sold_num | append: 'K+ ' | append: SOLD_SUFFIX
+      elsif sold >= 1000
+        assign sold_tenths = sold | divided_by: 100
+        assign sold_num = sold_tenths | divided_by: 10.0 | append: '' | remove: '.0'
+        assign sold_label = sold_num | append: 'K+ ' | append: SOLD_SUFFIX
+      else
+        assign sold_label = sold | append: ' ' | append: SOLD_SUFFIX
+      endif
+    endif
+
+    assign show_stars = false
+    if rating_count > 0 or SHOW_EMPTY_STATE
+      assign show_stars = true
+    endif
 
     assign has_real_options = false
     for option in product.options_with_values
@@ -584,25 +748,95 @@
 
   <div class="sh-pdp" id="ShPdp-{{ product.id }}" data-gallery="ShGallery-{{ product.id }}">
 
+    {% if badge_list != blank and badge_list.size > 0 %}
+      {% capture tags_html %}
+        {% for raw in badge_list %}
+          {% liquid
+            assign bits = raw | split: '|'
+            assign tag_text = bits[0] | strip
+            assign tag_color = bits[1] | strip | downcase | default: 'neutral'
+            assign tag_icon = bits[2] | strip | downcase
+            assign tag_style = ''
+
+            assign first_char = tag_color | slice: 0
+            if first_char == '#'
+              assign hex_pair = tag_color | split: '/'
+              assign hex_bg = hex_pair[0] | strip
+              assign hex_fg = hex_pair[1] | strip
+              assign bg_len = hex_bg | size
+              if bg_len == 4 or bg_len == 7
+                if hex_fg == blank
+                  assign bg_brightness = hex_bg | color_brightness
+                  if bg_brightness > 150
+                    assign hex_fg = hex_bg | color_darken: 58
+                  else
+                    assign hex_fg = '#FFFFFF'
+                  endif
+                endif
+                assign tag_style = '--sh-tag-bg:' | append: hex_bg | append: ';--sh-tag-fg:' | append: hex_fg | append: ';'
+              endif
+              assign tag_color = 'neutral'
+            elsif allowed_colors contains tag_color
+              assign tag_color = tag_color
+            else
+              assign tag_color = 'neutral'
+            endif
+          %}
+          {% if tag_text != blank %}
+            <li class="sh-tag sh-tag--{{ tag_color }}"{% if tag_style != blank %} style="{{ tag_style | escape }}"{% endif %}>
+              <span>{{ tag_text | escape }}</span>
+              {% case tag_icon %}
+                {% when 'truck' %}
+                  <span class="sh-tag__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.75 6.25h10.5v9.5H2.75z"/><path d="M13.25 9.75h3.4l3.6 3.4v2.6h-7z"/><circle cx="6.75" cy="17.75" r="1.6"/><circle cx="16.75" cy="17.75" r="1.6"/><path d="M8.35 17.75h6.8"/></svg></span>
+                {% when 'check' %}
+                  <span class="sh-tag__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></svg></span>
+                {% when 'sparkle' %}
+                  <span class="sh-tag__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3c.6 4.6 3.4 7.4 8 8-4.6.6-7.4 3.4-8 8-.6-4.6-3.4-7.4-8-8 4.6-.6 7.4-3.4 8-8z"/></svg></span>
+                {% when 'drop' %}
+                  <span class="sh-tag__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3.5s6 6.4 6 10.5a6 6 0 0 1-12 0c0-4.1 6-10.5 6-10.5z"/></svg></span>
+                {% when 'leaf' %}
+                  <span class="sh-tag__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 19c0-8 5-13 14-14 0 9-5 14-13 14"/><path d="M5 19 13 11"/></svg></span>
+              {% endcase %}
+            </li>
+          {% endif %}
+        {% endfor %}
+      {% endcapture %}
+      {% if tags_html contains '<li' %}
+        <ul class="sh-tags" aria-label="Product highlights">{{ tags_html }}</ul>
+      {% endif %}
+    {% endif %}
+
     <h1 class="sh-title">{{ product.title }}</h1>
 
-    {% if rating_count > 0 %}
-      <a class="sh-rating" href="{{ REVIEWS_ANCHOR }}"
-         aria-label="Rated {{ rating_value }} out of 5 from {{ rating_count }} reviews">
-        <span class="sh-rating-stars" style="--sh-rating: {{ rating_percent }}%;" aria-hidden="true">
-          <span class="sh-rating-stars-bg">★★★★★</span>
-          <span class="sh-rating-stars-fg">★★★★★</span>
-        </span>
-        <span class="sh-rating-count">({{ rating_count }})</span>
-      </a>
-    {% elsif SHOW_EMPTY_STATE %}
-      <a class="sh-rating sh-rating--empty" href="{{ REVIEWS_ANCHOR }}">
-        <span class="sh-rating-stars" style="--sh-rating: 0%;" aria-hidden="true">
-          <span class="sh-rating-stars-bg">★★★★★</span>
-          <span class="sh-rating-stars-fg">★★★★★</span>
-        </span>
-        <span class="sh-rating-count">Be the first to review</span>
-      </a>
+    {% if show_stars or sold_label != blank %}
+      <div class="sh-meta">
+        {% if rating_count > 0 %}
+          <a class="sh-rating" href="{{ REVIEWS_ANCHOR }}"
+             aria-label="Rated {{ rating_display }} out of 5 from {{ rating_count }} reviews">
+            <span class="sh-rating-stars" style="--sh-rating: {{ rating_percent }}%;" aria-hidden="true">
+              <span class="sh-rating-stars-bg">★★★★★</span>
+              <span class="sh-rating-stars-fg">★★★★★</span>
+            </span>
+            <span class="sh-rating-value">{{ rating_display }}</span>
+            {% if SHOW_REVIEW_COUNT %}<span class="sh-rating-count">({{ rating_count }})</span>{% endif %}
+          </a>
+        {% elsif SHOW_EMPTY_STATE %}
+          <a class="sh-rating sh-rating--empty" href="{{ REVIEWS_ANCHOR }}">
+            <span class="sh-rating-stars" style="--sh-rating: 0%;" aria-hidden="true">
+              <span class="sh-rating-stars-bg">★★★★★</span>
+              <span class="sh-rating-stars-fg">★★★★★</span>
+            </span>
+            <span class="sh-rating-count">Be the first to review</span>
+          </a>
+        {% endif %}
+
+        {% if sold_label != blank %}
+          <span class="sh-sold">
+            {% if show_stars %}<span class="sh-sold__sep" aria-hidden="true"></span>{% endif %}
+            <span class="sh-sold__label">{{ sold_label }}</span>
+          </span>
+        {% endif %}
+      </div>
     {% endif %}
 
     <div class="sh-price">
