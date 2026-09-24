@@ -230,7 +230,6 @@
                     "custom_liquid_6DznVc": {
                       "type": "custom-liquid",
                       "name": "Slider",
-                      "disabled": true,
                       "settings": {
                         "custom_liquid": "{% render 'sheene-product-page' %}"
                       },
@@ -239,6 +238,7 @@
                     "custom_liquid_7V8NUK": {
                       "type": "custom-liquid",
                       "name": "Goes Well Product",
+                      "disabled": true,
                       "settings": {
                         "custom_liquid": "{% render 'sheene-product-page', part: 'goes_well' %}"
                       },
@@ -247,6 +247,7 @@
                     "custom_liquid_dqgyJX": {
                       "type": "custom-liquid",
                       "name": "Extra",
+                      "disabled": true,
                       "settings": {
                         "custom_liquid": "{% render 'sheene-product-page', part: 'extras' %}"
                       },
