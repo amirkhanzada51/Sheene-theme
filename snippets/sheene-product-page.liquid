@@ -1725,6 +1725,11 @@
     margin-inline: auto;
     padding-block: clamp(2rem, 1.5rem + 2vw, 3.5rem);
   }
+  .sh-extras { width: 100%; }
+  .sh-extras > .sh-x,
+  .sh-extras > .sh-x--band > .sh-x-inner { padding-inline: var(--page-margin, clamp(1rem, 4vw, 3rem)); box-sizing: border-box; }
+  .sh-x--band { max-width: none; background: #F7F7F5; }
+  .sh-x-inner { max-width: 1240px; margin-inline: auto; }
   .sh-x-head { text-align: center; margin-bottom: clamp(1.25rem, 1rem + 1vw, 2rem); }
   .sh-x-title {
     margin: 0;
@@ -1747,9 +1752,9 @@
     overflow: hidden;
     background: var(--color-background, #FFFFFF);
   }
-  .sh-ingr__img { flex: 0 0 clamp(88px, 70px + 5vw, 120px); background: #F2F2F0; }
-  .sh-ingr__img img { width: 100%; height: 100%; min-height: 96px; object-fit: cover; display: block; }
-  .sh-ingr__body { padding: 0.9rem 1rem; display: flex; flex-direction: column; justify-content: center; gap: 0.3rem; }
+  .sh-ingr__img { flex: 0 0 clamp(100px, 18vw, 190px); background: #F2F2F0; }
+  .sh-ingr__img img { width: 100%; height: 100%; min-height: clamp(100px, 14vw, 170px); object-fit: cover; display: block; }
+  .sh-ingr__body { flex: 1 1 auto; min-width: 0; padding: clamp(0.9rem, 0.7rem + 1vw, 1.75rem); display: flex; flex-direction: column; justify-content: center; gap: 0.3rem; }
   .sh-ingr__name { margin: 0; font-weight: 600; font-size: clamp(0.95rem, 0.9rem + 0.2vw, 1.05rem); }
   .sh-ingr__desc { margin: 0; font-size: clamp(0.85rem, 0.82rem + 0.12vw, 0.93rem); line-height: 1.45; color: var(--sh-x-muted); }
 
@@ -1809,6 +1814,8 @@
 </style>
 {% endif %}
 
+{% if part == 'extras' %}<div class="sh-extras" id="ShExtras-{{ product.id }}">{% endif %}
+
 {% comment %} ============ EXPERT (extras section mein) ============ {% endcomment %}
 {% if part == 'extras' or part == 'expert' %}
   {% if expert_html != blank %}
@@ -1833,7 +1840,8 @@
 {% if part == 'extras' or part == 'ingredients' %}
   {% assign ingr = product.metafields.custom.pp_ingredients.value %}
   {% if ingr != blank and ingr.size > 0 %}
-    <section class="sh-x" aria-labelledby="ShIngr-{{ product.id }}">
+    <section class="sh-x sh-x--band" aria-labelledby="ShIngr-{{ product.id }}">
+      <div class="sh-x-inner">
       <div class="sh-x-head">
         <h2 class="sh-x-title" id="ShIngr-{{ product.id }}">{{ INGREDIENTS_HEADING }}</h2>
       </div>
@@ -1856,6 +1864,7 @@
             </article>
           {% endif %}
         {% endfor %}
+      </div>
       </div>
     </section>
   {% endif %}
@@ -1906,4 +1915,20 @@
       </div>
     </section>
   {% endif %}
+{% endif %}
+
+{% if part == 'extras' %}
+  </div>
+  <script>
+    (function () {
+      /* Extras block galti se product ke right column mein ho to bhi
+         khud product section ke neeche full width chala jata hai. */
+      var el = document.getElementById('ShExtras-{{ product.id }}');
+      if (!el || el.dataset.shMoved) return;
+      el.dataset.shMoved = '1';
+      var sec = el.closest('.shopify-section');
+      if (sec && sec.querySelector('.sh-gallery, .sh-pdp')) sec.after(el);
+      if (!el.children.length || !el.textContent.trim()) el.remove();
+    })();
+  </script>
 {% endif %}
