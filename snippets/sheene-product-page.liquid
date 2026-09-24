@@ -72,8 +72,9 @@
     product_result_card  name, duration, quote (multi line),
                          image (file, before/after ek hi photo mein),
                          product (product ref, optional)
-                         Purani entries mein image khali ho to before_image
-                         wali photo lag jati hai.
+                         Field ka naam image, after_image ya before_image,
+                         jo bhara ho woh lag jata hai (isi order mein).
+                         pp_results single ya list, dono chalte hain.
 
   PERKS ROW
   ---------
@@ -102,9 +103,7 @@
   assign source = source | default: 'product'
   assign limit = limit | default: 8
 
-  comment
-    ================= BODY / SLIDER =================
-  endcomment
+  # ================= BODY / SLIDER =================
   assign GALLERY_RATIO = '1 / 1'
   assign MEDIA_WIDTH = '52%'
   assign MAX_WIDTH = '1240px'
@@ -127,9 +126,7 @@
   assign SOLD_MIN = 1
   assign SOLD_SUFFIX = 'Sold'
 
-  comment
-    ---- perks: thresholds PKR mein ----
-  endcomment
+  # ---- perks: thresholds PKR mein ----
   assign FREE_DELIVERY_MIN = 2500
   assign TESTERS_MIN = 4000
   assign DISCOUNT_MIN = 2500
@@ -147,9 +144,7 @@
   assign COLOR_MET = '#2E7D4F'
   assign COLOR_UNMET = '#C0392B'
 
-  comment
-    ---- delivery estimate ----
-  endcomment
+  # ---- delivery estimate ----
   assign SHOW_DELIVERY = true
   assign DELIVERY_MIN_DAYS = 2
   assign DELIVERY_MAX_DAYS = 4
@@ -161,9 +156,7 @@
   assign ETA_STEP_2 = 'Processing'
   assign ETA_STEP_3 = 'Delivered'
 
-  comment
-    ================= GOES WELL / REFER =================
-  endcomment
+  # ================= GOES WELL / REFER =================
   assign GWW_HEADING = 'Goes well with'
   assign REFER_HEADING = 'We recommend instead'
   assign REFER_BUTTON = 'View product'
@@ -172,9 +165,7 @@
   assign SOLD_OUT_TEXT = 'Sold out'
   assign MAX_ITEMS = 7
 
-  comment
-    ================= EXPERT / INGREDIENTS / RESULTS =================
-  endcomment
+  # ================= EXPERT / INGREDIENTS / RESULTS =================
   assign EXPERT_UNDER_SLIDER = true
   assign EXPERT_MOBILE_UNDER_SLIDER = false
   assign EXPERT_WITH_ACCORDION = false
@@ -1874,29 +1865,50 @@
 {% comment %} ============ RESULTS ============ {% endcomment %}
 {% if part == 'extras' or part == 'results' %}
   {% liquid
-    assign results = ''
+    assign res_list = nil
+    assign res_single = nil
+    assign res_is_single = false
+    assign res_count = 0
     if source == 'all'
-      assign results = shop.metaobjects.product_result_card.values
-      if results == blank or results.size == 0
-        assign results = shop.metaobjects.result_card.values
+      assign res_list = shop.metaobjects.product_result_card.values
+      if res_list.size == 0
+        assign res_list = shop.metaobjects.result_card.values
       endif
+      assign res_count = res_list.size | default: 0
     else
       assign res_field = product.metafields.custom.pp_results
       if res_field.type contains 'list.'
-        assign results = res_field.value
-      elsif res_field != blank
-        assign results = res_field.value | sort
+        assign res_list = res_field.value
+        assign res_count = res_list.size | default: 0
+      elsif res_field.value != blank
+        assign res_single = res_field.value
+        assign res_is_single = true
+        assign res_count = 1
       endif
+    endif
+    if res_count > limit
+      assign res_count = limit
     endif
   %}
   {% capture res_cards %}
-    {% for r in results limit: limit %}
+    {% if res_count > 0 %}
+    {% for n in (1..res_count) %}
       {% liquid
+        if res_is_single
+          assign r = res_single
+        else
+          assign r_i = n | minus: 1
+          assign r = res_list[r_i]
+        endif
         assign r_img = r.image.value
+        if r_img == blank
+          assign r_img = r.after_image.value
+        endif
         if r_img == blank
           assign r_img = r.before_image.value
         endif
         assign r_prod = nil
+        assign r_img = r_img
         if r.product.value != blank
           for p in r.product.value limit: 1
             assign r_prod = p
@@ -1925,6 +1937,7 @@
         </article>
       {% endif %}
     {% endfor %}
+    {% endif %}
   {% endcapture %}
   {% if res_cards contains 'sh-res__img' %}
     <section class="sh-x" aria-labelledby="ShRes-{{ product.id | default: 'home' }}">
