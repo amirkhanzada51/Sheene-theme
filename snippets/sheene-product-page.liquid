@@ -58,6 +58,8 @@
     pp_refer_heading    Single line text           optional
     pp_refer_note       Single line text           optional
     pp_expert           Metaobject ref > expert_quote
+                        (custom.expert_quote bhi chalega, single ya list,
+                        list ho to pehla entry)
     pp_ingredients      List of metaobject refs > ingredient_card
     pp_results          List of metaobject refs > result_card
 
@@ -1723,7 +1725,16 @@
 
 {% comment %} ============ EXPERT ============ {% endcomment %}
 {% if part == 'expert' %}
-  {% assign ex = product.metafields.custom.pp_expert.value %}
+  {% liquid
+    assign ex_field = product.metafields.custom.pp_expert
+    if ex_field == blank
+      assign ex_field = product.metafields.custom.expert_quote
+    endif
+    assign ex = ex_field.value
+    if ex_field.type contains 'list.'
+      assign ex = ex_field.value.first
+    endif
+  %}
   {% if ex != blank and ex.quote.value != blank %}
     <div class="sh-x">
       <div class="sh-expert-wrap{% if layout == 'split' %} sh-expert-wrap--split{% endif %}">
