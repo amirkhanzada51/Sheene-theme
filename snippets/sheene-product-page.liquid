@@ -27,8 +27,9 @@
   EXPERT QUOTE
     EXPERT_UNDER_SLIDER = true         desktop par image slider ke theek
                                        neeche (block 1 khud lagata hai).
-                                       Tab slider sticky nahi rehta, warna
-                                       quote scroll mein kat jata.
+                                       Left column sticky rehta hai: lamba
+                                       ho to pehle scroll, phir bottom par
+                                       chipak jata hai.
     EXPERT_MOBILE_UNDER_SLIDER = false mobile par slider ke neeche nahi,
                                        extras section ke top par aata hai,
                                        taake title aur price upar rahen.
@@ -273,12 +274,7 @@
   {% endif %}
 {% endif %}
 
-{% liquid
-  assign sticky_on = STICKY_MEDIA
-  if EXPERT_UNDER_SLIDER and expert_html != blank
-    assign sticky_on = false
-  endif
-%}
+{% assign sticky_on = STICKY_MEDIA %}
 
 {% comment %} ================================================================
      SLIDER + BODY
@@ -793,14 +789,14 @@
     .layout-panel-flex:has(> * > .sh-gallery) .sh-gallery {
       grid-column: 1;
       grid-row: 1 / span 50;
-      {% if sticky_on %}position: sticky; top: calc(var(--header-height, 0px) + 1.5rem);{% endif %}
+      {% if sticky_on %}position: sticky; top: var(--sh-sticky-top, calc(var(--header-height, 0px) + 1.5rem)); align-self: start;{% endif %}
     }
 
     .layout-panel-flex--row:has(.sh-gallery) { align-items: flex-start; }
     .layout-panel-flex--row > *:has(> .sh-gallery) {
       flex: 0 0 {{ MEDIA_WIDTH }};
       min-width: 0;
-      {% if sticky_on %}position: sticky; top: calc(var(--header-height, 0px) + 1.5rem);{% endif %}
+      {% if sticky_on %}position: sticky; top: var(--sh-sticky-top, calc(var(--header-height, 0px) + 1.5rem)); align-self: start;{% endif %}
     }
     .layout-panel-flex--row > *:has(> .sh-pdp) {
       flex: 1 1 0;
@@ -910,6 +906,31 @@
       }
 
       goTo(0);
+
+      {% if sticky_on %}
+      /* Sticky left column jo viewport se lamba ho: pehle scroll hota hai,
+         bottom tak pohanch kar chipak jata hai, jaise jenpharm par. */
+      var GAP = 24;
+      function headerOffset() {
+        var v = parseFloat(getComputedStyle(root).getPropertyValue('--header-height'));
+        if (!isNaN(v) && v > 0) return v;
+        var h = document.querySelector('header-component, .header-wrapper, header');
+        return h ? h.getBoundingClientRect().height : 0;
+      }
+      function setStickyTop() {
+        var base = headerOffset() + GAP;
+        var h = root.offsetHeight;
+        var vh = window.innerHeight;
+        var top = (base + h + GAP > vh) ? (vh - h - GAP) : base;
+        var val = top + 'px';
+        root.style.setProperty('--sh-sticky-top', val);
+        if (root.parentElement) root.parentElement.style.setProperty('--sh-sticky-top', val);
+      }
+      setStickyTop();
+      window.addEventListener('resize', setStickyTop);
+      window.addEventListener('load', setStickyTop);
+      if (window.ResizeObserver) new ResizeObserver(setStickyTop).observe(root);
+      {% endif %}
     })();
   </script>
 {% endif %}
