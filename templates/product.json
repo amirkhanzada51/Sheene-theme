@@ -221,6 +221,7 @@
                     "custom_liquid_CT48yK": {
                       "type": "custom-liquid",
                       "name": "Body",
+                      "disabled": true,
                       "settings": {
                         "custom_liquid": "{% render 'sheene-product-page' %}"
                       },
@@ -230,7 +231,7 @@
                       "type": "custom-liquid",
                       "name": "Slider",
                       "settings": {
-                        "custom_liquid": "{% render 'sheene-product-page', part: 'expert', layout: 'split' %}"
+                        "custom_liquid": "{% render 'sheene-product-page' %}\n{% render 'sheene-product-page', part: 'goes_well' %}\n{% render 'sheene-product-page', part: 'extras' %}"
                       },
                       "blocks": {}
                     },
