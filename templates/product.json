@@ -231,7 +231,7 @@
                       "type": "custom-liquid",
                       "name": "Slider",
                       "settings": {
-                        "custom_liquid": "{% render 'sheene-product-page', part: 'goes_well' %}"
+                        "custom_liquid": "{% render 'sheene-product-page' %}"
                       },
                       "blocks": {}
                     },
