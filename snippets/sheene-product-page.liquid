@@ -1719,11 +1719,16 @@
     if ex_field == blank
       assign ex_field = product.metafields.custom.expert_quote
     endif
-    assign ex = ex_field.value
+    assign ex = nil
     if ex_field.type contains 'list.'
-      assign ex = ex_field.value.first
+      for e in ex_field.value limit: 1
+        assign ex = e
+      endfor
+    else
+      assign ex = ex_field.value
     endif
   %}
+  <!-- sheene expert: type={{ ex_field.type | default: 'none' }} entry={{ ex.system.handle | default: 'none' }} quote={% if ex.quote.value != blank %}yes{% else %}no{% endif %} -->
   {% if ex != blank and ex.quote.value != blank %}
     <div class="sh-x">
       <div class="sh-expert-wrap{% if EXPERT_WITH_ACCORDION %} sh-expert-wrap--split{% endif %}">
