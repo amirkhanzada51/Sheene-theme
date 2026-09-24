@@ -218,20 +218,20 @@
                       },
                       "blocks": {}
                     },
-                    "custom_liquid_6DznVc": {
-                      "type": "custom-liquid",
-                      "name": "Slider",
-                      "disabled": true,
-                      "settings": {
-                        "custom_liquid": "{% render 'sheene-product-page-image-slider' %}"
-                      },
-                      "blocks": {}
-                    },
                     "custom_liquid_CT48yK": {
                       "type": "custom-liquid",
                       "name": "Body",
                       "settings": {
                         "custom_liquid": "{% render 'sheene-product-page' %}"
+                      },
+                      "blocks": {}
+                    },
+                    "custom_liquid_6DznVc": {
+                      "type": "custom-liquid",
+                      "name": "Slider",
+                      "disabled": true,
+                      "settings": {
+                        "custom_liquid": "{% render 'sheene-product-page', part: 'expert', layout: 'split' %}"
                       },
                       "blocks": {}
                     },
@@ -521,8 +521,8 @@
                     "text_kTy3Yk",
                     "review_gFytLP",
                     "custom_liquid_mYKJ39",
-                    "custom_liquid_6DznVc",
                     "custom_liquid_CT48yK",
+                    "custom_liquid_6DznVc",
                     "custom_liquid_dqgyJX",
                     "custom_liquid_YbHkfV",
                     "buy_buttons_CRTRrX",
