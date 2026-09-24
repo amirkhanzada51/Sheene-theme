@@ -5,42 +5,31 @@
 
   Snippet ka naam:  sheene-product-page
 
-  PARTS (har Custom Liquid block isi file ko call karta hai)
-  ----------------------------------------------------------
-    part: 'slider'        Left column image slider
-    part: 'body'          Right column: tags, title, rating, price, intro,
-                          benefits, delivery, perks, variants
-    part: 'all'           slider + body upar neeche (ek hi block mein)
-    part: 'goes_well'     Goes Well With / Recommend Instead box
-    part: 'expert'        Doctor / expert quote card
-    part: 'ingredients'   Ingredients that make a difference
-    part: 'results'       Before / After result cards
+  PAGE PAR SIRF 3 CUSTOM LIQUID BLOCKS
+  -----------------------------------
+  Ek hi file hai, lekin page par teen alag jagah content aata hai, is liye
+  teen calls. Har cheez khud check karti hai: admin mein data hai to
+  dikhegi, khali hai to hide. Kuch aur set nahi karna.
 
-  Extra params:
-    part: 'expert', layout: 'split'
-        Quote left, accordion right (desktop). Split use karo to main column
-        wala "Dynamic Accordian" block band kar do, warna do dafa aayega.
-    part: 'results', source: 'all', limit: 8
-        Saare result cards (home page ke liye), product se nahi.
+    1. Right column (Body block):
+         {% render 'sheene-product-page' %}
+       Slider + tags, title, rating, price, intro, benefits, delivery,
+       perks, variants.
 
-  BLOCK STRUCTURE (theme editor)
-  ------------------------------
-    Product details
-    └─ Group  (Horizontal, Stack on mobile: on)
-       ├─ Custom Liquid   {% render 'sheene-product-page', part: 'slider' %}
-       └─ Group  (Vertical)
-          ├─ Custom Liquid   {% render 'sheene-product-page', part: 'body' %}
-          ├─ Buy buttons
-          ├─ Custom Liquid   {% render 'sheene-product-page', part: 'goes_well' %}
-          └─ Custom Liquid   {% render 'sheene-product-accordion' %}
+    2. Buy buttons ke neeche:
+         {% render 'sheene-product-page', part: 'goes_well' %}
+       Recommend Instead ya Goes Well With.
 
-    Main section ke neeche naya section, usme Custom Liquid blocks:
-          {% render 'sheene-product-page', part: 'expert', layout: 'split' %}
-          {% render 'sheene-product-page', part: 'ingredients' %}
-          {% render 'sheene-product-page', part: 'results' %}
+    3. Main section ke NEECHE naye section mein:
+         {% render 'sheene-product-page', part: 'extras' %}
+       Expert quote, Ingredients, Results. Jiska data ho woh aata hai.
 
-  Har part ki CSS sirf usi part ke saath load hoti hai.
-  Jis part ka admin data khali ho, woh kuch render nahi karta.
+  Accordion expert quote ke saath (quote left, accordion right) chahiye to
+  EXPERT_WITH_ACCORDION = true, aur main column wala "Dynamic Accordian"
+  block band kar do.
+
+  Home page par results:  {% render 'sheene-product-page', part: 'results', source: 'all' %}
+  (Chahiye to 'slider', 'body', 'expert', 'ingredients' alag bhi chal jate hain.)
 
   ADMIN: PRODUCT METAFIELDS (namespace custom)
   --------------------------------------------
@@ -94,7 +83,6 @@
 {% liquid
   assign part = part | default: 'all'
   assign product = product | default: closest.product
-  assign layout = layout | default: 'single'
   assign source = source | default: 'product'
   assign limit = limit | default: 8
 
@@ -171,6 +159,7 @@
   comment
     ================= EXPERT / INGREDIENTS / RESULTS =================
   endcomment
+  assign EXPERT_WITH_ACCORDION = false
   assign INGREDIENTS_HEADING = 'Ingredients that make a difference'
   assign RESULTS_HEADING = 'Results you can trust'
   assign RESULTS_SUBHEADING = 'Real customers. Unedited photos.'
@@ -1586,7 +1575,7 @@
 {% comment %} ================================================================
      EXPERT / INGREDIENTS / RESULTS
    ================================================================ {% endcomment %}
-{% if part == 'expert' or part == 'ingredients' or part == 'results' %}
+{% if part == 'extras' or part == 'expert' or part == 'ingredients' or part == 'results' %}
 <style>
   .sh-x {
     --sh-x-hair: rgb(var(--color-border-rgb, 17 17 17) / 0.14);
@@ -1724,7 +1713,7 @@
 {% endif %}
 
 {% comment %} ============ EXPERT ============ {% endcomment %}
-{% if part == 'expert' %}
+{% if part == 'extras' or part == 'expert' %}
   {% liquid
     assign ex_field = product.metafields.custom.pp_expert
     if ex_field == blank
@@ -1737,7 +1726,7 @@
   %}
   {% if ex != blank and ex.quote.value != blank %}
     <div class="sh-x">
-      <div class="sh-expert-wrap{% if layout == 'split' %} sh-expert-wrap--split{% endif %}">
+      <div class="sh-expert-wrap{% if EXPERT_WITH_ACCORDION %} sh-expert-wrap--split{% endif %}">
         <figure class="sh-expert" style="margin:0;">
           {% if ex.photo.value != blank %}
             {% assign ex_alt = ex.name.value | escape %}
@@ -1757,7 +1746,7 @@
           </div>
         </figure>
 
-        {% if layout == 'split' %}
+        {% if EXPERT_WITH_ACCORDION %}
           <div>{% render 'sheene-product-accordion' %}</div>
         {% endif %}
       </div>
@@ -1766,7 +1755,7 @@
 {% endif %}
 
 {% comment %} ============ INGREDIENTS ============ {% endcomment %}
-{% if part == 'ingredients' %}
+{% if part == 'extras' or part == 'ingredients' %}
   {% assign ingr = product.metafields.custom.pp_ingredients.value %}
   {% if ingr != blank and ingr.size > 0 %}
     <section class="sh-x" aria-labelledby="ShIngr-{{ product.id }}">
@@ -1798,7 +1787,7 @@
 {% endif %}
 
 {% comment %} ============ RESULTS ============ {% endcomment %}
-{% if part == 'results' %}
+{% if part == 'extras' or part == 'results' %}
   {% liquid
     if source == 'all'
       assign results = shop.metaobjects.result_card.values
