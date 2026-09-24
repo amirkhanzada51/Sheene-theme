@@ -230,6 +230,7 @@
                     "custom_liquid_6DznVc": {
                       "type": "custom-liquid",
                       "name": "Slider",
+                      "disabled": true,
                       "settings": {
                         "custom_liquid": "{% render 'sheene-product-page' %}"
                       },
