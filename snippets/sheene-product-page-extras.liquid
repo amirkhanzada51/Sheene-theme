@@ -161,10 +161,25 @@
     padding-block: clamp(2rem, 1.5rem + 2vw, 3.5rem);
   }
   .sh-extras { width: 100%; }
-  .sh-extras > .sh-x,
-  .sh-extras > .sh-x--band > .sh-x-inner { padding-inline: var(--page-margin, clamp(1rem, 4vw, 3rem)); box-sizing: border-box; }
-  .sh-x--band { max-width: none; background: #F7F7F5; }
-  .sh-x-inner { max-width: 1240px; margin-inline: auto; }
+  .sh-extras { box-sizing: border-box; }
+  .sh-extras > .sh-x:not(.sh-x--band) { padding-inline: 0; }
+
+  /* Ingredients band: andar padding, gol corners, cards kinare se nahi chipakte */
+  .sh-x.sh-x--band {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1240px;
+    margin-inline: auto;
+    background: #F7F7F5;
+    border-radius: 20px;
+    padding: clamp(1.75rem, 1.25rem + 2vw, 3.25rem) clamp(1rem, 0.5rem + 2.5vw, 2.75rem);
+  }
+  .sh-x--band + .sh-x { margin-top: clamp(0.5rem, 0.3rem + 1vw, 1.5rem); }
+  .sh-x-inner { width: 100%; }
+
+  @media (max-width: 749px) {
+    .sh-x.sh-x--band { border-radius: 16px; padding: 1.75rem 0.9rem; }
+  }
   .sh-x-head { text-align: center; margin-bottom: clamp(1.25rem, 1rem + 1vw, 2rem); }
   .sh-x-title {
     margin: 0;
