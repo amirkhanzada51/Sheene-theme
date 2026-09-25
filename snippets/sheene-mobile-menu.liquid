@@ -1,0 +1,126 @@
+{% comment %}
+==========================================================================
+  SHEENE - Mobile menu drawer + stacking fix
+==========================================================================
+
+  Snippet ka naam:  sheene-mobile-menu
+
+  ISTEMAAL
+  --------
+  layout/theme.liquid mein </body> se pehle, drawer fix wali line ke saath:
+
+      {%- render 'sheene-drawer-fix' -%}
+      {%- render 'sheene-mobile-menu' -%}
+
+  KYA KARTA HAI
+  -------------
+  1. Page ke har section ko apna stacking context deta hai. Is se product
+     cards ke "Bundle" badges aur slider arrows kabhi menu ke upar nahi
+     aate, chahe unka z-index kitna bhi ho.
+  2. Mobile menu drawer ko Sheene style deta hai: patla drawer, saaf rows,
+     hairline dividers, chhota font, right arrow.
+  3. Drawer ke neeche wali product images (Horizon "Featured products")
+     mobile par chhupa deta hai. Chahiye to HIDE_MENU_PRODUCTS = false.
+
+  Desktop ka menu bilkul nahi chherta.
+{% endcomment %}
+
+{% liquid
+  assign DRAWER_WIDTH = '86vw'
+  assign DRAWER_MAX = '380px'
+  assign LINK_SIZE = '1.05rem'
+  assign HIDE_MENU_PRODUCTS = true
+%}
+
+<style>
+  /* 1. Sections ke andar ke badges / arrows menu ke upar na aayen */
+  #MainContent > .shopify-section,
+  main > .shopify-section {
+    isolation: isolate;
+  }
+
+  /* 2. Mobile drawer */
+  @media screen and (max-width: 749px) {
+    .menu-drawer {
+      width: min({{ DRAWER_WIDTH }}, {{ DRAWER_MAX }}) !important;
+      max-width: {{ DRAWER_MAX }} !important;
+      box-shadow: 0 0 40px rgb(0 0 0 / 0.14);
+      font-family: var(--font-body--family, system-ui, sans-serif);
+    }
+
+    .menu-drawer > .menu-drawer__close-button {
+      padding: 1.15rem 1.25rem !important;
+      margin: 0;
+    }
+
+    .menu-drawer__navigation {
+      border-top: 1px solid rgb(var(--color-foreground-rgb, 17 17 17) / 0.1);
+    }
+
+    .menu-drawer__menu.has-submenu {
+      padding-inline: 0 !important;
+      margin-block-end: 0 !important;
+    }
+
+    .menu-drawer__menu.has-submenu > .menu-drawer__list-item {
+      min-height: 0 !important;
+      margin: 0 !important;
+      border-bottom: 1px solid rgb(var(--color-foreground-rgb, 17 17 17) / 0.1);
+    }
+
+    .menu-drawer .menu-drawer__menu-item--mainlist {
+      min-height: 0 !important;
+      padding: 1.05rem 1.5rem !important;
+      font-family: var(--font-body--family, system-ui, sans-serif) !important;
+      font-size: {{ LINK_SIZE }} !important;
+      font-weight: 600 !important;
+      line-height: 1.3 !important;
+      letter-spacing: 0.01em;
+      text-transform: none !important;
+      color: var(--color-foreground, #111111) !important;
+      transition: background-color 0.15s ease;
+    }
+
+    /* right arrow, sirf simple links par (dropdown wale apna icon rakhte hain) */
+    .menu-drawer a.menu-drawer__menu-item--mainlist::after {
+      content: '';
+      flex: 0 0 auto;
+      width: 7px;
+      height: 7px;
+      margin-inline-start: 1rem;
+      border-top: 1.6px solid currentColor;
+      border-right: 1.6px solid currentColor;
+      transform: rotate(45deg);
+      opacity: 0.4;
+    }
+
+    .menu-drawer .menu-drawer__menu-item--mainlist:active,
+    .menu-drawer .menu-drawer__menu-item--mainlist[aria-current='page'] {
+      background: #F7F7F5;
+    }
+
+    .menu-drawer .menu-drawer__menu-item--mainlist > .svg-wrapper {
+      padding-block: 0 !important;
+      opacity: 0.5;
+    }
+
+    /* submenu rows */
+    .menu-drawer .menu-drawer__menu-item--child,
+    .menu-drawer .menu-drawer__menu-item--parent {
+      padding: 0.7rem 1.5rem !important;
+      font-size: 0.95rem !important;
+      font-weight: 500 !important;
+      color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.8) !important;
+    }
+
+    .menu-drawer__utility-links {
+      margin-inline-start: 1.5rem !important;
+    }
+
+    {% if HIDE_MENU_PRODUCTS %}
+    .menu-drawer__featured-content {
+      display: none !important;
+    }
+    {% endif %}
+  }
+</style>
