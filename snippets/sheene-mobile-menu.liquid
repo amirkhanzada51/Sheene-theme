@@ -55,7 +55,10 @@
   assign TIKTOK_URL = '' | default: settings.social_tiktok_link
   assign YOUTUBE_URL = '' | default: settings.social_youtube_link
   # Sirf digits, country code ke saath, jaise 923001234567. Khali = hide
-  assign WHATSAPP_NUMBER = '+923273626163'
+  assign WHATSAPP_NUMBER = '923273626163'
+
+  # WhatsApp number se +, space aur dash khud hat jate hain
+  assign WHATSAPP_NUMBER = WHATSAPP_NUMBER | remove: '+' | remove: ' ' | remove: '-'
 %}
 
 <template id="ShMenuExtras">
