@@ -244,15 +244,6 @@
                       },
                       "blocks": {}
                     },
-                    "custom_liquid_dqgyJX": {
-                      "type": "custom-liquid",
-                      "name": "Extra",
-                      "disabled": true,
-                      "settings": {
-                        "custom_liquid": "{% render 'sheene-product-page', part: 'extras' %}"
-                      },
-                      "blocks": {}
-                    },
                     "custom_liquid_YbHkfV": {
                       "type": "custom-liquid",
                       "name": "Product Title",
@@ -264,7 +255,6 @@
                     },
                     "buy_buttons_CRTRrX": {
                       "type": "buy-buttons",
-                      "disabled": true,
                       "settings": {
                         "stacking": true,
                         "text_color": "",
@@ -328,6 +318,14 @@
                       "name": "Dynamic Accordian",
                       "settings": {
                         "custom_liquid": "{% render 'sheene-product-accordion' %}"
+                      },
+                      "blocks": {}
+                    },
+                    "custom_liquid_dqgyJX": {
+                      "type": "custom-liquid",
+                      "name": "Extra",
+                      "settings": {
+                        "custom_liquid": "{% render 'sheene-product-extras', part: 'ingredients' %}\n{% render 'sheene-product-extras', part: 'results' %}\n{% render 'sheene-product-extras', part: 'results', source: 'all', limit: 8 %}"
                       },
                       "blocks": {}
                     },
@@ -525,10 +523,10 @@
                     "custom_liquid_CT48yK",
                     "custom_liquid_6DznVc",
                     "custom_liquid_7V8NUK",
-                    "custom_liquid_dqgyJX",
                     "custom_liquid_YbHkfV",
                     "buy_buttons_CRTRrX",
                     "custom_liquid_gXTaDm",
+                    "custom_liquid_dqgyJX",
                     "accordion_jgFpNM"
                   ]
                 }
