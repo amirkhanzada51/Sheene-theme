@@ -324,6 +324,7 @@
                     "custom_liquid_dqgyJX": {
                       "type": "custom-liquid",
                       "name": "Extra",
+                      "disabled": true,
                       "settings": {
                         "custom_liquid": "{% render 'sheene-product-page-extras', part: 'ingredients' %}\n{% render 'sheene-product-page-extras', part: 'results' %}\n{% render 'sheene-product-page-extras', part: 'results', source: 'all', limit: 8 %}"
                       },
@@ -536,6 +537,14 @@
                 "group_9VYJTt"
               ]
             },
+            "custom_liquid_K3KEXB": {
+              "type": "custom-liquid",
+              "name": "t:names.custom_liquid",
+              "settings": {
+                "custom_liquid": "{% render 'sheene-product-page-extras', part: 'ingredients' %}\n{% render 'sheene-product-page-extras', part: 'results' %}\n{% render 'sheene-product-page-extras', part: 'results', source: 'all', limit: 8 %}"
+              },
+              "blocks": {}
+            },
             "text_aEtTtq": {
               "type": "text",
               "name": "t:names.product_description",
@@ -566,6 +575,7 @@
           },
           "block_order": [
             "group_icgrde",
+            "custom_liquid_K3KEXB",
             "text_aEtTtq"
           ]
         }
