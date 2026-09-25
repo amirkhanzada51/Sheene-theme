@@ -321,15 +321,6 @@
                       },
                       "blocks": {}
                     },
-                    "custom_liquid_dqgyJX": {
-                      "type": "custom-liquid",
-                      "name": "Extra",
-                      "disabled": true,
-                      "settings": {
-                        "custom_liquid": "{% render 'sheene-product-page-extras', part: 'ingredients' %}\n{% render 'sheene-product-page-extras', part: 'results' %}\n{% render 'sheene-product-page-extras', part: 'results', source: 'all', limit: 8 %}"
-                      },
-                      "blocks": {}
-                    },
                     "accordion_jgFpNM": {
                       "type": "accordion",
                       "name": "t:names.accordion",
@@ -527,7 +518,6 @@
                     "custom_liquid_YbHkfV",
                     "buy_buttons_CRTRrX",
                     "custom_liquid_gXTaDm",
-                    "custom_liquid_dqgyJX",
                     "accordion_jgFpNM"
                   ]
                 }
@@ -539,9 +529,17 @@
             },
             "custom_liquid_K3KEXB": {
               "type": "custom-liquid",
-              "name": "t:names.custom_liquid",
+              "name": "Ingredient cards",
               "settings": {
-                "custom_liquid": "{% render 'sheene-product-page-extras', part: 'ingredients' %}\n{% render 'sheene-product-page-extras', part: 'results' %}\n{% render 'sheene-product-page-extras', part: 'results', source: 'all', limit: 8 %}"
+                "custom_liquid": "{% render 'sheene-product-page-extras', part: 'ingredients' %}"
+              },
+              "blocks": {}
+            },
+            "custom_liquid_rje3xC": {
+              "type": "custom-liquid",
+              "name": "Result cards",
+              "settings": {
+                "custom_liquid": "{% render 'sheene-product-page-extras', part: 'results' %}\n{% render 'sheene-product-page-extras', part: 'results', source: 'all', limit: 8 %}"
               },
               "blocks": {}
             },
@@ -576,6 +574,7 @@
           "block_order": [
             "group_icgrde",
             "custom_liquid_K3KEXB",
+            "custom_liquid_rje3xC",
             "text_aEtTtq"
           ]
         }
