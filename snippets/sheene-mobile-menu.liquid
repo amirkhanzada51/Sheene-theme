@@ -22,7 +22,7 @@
        - Current page par left mein ink line
        - Promo card (knobs se text / link)
        - Trust line + social icons (Facebook, Instagram, TikTok,
-         YouTube, WhatsApp). Links Theme settings > Social media se.
+         YouTube, WhatsApp). Links neeche knobs mein.
   3. Horizon ki "Featured products" images drawer se chhupa deta hai.
 
   Desktop ka inline menu nahi chherta, sirf drawer (mobile, tablet, ya
@@ -47,13 +47,14 @@
 
   assign TRUST_LINE = ''
 
-  # Social links: khali chhodo to Theme settings > Social media wale links
-  # use hote hain. Yahan link daalo to woh override karta hai. Dono khali = hide.
+  # Social links: poora URL yahan daalo. Khali = icon hide.
+  # (Horizon mein theme level "Social media" settings nahi hoti, is liye
+  #  links seedha yahin likhne hain.)
   assign SOCIAL_LABEL = 'Follow us'
-  assign FACEBOOK_URL = '' | default: settings.social_facebook_link
-  assign INSTAGRAM_URL = '' | default: settings.social_instagram_link
-  assign TIKTOK_URL = '' | default: settings.social_tiktok_link
-  assign YOUTUBE_URL = '' | default: settings.social_youtube_link
+  assign FACEBOOK_URL = 'https://www.facebook.com/1273146945880822'
+  assign INSTAGRAM_URL = ''
+  assign TIKTOK_URL = ''
+  assign YOUTUBE_URL = ''
   # Sirf digits, country code ke saath, jaise 923001234567. Khali = hide
   assign WHATSAPP_NUMBER = '923273626163'
 
