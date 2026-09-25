@@ -57,12 +57,14 @@
 
   PERKS ROW
   ---------
-  Teen conditional perks cart subtotal se green ya red. Threshold 0 ho to
-  hamesha green ("On all orders"). Cart kahin se bhi badle, row khud update.
+  Ek card: upar progress bar + "Rs.X away from <agla reward>", neeche teen
+  rewards ki rows, har row green (unlocked) ya red (Add Rs.X more). Card ke
+  neeche Dermatologist aur Returns chhoti trust line. Threshold 0 ho to
+  hamesha green ("On all orders"). Cart kahin se bhi badle, sab khud update.
 
   ESTIMATED DELIVERY
   ------------------
-  Countdown line + black timeline card (Purchased > Processing > Delivered).
+  Light timeline card (Purchased > Processing > Delivered).
     DELIVERY_MIN_DAYS / MAX_DAYS   delivery window, aaj se kitne din
     ETA_PROCESS_DAYS               processing kitne din
     ETA_CUTOFF_HOUR                is ghante tak order = aaj ka order
@@ -114,6 +116,8 @@
   assign DISCOUNT_LABEL = 'Extra 10% off'
   assign PERK_MET_TEXT = 'Unlocked'
   assign PERK_ALWAYS_TEXT = 'On all orders'
+  assign PERKS_AWAY_TEXT = 'away from'
+  assign PERKS_ALL_TEXT = 'All rewards unlocked on this order'
 
   assign SHOW_DERMATOLOGIST = true
   assign DERMATOLOGIST_LABEL = 'Dermatologist Trusted Brand'
@@ -128,8 +132,6 @@
   assign DELIVERY_MAX_DAYS = 4
   assign ETA_CUTOFF_HOUR = 24
   assign ETA_PROCESS_DAYS = 1
-  assign ETA_LINE_1 = 'Order today within'
-  assign ETA_LINE_2 = ", you'll receive your package between"
   assign ETA_STEP_1 = 'Purchased'
   assign ETA_STEP_2 = 'Processing'
   assign ETA_STEP_3 = 'Delivered'
@@ -547,25 +549,10 @@
 
   /* ---------- delivery estimate ---------- */
   .sh-eta { width: 100%; }
-  .sh-eta__line {
-    margin: 0 0 0.85rem;
-    font-size: clamp(0.92rem, 0.88rem + 0.18vw, 1.02rem);
-    line-height: 1.5;
-    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.8);
-  }
-  .sh-eta__line strong { color: var(--color-foreground, #111111); font-weight: 700; white-space: nowrap; }
-  .sh-eta__clock {
-    display: inline-block;
-    width: 1.05em;
-    height: 1.05em;
-    vertical-align: -0.16em;
-    margin-right: 0.35em;
-  }
-  .sh-eta__clock svg { width: 100%; height: 100%; display: block; fill: none; stroke: currentColor; stroke-width: 1.8px; stroke-linecap: round; stroke-linejoin: round; }
-
   .sh-eta__card {
-    background: var(--color-foreground, #111111);
-    color: var(--color-background, #FFFFFF);
+    background: #F7F7F5;
+    color: var(--color-foreground, #111111);
+    border: 1px solid var(--sh-hair);
     border-radius: 14px;
     padding: clamp(1rem, 0.85rem + 0.6vw, 1.4rem) clamp(1rem, 0.8rem + 0.9vw, 1.6rem);
   }
@@ -608,55 +595,99 @@
   .sh-eta__step:nth-child(2) { text-align: center; align-items: center; }
   .sh-eta__step:nth-child(3) { text-align: right; align-items: flex-end; }
   .sh-eta__date { font-weight: 700; font-size: clamp(0.8rem, 0.76rem + 0.18vw, 0.92rem); line-height: 1.2; white-space: nowrap; }
-  .sh-eta__label { font-size: clamp(0.8rem, 0.76rem + 0.18vw, 0.95rem); line-height: 1.2; opacity: 0.85; }
+  .sh-eta__label { font-size: clamp(0.8rem, 0.76rem + 0.18vw, 0.95rem); line-height: 1.2; color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.65); }
 
   /* ---------- perks ---------- */
-  .sh-perks {
-    width: 100%;
-    padding: 1.1rem 0;
-    border-top: 1px solid var(--sh-hair);
-    border-bottom: 1px solid var(--sh-hair);
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+  .sh-perks { width: 100%; display: flex; flex-direction: column; gap: 0.85rem; }
+  .sh-perks__card {
+    border: 1px solid var(--sh-hair);
+    border-radius: 14px;
+    overflow: hidden;
+    background: var(--color-background, #FFFFFF);
   }
-  .sh-perks__row {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.75rem;
+  .sh-perks__head { padding: 0.95rem 1.1rem 0.9rem; background: #F7F7F5; }
+  .sh-perks__msg {
+    margin: 0 0 0.6rem;
+    font-size: clamp(0.85rem, 0.82rem + 0.12vw, 0.93rem);
+    line-height: 1.35;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.75);
   }
-  .sh-perks__row--static { grid-template-columns: repeat(2, 1fr); }
-  .sh-perks__row--static:has(> :only-child) { grid-template-columns: 1fr; }
+  .sh-perks__msg strong { color: var(--color-foreground, #111111); font-weight: 700; }
+  .sh-perks__bar {
+    height: 6px;
+    border-radius: 999px;
+    background: rgb(var(--color-foreground-rgb, 17 17 17) / 0.1);
+    overflow: hidden;
+  }
+  .sh-perks__fill {
+    display: block;
+    height: 100%;
+    width: var(--sh-progress, 0%);
+    border-radius: inherit;
+    background: var(--color-foreground, #111111);
+    transition: width 0.45s ease, background 0.3s ease;
+  }
+  .sh-perks__card.is-complete .sh-perks__fill { background: var(--sh-ok); }
 
+  .sh-perks__list { list-style: none; margin: 0; padding: 0; }
   .sh-perk {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    text-align: center;
-    gap: 0.35rem;
-    min-width: 0;
-    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.75);
-    transition: color 0.2s ease;
+    gap: 0.8rem;
+    padding: 0.8rem 1.1rem;
+    border-top: 1px solid var(--sh-hair);
+    --sh-perk-c: var(--sh-no);
+    --sh-perk-bg: rgb(192 57 43 / 0.09);
   }
-  .sh-perk .sh-ico { width: 22px; height: 22px; display: block; }
-  .sh-perk .sh-ico svg { stroke-width: var(--icon-stroke-width, 1.5px); }
+  .sh-perk.is-met { --sh-perk-c: var(--sh-ok); --sh-perk-bg: rgb(46 125 79 / 0.1); }
+  .sh-perk__icon {
+    flex: 0 0 auto;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: var(--sh-perk-bg);
+    color: var(--sh-perk-c);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .sh-perk__icon .sh-ico { width: 18px; height: 18px; display: block; }
   .sh-perk__label {
+    flex: 1 1 auto;
+    min-width: 0;
     font-weight: 600;
-    font-size: clamp(0.72rem, 0.68rem + 0.15vw, 0.82rem);
+    font-size: clamp(0.88rem, 0.84rem + 0.15vw, 0.97rem);
     line-height: 1.25;
-    text-wrap: balance;
+    color: var(--color-foreground, #111111);
   }
   .sh-perk__status {
-    font-size: clamp(0.68rem, 0.65rem + 0.1vw, 0.76rem);
+    flex: 0 0 auto;
+    padding: 0.35em 0.75em;
+    border-radius: 999px;
+    background: var(--sh-perk-bg);
+    color: var(--sh-perk-c);
+    font-weight: 600;
+    font-size: clamp(0.72rem, 0.7rem + 0.1vw, 0.8rem);
     line-height: 1.2;
-    font-weight: 500;
+    white-space: nowrap;
+    transition: background 0.2s ease, color 0.2s ease;
   }
-  .sh-perk.is-met { color: var(--sh-ok); }
-  .sh-perk.is-unmet { color: var(--sh-no); }
+
+  .sh-perks__trust {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.5rem 1.4rem;
+    font-size: clamp(0.8rem, 0.77rem + 0.12vw, 0.88rem);
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.7);
+  }
+  .sh-perks__trust-item { display: inline-flex; align-items: center; gap: 0.45rem; }
+  .sh-perks__trust-item .sh-ico { width: 17px; height: 17px; display: block; }
 
   @media screen and (max-width: 400px) {
-    .sh-perks__row { gap: 0.4rem; }
-    .sh-perk .sh-ico { width: 20px; height: 20px; }
+    .sh-perk { gap: 0.65rem; padding: 0.75rem 0.9rem; }
+    .sh-perks__head { padding: 0.85rem 0.9rem; }
+    .sh-perk__icon { width: 30px; height: 30px; }
     .sh-tags { gap: 0.45rem; }
   }
 
@@ -1109,10 +1140,6 @@
            data-max="{{ DELIVERY_MAX_DAYS }}"
            data-process="{{ ETA_PROCESS_DAYS }}"
            data-cutoff="{{ ETA_CUTOFF_HOUR }}">
-        <p class="sh-eta__line">
-          <span class="sh-eta__clock" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></svg></span>{{ ETA_LINE_1 }} <strong data-eta-countdown>&nbsp;</strong>{{ ETA_LINE_2 }} <strong data-eta-from>&nbsp;</strong> to <strong data-eta-to>&nbsp;</strong>
-        </p>
-
         <div class="sh-eta__card">
           <div class="sh-eta__track" aria-hidden="true">
             <span class="sh-eta__icon"><svg viewBox="0 0 24 24"><path d="M5.5 8h13l-1 12.5h-11z"/><path d="M9 10V6.5a3 3 0 0 1 6 0V10"/></svg></span>
@@ -1130,38 +1157,73 @@
       </div>
     {% endif %}
 
+    {% liquid
+      assign next_min = 0
+      assign next_label = ''
+      if fd_cents > cart_cents
+        assign next_min = fd_cents
+        assign next_label = FREE_DELIVERY_LABEL
+      endif
+      if dc_cents > cart_cents
+        if next_min == 0 or dc_cents < next_min
+          assign next_min = dc_cents
+          assign next_label = DISCOUNT_LABEL
+        endif
+      endif
+      if ts_cents > cart_cents
+        if next_min == 0 or ts_cents < next_min
+          assign next_min = ts_cents
+          assign next_label = TESTERS_LABEL
+        endif
+      endif
+      assign progress = 100
+      if next_min > 0
+        assign progress = cart_cents | times: 100 | divided_by: next_min
+      endif
+    %}
     <div class="sh-perks" data-sh-perks>
-      <div class="sh-perks__row">
-        <div class="sh-perk {% if cart_cents >= fd_cents %}is-met{% else %}is-unmet{% endif %}" data-sh-perk data-min="{{ fd_cents }}">
-          <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.75 6.25h10.5v9.5H2.75z"/><path d="M13.25 9.75h3.4l3.6 3.4v2.6h-7z"/><circle cx="6.75" cy="17.75" r="1.6"/><circle cx="16.75" cy="17.75" r="1.6"/><path d="M8.35 17.75h6.8"/></svg></span>
-          <span class="sh-perk__label">{{ FREE_DELIVERY_LABEL }}</span>
-          <span class="sh-perk__status" data-sh-perk-status>{% if fd_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= fd_cents %}{{ PERK_MET_TEXT }}{% else %}Above {{ fd_cents | money_without_trailing_zeros }}{% endif %}</span>
+      <div class="sh-perks__card{% if next_min == 0 %} is-complete{% endif %}" data-sh-perks-card>
+        <div class="sh-perks__head">
+          <p class="sh-perks__msg" data-sh-perks-msg>
+            {%- if next_min == 0 -%}
+              <strong>{{ PERKS_ALL_TEXT }}</strong>
+            {%- else -%}
+              {%- assign away = next_min | minus: cart_cents -%}
+              <strong>{{ away | money_without_trailing_zeros }}</strong> {{ PERKS_AWAY_TEXT }} <strong>{{ next_label }}</strong>
+            {%- endif -%}
+          </p>
+          <div class="sh-perks__bar" aria-hidden="true"><span class="sh-perks__fill" data-sh-perks-fill style="--sh-progress: {{ progress }}%;"></span></div>
         </div>
-
-        <div class="sh-perk {% if cart_cents >= ts_cents %}is-met{% else %}is-unmet{% endif %}" data-sh-perk data-min="{{ ts_cents }}">
-          <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9.5 3h5M10.5 3v3.5h3V3"/><path d="M9 6.5h6a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1z"/><path d="M8 12h8"/></svg></span>
-          <span class="sh-perk__label">{{ TESTERS_LABEL }}</span>
-          <span class="sh-perk__status" data-sh-perk-status>{% if ts_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= ts_cents %}{{ PERK_MET_TEXT }}{% else %}Above {{ ts_cents | money_without_trailing_zeros }}{% endif %}</span>
-        </div>
-
-        <div class="sh-perk {% if cart_cents >= dc_cents %}is-met{% else %}is-unmet{% endif %}" data-sh-perk data-min="{{ dc_cents }}">
-          <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></span>
-          <span class="sh-perk__label">{{ DISCOUNT_LABEL }}</span>
-          <span class="sh-perk__status" data-sh-perk-status>{% if dc_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= dc_cents %}{{ PERK_MET_TEXT }}{% else %}Above {{ dc_cents | money_without_trailing_zeros }}{% endif %}</span>
-        </div>
+        <ul class="sh-perks__list">
+          <li class="sh-perk {% if cart_cents >= fd_cents %}is-met{% endif %}" data-sh-perk data-min="{{ fd_cents }}" data-label="{{ FREE_DELIVERY_LABEL | escape }}">
+            <span class="sh-perk__icon" aria-hidden="true"><span class="sh-ico"><svg viewBox="0 0 24 24"><path d="M2.75 6.25h10.5v9.5H2.75z"/><path d="M13.25 9.75h3.4l3.6 3.4v2.6h-7z"/><circle cx="6.75" cy="17.75" r="1.6"/><circle cx="16.75" cy="17.75" r="1.6"/><path d="M8.35 17.75h6.8"/></svg></span></span>
+            <span class="sh-perk__label">{{ FREE_DELIVERY_LABEL }}</span>
+            <span class="sh-perk__status" data-sh-perk-status>{% if fd_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= fd_cents %}{{ PERK_MET_TEXT }}{% else %}Add {% assign gap = fd_cents | minus: cart_cents %}{{ gap | money_without_trailing_zeros }} more{% endif %}</span>
+          </li>
+          <li class="sh-perk {% if cart_cents >= ts_cents %}is-met{% endif %}" data-sh-perk data-min="{{ ts_cents }}" data-label="{{ TESTERS_LABEL | escape }}">
+            <span class="sh-perk__icon" aria-hidden="true"><span class="sh-ico"><svg viewBox="0 0 24 24"><path d="M9.5 3h5M10.5 3v3.5h3V3"/><path d="M9 6.5h6a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1z"/><path d="M8 12h8"/></svg></span></span>
+            <span class="sh-perk__label">{{ TESTERS_LABEL }}</span>
+            <span class="sh-perk__status" data-sh-perk-status>{% if ts_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= ts_cents %}{{ PERK_MET_TEXT }}{% else %}Add {% assign gap = ts_cents | minus: cart_cents %}{{ gap | money_without_trailing_zeros }} more{% endif %}</span>
+          </li>
+          <li class="sh-perk {% if cart_cents >= dc_cents %}is-met{% endif %}" data-sh-perk data-min="{{ dc_cents }}" data-label="{{ DISCOUNT_LABEL | escape }}">
+            <span class="sh-perk__icon" aria-hidden="true"><span class="sh-ico"><svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></span></span>
+            <span class="sh-perk__label">{{ DISCOUNT_LABEL }}</span>
+            <span class="sh-perk__status" data-sh-perk-status>{% if dc_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= dc_cents %}{{ PERK_MET_TEXT }}{% else %}Add {% assign gap = dc_cents | minus: cart_cents %}{{ gap | money_without_trailing_zeros }} more{% endif %}</span>
+          </li>
+        </ul>
       </div>
 
-      <div class="sh-perks__row sh-perks__row--static">
+      <div class="sh-perks__trust">
         {% if SHOW_DERMATOLOGIST %}
-          <div class="sh-perk">
+          <span class="sh-perks__trust-item">
             <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5.5c0 4.4 3 8 7 9.5 4-1.5 7-5.1 7-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span>
-            <span class="sh-perk__label">{{ DERMATOLOGIST_LABEL }}</span>
-          </div>
+            {{ DERMATOLOGIST_LABEL }}
+          </span>
         {% endif %}
-        <div class="sh-perk">
+        <span class="sh-perks__trust-item">
           <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9h11a5 5 0 0 1 0 10H9"/><path d="M8 5 4 9l4 4"/></svg></span>
-          <span class="sh-perk__label">{{ RETURNS_LABEL }}</span>
-        </div>
+          {{ RETURNS_LABEL }}
+        </span>
       </div>
     </div>
 
@@ -1348,9 +1410,6 @@
           var dA = day(base, minD);
           var dB = day(base, maxD);
 
-          q('[data-eta-countdown]').textContent = h + 'h ' + pad(m) + 'min';
-          q('[data-eta-from]').textContent = full(dA);
-          q('[data-eta-to]').textContent = full(dB);
           q('[data-eta-s1]').textContent = short(d0);
           q('[data-eta-s2]').textContent = range(d0, pEnd);
           q('[data-eta-s3]').textContent = range(dA, dB);
@@ -1379,12 +1438,29 @@
 
       /* ---- perks ---- */
       var perks = root.querySelectorAll('[data-sh-perk]');
+      var perksCard = root.querySelector('[data-sh-perks-card]');
+      var perksMsg = root.querySelector('[data-sh-perks-msg]');
+      var perksFill = root.querySelector('[data-sh-perks-fill]');
+      var AWAY_TEXT = {{ PERKS_AWAY_TEXT | json }};
+      var ALL_TEXT = {{ PERKS_ALL_TEXT | json }};
+      var esc = function (s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; };
       function paint(subtotal) {
+        var nextMin = 0, nextLabel = '';
+        perks.forEach(function (el) {
+          var m = parseInt(el.dataset.min, 10) || 0;
+          if (m > subtotal && (nextMin === 0 || m < nextMin)) { nextMin = m; nextLabel = el.dataset.label || ''; }
+        });
+        if (perksCard) perksCard.classList.toggle('is-complete', nextMin === 0);
+        if (perksMsg) {
+          perksMsg.innerHTML = nextMin === 0
+            ? '<strong>' + esc(ALL_TEXT) + '</strong>'
+            : '<strong>' + esc(money(Math.ceil((nextMin - subtotal) / 100) * 100)) + '</strong> ' + esc(AWAY_TEXT) + ' <strong>' + esc(nextLabel) + '</strong>';
+        }
+        if (perksFill) perksFill.style.setProperty('--sh-progress', (nextMin === 0 ? 100 : Math.min(100, Math.floor(subtotal * 100 / nextMin))) + '%');
         perks.forEach(function (el) {
           var min = parseInt(el.dataset.min, 10) || 0;
           var met = subtotal >= min;
           el.classList.toggle('is-met', met);
-          el.classList.toggle('is-unmet', !met);
           var st = el.querySelector('[data-sh-perk-status]');
           if (!st) return;
           if (min === 0) st.textContent = ALWAYS_TEXT;
