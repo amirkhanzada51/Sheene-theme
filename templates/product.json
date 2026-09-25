@@ -539,7 +539,7 @@
               "type": "custom-liquid",
               "name": "Result cards",
               "settings": {
-                "custom_liquid": "{% render 'sheene-product-page-extras', part: 'results', source: 'all', limit: 8 %}"
+                "custom_liquid": "{% render 'sheene-product-page-extras', part: 'results',  limit: 8 %}"
               },
               "blocks": {}
             },
