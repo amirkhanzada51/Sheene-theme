@@ -323,7 +323,9 @@
           assign r = res_single
         else
           assign r_i = n | minus: 1
-          assign r = res_list[r_i]
+          for rr in res_list offset: r_i limit: 1
+            assign r = rr
+          endfor
         endif
         assign r_img = r.image.value
         if r_img == blank
