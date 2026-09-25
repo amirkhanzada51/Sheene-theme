@@ -21,7 +21,8 @@
        - "SHOP" chhota label, phir saaf rows, har row par arrow
        - Current page par left mein ink line
        - Promo card (knobs se text / link)
-       - Trust line + footer links (account, contact, WhatsApp)
+       - Trust line + social icons (Facebook, Instagram, TikTok,
+         YouTube, WhatsApp). Links Theme settings > Social media se.
   3. Horizon ki "Featured products" images drawer se chhupa deta hai.
 
   Desktop ka inline menu nahi chherta, sirf drawer (mobile, tablet, ya
@@ -44,10 +45,15 @@
   assign PROMO_CTA = 'Shop bundles'
   assign PROMO_URL = '/collections/bundles'
 
-  assign TRUST_LINE = ''
+  assign TRUST_LINE = 'Free delivery  ·  Cash on delivery  ·  3 day returns'
 
-  # Format: Label|/url  (comma se alag)
-  assign FOOT_LINKS = 'My account|/account,Contact us|/pages/contact'
+  # Social links: khali chhodo to Theme settings > Social media wale links
+  # use hote hain. Yahan link daalo to woh override karta hai. Dono khali = hide.
+  assign SOCIAL_LABEL = 'Follow us'
+  assign FACEBOOK_URL = '' | default: settings.social_facebook_link
+  assign INSTAGRAM_URL = '' | default: settings.social_instagram_link
+  assign TIKTOK_URL = '' | default: settings.social_tiktok_link
+  assign YOUTUBE_URL = '' | default: settings.social_youtube_link
   # Sirf digits, country code ke saath, jaise 923001234567. Khali = hide
   assign WHATSAPP_NUMBER = ''
 %}
@@ -86,23 +92,39 @@
       <p class="sh-md-trust">{{ TRUST_LINE }}</p>
     {%- endif -%}
 
-    <div class="sh-md-foot">
-      {%- assign foot = FOOT_LINKS | split: ',' -%}
-      {%- for item in foot -%}
-        {%- assign bits = item | split: '|' -%}
-        {%- assign f_label = bits[0] | strip -%}
-        {%- assign f_url = bits[1] | strip -%}
-        {%- if f_label != blank and f_url != blank -%}
-          <a class="sh-md-foot__link" href="{{ f_url }}">{{ f_label }}</a>
-        {%- endif -%}
-      {%- endfor -%}
-      {%- if WHATSAPP_NUMBER != blank -%}
-        <a class="sh-md-foot__link sh-md-foot__link--wa" href="https://wa.me/{{ WHATSAPP_NUMBER }}" target="_blank" rel="noopener">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.2-3.6A8 8 0 1 1 8 19.1L4 20z"/><path d="M9 9.5c.3 1.8 2.2 4 4.5 4.8l1.2-1.1 1.8.9c-.2 1-1 1.6-2 1.6C11.4 15.4 8.6 12.6 8.3 9.5c0-1 .6-1.8 1.6-2l.9 1.8L9 9.5z"/></svg>
-          WhatsApp
+    {%- capture social_html -%}
+      {%- if FACEBOOK_URL != blank -%}
+        <a class="sh-md-social__link" href="{{ FACEBOOK_URL }}" target="_blank" rel="noopener" aria-label="Facebook">
+          <svg viewBox="0 0 24 24" class="is-fill"><path d="M13.5 21v-7.2h2.4l.4-2.8h-2.8V9.2c0-.8.2-1.4 1.4-1.4h1.5V5.3c-.3 0-1.1-.1-2.1-.1-2.1 0-3.6 1.3-3.6 3.7V11H8.3v2.8h2.4V21h2.8z"/></svg>
         </a>
       {%- endif -%}
-    </div>
+      {%- if INSTAGRAM_URL != blank -%}
+        <a class="sh-md-social__link" href="{{ INSTAGRAM_URL }}" target="_blank" rel="noopener" aria-label="Instagram">
+          <svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.2" cy="6.8" r="0.9" class="is-dot"/></svg>
+        </a>
+      {%- endif -%}
+      {%- if TIKTOK_URL != blank -%}
+        <a class="sh-md-social__link" href="{{ TIKTOK_URL }}" target="_blank" rel="noopener" aria-label="TikTok">
+          <svg viewBox="0 0 24 24" class="is-fill"><path d="M16.2 3c.4 2.1 1.8 3.6 3.8 3.9v3c-1.4 0-2.7-.4-3.8-1.1v6c0 3.2-2.5 5.4-5.4 5.4-3 0-5.3-2.3-5.3-5.1 0-3.1 2.7-5.4 5.9-5v3.1c-1.4-.3-2.8.6-2.8 1.9 0 1 .8 1.9 2 1.9s2-.9 2-2.1V3h3.6z"/></svg>
+        </a>
+      {%- endif -%}
+      {%- if YOUTUBE_URL != blank -%}
+        <a class="sh-md-social__link" href="{{ YOUTUBE_URL }}" target="_blank" rel="noopener" aria-label="YouTube">
+          <svg viewBox="0 0 24 24" class="is-fill"><path d="M21.6 7.6c-.2-.9-.9-1.6-1.8-1.8C18.2 5.4 12 5.4 12 5.4s-6.2 0-7.8.4c-.9.2-1.6.9-1.8 1.8C2 9.2 2 12 2 12s0 2.8.4 4.4c.2.9.9 1.6 1.8 1.8 1.6.4 7.8.4 7.8.4s6.2 0 7.8-.4c.9-.2 1.6-.9 1.8-1.8.4-1.6.4-4.4.4-4.4s0-2.8-.4-4.4zM10 15V9l5.2 3L10 15z"/></svg>
+        </a>
+      {%- endif -%}
+      {%- if WHATSAPP_NUMBER != blank -%}
+        <a class="sh-md-social__link" href="https://wa.me/{{ WHATSAPP_NUMBER }}" target="_blank" rel="noopener" aria-label="WhatsApp">
+          <svg viewBox="0 0 24 24"><path d="M4 20l1.2-3.6A8 8 0 1 1 8 19.1L4 20z"/><path d="M9 9.5c.3 1.8 2.2 4 4.5 4.8l1.2-1.1 1.8.9c-.2 1-1 1.6-2 1.6C11.4 15.4 8.6 12.6 8.3 9.5c0-1 .6-1.8 1.6-2l.9 1.8L9 9.5z"/></svg>
+        </a>
+      {%- endif -%}
+    {%- endcapture -%}
+    {%- if social_html contains '<a' -%}
+      <div class="sh-md-social">
+        {%- if SOCIAL_LABEL != blank -%}<span class="sh-md-social__label">{{ SOCIAL_LABEL }}</span>{%- endif -%}
+        <div class="sh-md-social__list">{{ social_html }}</div>
+      </div>
+    {%- endif -%}
   </div>
 </template>
 
@@ -275,8 +297,7 @@
     place-items: center;
     background: rgb(255 255 255 / 0.14);
   }
-  .sh-md-promo__arrow svg,
-  .sh-md-foot__link svg {
+  .sh-md-promo__arrow svg {
     width: 18px;
     height: 18px;
     fill: none;
@@ -295,27 +316,49 @@
     color: var(--sh-md-muted);
   }
 
-  .sh-md-foot {
+  .sh-md-social {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
     padding-top: 1rem;
     border-top: 1px solid var(--sh-md-line);
   }
-  .sh-md-foot__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    min-height: 40px;
-    padding: 0 1rem;
-    border: 1px solid var(--sh-md-line);
-    border-radius: 999px;
-    font-size: 0.86rem;
-    font-weight: 500;
-    color: inherit;
-    text-decoration: none;
+  .sh-md-social__label {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.17em;
+    text-transform: uppercase;
+    color: var(--sh-md-muted);
   }
-  .sh-md-foot__link:active { background: #F7F7F5; }
+  .sh-md-social__list { display: flex; gap: 0.5rem; }
+  .sh-md-social__link {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    border: 1px solid var(--sh-md-line);
+    color: var(--color-foreground, #111111);
+    transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+  }
+  .sh-md-social__link:active,
+  .sh-md-social__link:hover {
+    background: var(--color-foreground, #111111);
+    border-color: var(--color-foreground, #111111);
+    color: var(--color-background, #FFFFFF);
+  }
+  .sh-md-social__link svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.7px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .sh-md-social__link svg.is-fill { fill: currentColor; stroke: none; }
+  .sh-md-social__link svg .is-dot { fill: currentColor; stroke: none; }
 
   .menu-drawer__utility-links { margin-inline-start: var(--sh-md-pad) !important; }
 
