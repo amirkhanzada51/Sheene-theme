@@ -22,7 +22,7 @@
        - Current page par left mein ink line
        - Promo card (knobs se text / link)
        - Trust line + social icons (Facebook, Instagram, TikTok,
-         YouTube, WhatsApp). Links neeche knobs mein.
+         YouTube, WhatsApp). Links Settings > General > Brand se.
   3. Horizon ki "Featured products" images drawer se chhupa deta hai.
 
   Desktop ka inline menu nahi chherta, sirf drawer (mobile, tablet, ya
@@ -47,19 +47,48 @@
 
   assign TRUST_LINE = ''
 
-  # Social links: poora URL yahan daalo. Khali = icon hide.
-  # (Horizon mein theme level "Social media" settings nahi hoti, is liye
-  #  links seedha yahin likhne hain.)
+  # Social links khud aate hain: Settings > General > Brand > Social links.
+  # Yahan kuch likho to woh Brand wale link ko override karta hai.
+  # Dono khali = icon hide.
   assign SOCIAL_LABEL = 'Follow us'
-  assign FACEBOOK_URL = 'https://www.facebook.com/1273146945880822'
+  assign FACEBOOK_URL = ''
   assign INSTAGRAM_URL = ''
   assign TIKTOK_URL = ''
   assign YOUTUBE_URL = ''
-  # Sirf digits, country code ke saath, jaise 923001234567. Khali = hide
-  assign WHATSAPP_NUMBER = '923273626163'
+  # Sirf digits, country code ke saath, jaise 923001234567.
+  # Khali ho to Brand wala WhatsApp link use hota hai.
+  assign WHATSAPP_NUMBER = ''
+
+  # ---- Brand settings se links (shop.brand.metafields.social_links) ----
+  assign b_links = shop.brand.metafields.social_links
+  assign b_fb = b_links.facebook.value
+  assign b_ig = b_links.instagram.value
+  assign b_tt = b_links.tiktok.value
+  assign b_yt = b_links.youtube.value
+  assign b_wa = b_links.whatsapp.value
+  if FACEBOOK_URL == blank
+    assign FACEBOOK_URL = b_fb
+  endif
+  if INSTAGRAM_URL == blank
+    assign INSTAGRAM_URL = b_ig
+  endif
+  if TIKTOK_URL == blank
+    assign TIKTOK_URL = b_tt
+  endif
+  if YOUTUBE_URL == blank
+    assign YOUTUBE_URL = b_yt
+  endif
+  if WHATSAPP_NUMBER == blank and b_wa != blank
+    assign WHATSAPP_NUMBER = b_wa | split: '/' | last
+  endif
 
   # WhatsApp number se +, space aur dash khud hat jate hain
-  assign WHATSAPP_NUMBER = WHATSAPP_NUMBER | remove: '+' | remove: ' ' | remove: '-'
+  assign WHATSAPP_NUMBER = WHATSAPP_NUMBER | split: '?' | first | remove: '+' | remove: ' ' | remove: '-'
+  # Pakistani number 0 se shuru ho (0327...) to 92 laga do, wa.me ko country code chahiye
+  assign wa_first = WHATSAPP_NUMBER | slice: 0
+  if wa_first == '0'
+    assign WHATSAPP_NUMBER = WHATSAPP_NUMBER | remove_first: '0' | prepend: '92'
+  endif
 %}
 
 <template id="ShMenuExtras">
