@@ -855,6 +855,17 @@
         "padding-block-end": 48
       }
     },
+    "custom_liquid_AaGq46": {
+      "type": "custom-liquid",
+      "name": "Recommendation products",
+      "settings": {
+        "custom_liquid": "{%- render 'sheene-product-page-recommendation' -%}",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "1787586823fd821aab": {
       "type": "_blocks",
       "blocks": {
@@ -902,6 +913,7 @@
     },
     "recommended_products_HzXXfa": {
       "type": "recommended-products",
+      "disabled": true,
       "name": "Recommended Products",
       "settings": {}
     },
@@ -1240,6 +1252,7 @@
   "order": [
     "main",
     "section_MiWbx3",
+    "custom_liquid_AaGq46",
     "1787586823fd821aab",
     "recommended_products_HzXXfa",
     "section_3R6U7q",
