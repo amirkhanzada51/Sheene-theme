@@ -855,17 +855,6 @@
         "padding-block-end": 48
       }
     },
-    "custom_liquid_AaGq46": {
-      "type": "custom-liquid",
-      "name": "Recommendation products",
-      "settings": {
-        "custom_liquid": "{%- render 'sheene-product-page-recommendation' -%}",
-        "background_color": "",
-        "section_width": "page-width",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
-    },
     "1787586823fd821aab": {
       "type": "_blocks",
       "blocks": {
@@ -907,6 +896,17 @@
         "border_opacity": 100,
         "border_color": "",
         "border_radius": 0,
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "custom_liquid_AaGq46": {
+      "type": "custom-liquid",
+      "name": "Recommendation products",
+      "settings": {
+        "custom_liquid": "{%- render 'sheene-product-page-recommendation' -%}",
+        "background_color": "",
+        "section_width": "page-width",
         "padding-block-start": 0,
         "padding-block-end": 0
       }
@@ -1252,8 +1252,8 @@
   "order": [
     "main",
     "section_MiWbx3",
-    "custom_liquid_AaGq46",
     "1787586823fd821aab",
+    "custom_liquid_AaGq46",
     "recommended_products_HzXXfa",
     "section_3R6U7q",
     "1787586820879c6e76"
