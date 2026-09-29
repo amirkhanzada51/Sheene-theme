@@ -1,7 +1,7 @@
 {% comment %}
   ==========================================================
   SHEENE - Product Grid  (reusable)
-  File: snippets/sheene-product-grid.liquid
+  File: snippets/sheene-home-product-slider.liquid
   ==========================================================
 
   Ek hi snippet, jitni baar chaho use karo. Har jagah alag
@@ -10,8 +10,11 @@
   ----------------------------------------------------------
   IS VERSION MEIN NAYA KYA HAI
   ----------------------------------------------------------
-  Card se lambi variant pills hata di gayi hain. Ab:
+  Collection ke ilawa ab products ki list bhi le sakta hai
+  (product_list). Product page ka Recommended section isi se
+  Shopify recommendations dikhata hai, bilkul home jaise cards.
 
+  Card par variants:
     Ek hi variant           ->  seedha "Add to cart"
     Ek se zyada variants    ->  "Choose options" button, jo ek
                                 popup kholta hai. Popup mein
@@ -28,7 +31,7 @@
 
   Best Sellers (assets ke saath, page par pehla hona chahiye):
 
-    {% raw %}{% render 'sheene-product-grid',
+    {% raw %}{% render 'sheene-home-product-slider',
       collection: 'best-sellers',
       heading: 'Our Best Sellers',
       badge_text: 'Best Seller'
@@ -36,7 +39,7 @@
 
   Bundles (assets: false, kyunki CSS aur JS upar aa chuke hain):
 
-    {% raw %}{% render 'sheene-product-grid',
+    {% raw %}{% render 'sheene-home-product-slider',
       collection: 'bundles',
       heading: 'Shop Bundles',
       badge_text: 'Bundle',
@@ -46,13 +49,13 @@
       assets: false
     %}{% endraw %}
 
-  New Arrivals, badge ke baghair:
+  Products ki list se (collection ki jagah):
 
-    {% raw %}{% render 'sheene-product-grid',
-      collection: 'new-arrivals',
-      heading: 'New Arrivals',
-      show_badge: false,
-      assets: false
+    {% raw %}{% render 'sheene-home-product-slider',
+      product_list: recommendations.products,
+      grid_id: 'recommended',
+      heading: 'Recommended',
+      show_view_all: false
     %}{% endraw %}
 
   ----------------------------------------------------------
@@ -61,6 +64,13 @@
 
   collection       collection ka handle. Default 'best-sellers'.
                    Handle URL se milta hai: /collections/bundles -> 'bundles'
+
+  product_list     products ki list (jaise recommendations.products).
+                   Ye diya ho to collection ki jagah yahi use hoti hai.
+
+  grid_id          section ka unique naam (HTML id ke liye).
+                   Default: collection handle. product_list ke saath
+                   zaroor do, taake ek page par do grids clash na karein.
 
   heading          upar ka title. Default 'Our Best Sellers'.
                    heading: '' bhejo to title bilkul nahi aayega.
@@ -110,6 +120,11 @@
   assign col_handle = collection | default: 'best-sellers'
   assign col = collections[col_handle]
 
+  assign using_list = false
+  if product_list != blank
+    assign using_list = true
+  endif
+
   assign grid_limit = limit | default: 8
   assign grid_mobile_limit = mobile_limit | default: 4
   assign grid_columns = columns | default: 4
@@ -149,7 +164,7 @@
     assign assets_on = false
   endif
 
-  assign uid = col_handle | handle
+  assign uid = grid_id | default: col_handle | handle
 %}
 
 {%- if assets_on -%}
@@ -978,8 +993,9 @@ body {
   {%- endif -%}
 
   <div class="custom-best-sellers__grid">
-    {% if col != blank and col.products_count > 0 %}
-      {% for product in col.products limit: grid_limit %}
+    {% if using_list or col != blank and col.products_count > 0 %}
+      {% if using_list %}{% assign src_products = product_list %}{% else %}{% assign src_products = col.products %}{% endif %}
+      {% for product in src_products limit: grid_limit %}
 
         {% liquid
           assign rating_value = 0
