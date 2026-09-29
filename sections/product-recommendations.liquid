@@ -1,562 +1,396 @@
+{% comment %}
+  SHEENE - Recommended products (product page)
 
-<script
-  src="{{ 'product-recommendations.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
+  Pehle: section khali grid ke saath aata tha, JS baad mein cards banata
+  tha, is liye heading akeli dikhti thi, phir cards achanak kood kar aate
+  thay aur full size images der se load hoti thein.
+
+  Ab:
+  - Page ke saath hi 4 skeleton cards (grey boxes) usi size mein aate hain,
+    to layout nahi hilta.
+  - Cards ban kar pehli images load hone tak skeleton hi dikhta hai, phir
+    ek saath fade in.
+  - Images CDN se chhoti size (640px) mein aati hain, pehle full size aati
+    thein.
+  - Recommendations na milen to poora section hide.
+  Design, classes aur add to cart behaviour wahi hain.
+{% endcomment %}
 
 {% liquid
-  case section.settings.layout_type
-    when 'grid'
-      assign classes = 'resource-list--grid'
-    when 'carousel'
-      assign classes = 'resource-list__carousel'
-  endcase
-
-  capture styles
-    echo '--column-count-mobile: ' | append: section.settings.mobile_columns | append: ';'
-    echo '--resource-list-column-gap-desktop: ' | append: section.settings.columns_gap | append: 'px;'
-    echo '--resource-list-row-gap-desktop: ' | append: section.settings.rows_gap | append: 'px;'
-    echo '--resource-list-columns: repeat(' | append: section.settings.columns | append: ', 1fr);'
-    echo '--resource-list-columns-mobile: repeat(' | append: section.settings.mobile_columns | append: ', 1fr);'
-    echo '--resource-list-column-gap-desktop: ' | append: section.settings.columns_gap | append: 'px;'
-    echo '--column-count: ' | append: section.settings.columns | append: ';'
-    echo '--column-count-mobile: ' | append: section.settings.mobile_columns | append: ';'
-  endcapture
+  assign CARD_COUNT = 4
+  assign IMAGE_WIDTH = 640
 %}
 
-{% render 'quick-add-styles' %}
-{% render 'quick-add-modal-styles' %}
-{% render 'swatch-styles' %}
-{% render 'quantity-selector-styles' %}
-{% render 'variant-picker-styles' %}
-{% render 'product-badges-styles' %}
-{% render 'resource-list-styles' %}
-{% render 'product-recommendations-styles' %}
-<product-recommendations
-  id="product-recommendations-{{ section.id }}"
-  class="product-recommendations"
-  data-url="{{ routes.product_recommendations_url }}?limit={{ section.settings.max_products }}"
-  data-section-id="{{ section.id }}"
-  data-product-id="{{ section.settings.product.id | default: product.id }}"
-  data-intent="{{ section.settings.recommendation_type }}"
-  data-testid="product-recommendations-section"
-  data-recommendations-performed="{{ recommendations.performed }}"
-  data-hydration-key="product-recommendations-{{ section.id }}"
-  {{ section.shopify_attributes }}
->
-  {% liquid
-    if section.settings.background_color != blank
-      render 'contrast-override', background_color: section.settings.background_color, section_id: section.id
-    endif
-  %}
+<style>
+  .rpfu-section, .rpfu-section * { box-sizing: border-box; }
+  .rpfu-section {
+    width: 100%;
+    margin-top: 50px;
+    background: #ffffff;
+    color: #080808;
+    font-family: var(--font-body--family, "Jost", sans-serif);
+    overflow: hidden;
+  }
+  .rpfu-container { width: calc(100% - 88px); margin: 10px auto; }
+  .rpfu-heading {
+    margin: 20px 0 24px;
+    padding: 0;
+    font-family: var(--font-heading--family, "Jost", sans-serif);
+    font-size: 32px;
+    line-height: 1.15;
+    font-weight: 500;
+    letter-spacing: -1.25px;
+    color: #050505;
+  }
 
-  <div
-    class="section-background{% if section.settings.background_color != blank %} color-custom-{{ section.id }}{% endif %}"
-  ></div>
-  <div
-    class="
-      section
-      section--{{ section.settings.section_width }}
-      {% if section.settings.background_color != blank %}color-custom-{{ section.id }}{% endif %}
-      section-resource-list
-      spacing-style
-      gap-style
-    "
-    style="
-      {%  render 'spacing-style', settings: section.settings %}
-      {%  render 'gap-style', value: section.settings.gap %}
-      {{ styles }}
-    "
-  >
-    <div class="section-resource-list__content">
-      {% content_for 'blocks' %}
-    </div>
+  /* grid: real cards aur skeleton ek hi jagah stack hote hain */
+  .rpfu-stage { position: relative; }
+  .rpfu-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 16px;
+    row-gap: 45px;
+  }
+  .rpfu-grid--real { opacity: 0; transition: opacity 0.35s ease; }
+  .rpfu-section.is-ready .rpfu-grid--real { opacity: 1; }
+  .rpfu-section.is-ready .rpfu-grid--skel { display: none; }
+  .rpfu-section:not(.is-ready) .rpfu-grid--real {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
 
-    {%- if recommendations.performed or section.settings.product == blank -%}
-      {% liquid
-        if section.settings.product == blank
-          assign products = null
-          # Onboarding mode: Show placeholder products
-          for i in (1..section.settings.max_products)
-            assign products = products | append: ', '
-            assign products = products | split: ','
-          endfor
-        elsif recommendations.performed and recommendations.products_count == 0
-          # No recommendations found, pull from catalog
-          if section.settings.recommendation_type == 'related'
-            assign products = collections.all.products | reject: 'id', section.settings.product.id
-          elsif section.settings.recommendation_type == 'complementary'
-            # Do not recommend the All collection as complementary products
-            assign products = null
-          endif
+  /* skeleton */
+  .rpfu-skel__media {
+    width: 100%;
+    aspect-ratio: 420 / 630;
+    background: linear-gradient(100deg, #eef0f1 30%, #f6f7f8 50%, #eef0f1 70%);
+    background-size: 200% 100%;
+    animation: rpfuShimmer 1.3s linear infinite;
+  }
+  .rpfu-skel__line {
+    height: 14px;
+    margin-top: 16px;
+    width: 80%;
+    border-radius: 4px;
+    background: #eef0f1;
+  }
+  .rpfu-skel__line--short { width: 45%; margin-top: 10px; }
+  .rpfu-skel__btn { height: 51px; margin-top: 18px; background: #eef0f1; }
+  @keyframes rpfuShimmer { to { background-position: -200% 0; } }
+  @media (prefers-reduced-motion: reduce) { .rpfu-skel__media { animation: none; } }
 
-        else
-          assign products = recommendations.products
-        endif
-      %}
-      {% capture list_items %}
-        {% for product in products limit: section.settings.max_products %}
-          <div class="resource-list__item">
-            {% content_for 'block',
-              type: '_product-card',
-              id: 'static-product-card',
-              closest.product: product,
-              product_view_context: 'recommendation'
-            %}
+  /* card */
+  .rpfu-card { width: 100%; min-width: 0; position: relative; color: #080808; }
+  .rpfu-media {
+    width: 100%;
+    aspect-ratio: 420 / 630;
+    position: relative;
+    overflow: hidden;
+    background: #e9edef;
+  }
+  .rpfu-image-link { display: block; width: 100%; height: 100%; overflow: hidden; color: inherit; text-decoration: none; }
+  .rpfu-slides { width: 100%; height: 100%; display: flex; transition: transform 0.35s ease; will-change: transform; }
+  .rpfu-slide { width: 100%; height: 100%; flex: 0 0 100%; overflow: hidden; }
+  .rpfu-slide img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform 0.38s ease; }
+  .rpfu-image-link:hover .rpfu-slide img { transform: scale(1.025); }
+
+  .rpfu-trending {
+    position: absolute; top: 15px; right: 16px; z-index: 5;
+    min-height: 25px; padding: 5px 11px;
+    display: none; align-items: center; justify-content: center;
+    border-radius: 14px; background: #050505; color: #ffffff;
+    font-size: 12px; line-height: 1; font-weight: 500; white-space: nowrap;
+  }
+  .rpfu-card.is-trending .rpfu-trending { display: flex; }
+
+  .rpfu-image-arrow {
+    position: absolute; top: 50%; transform: translateY(-50%); z-index: 3;
+    width: 25px; height: 25px; padding: 0; border: 0; border-radius: 50%;
+    background: rgba(255, 255, 255, 0.92);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .rpfu-image-arrow:hover { background: #ffffff; transform: translateY(-50%) scale(1.04); }
+  .rpfu-image-arrow svg { width: 15px; height: 15px; fill: none; stroke: #777777; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
+  .rpfu-prev { left: 9px; }
+  .rpfu-next { right: 9px; }
+  .rpfu-card.single-image .rpfu-image-arrow { display: none; }
+
+  .rpfu-dots { position: absolute; left: 0; right: 0; bottom: 10px; z-index: 2; display: flex; justify-content: center; gap: 4px; pointer-events: none; }
+  .rpfu-dot { width: 6px; height: 6px; border-radius: 50%; background: #c5c7c8; transition: background 0.2s ease; }
+  .rpfu-dot.active { background: #080808; }
+
+  .rpfu-info { width: 100%; padding-top: 25px; }
+  .rpfu-title { margin: 0; font-size: 18px; line-height: 1.38; font-weight: 500; letter-spacing: -0.15px; color: #080808; }
+  .rpfu-title-link { position: relative; display: inline-block; color: #080808; text-decoration: none; }
+  .rpfu-title-link::after {
+    content: ""; position: absolute; left: 0; bottom: -2px; width: 100%; height: 1px;
+    background: #080808; transform: scaleX(0); transform-origin: left center; transition: transform 0.35s ease;
+  }
+  .rpfu-title-link:hover::after { transform: scaleX(1); }
+  .rpfu-description { margin-top: 10px; min-height: 21px; font-size: 15px; line-height: 1.4; color: #777777; }
+  .rpfu-price-row { margin-top: 5px; display: flex; align-items: center; flex-wrap: wrap; gap: 7px; }
+  .rpfu-price { font-size: 15px; line-height: 1.4; color: #111111; }
+  .rpfu-compare { font-size: 14px; line-height: 1.4; color: #777777; text-decoration: line-through; }
+
+  .rpfu-variants { width: 100%; margin-top: 18px; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .rpfu-variant {
+    min-width: 64px; height: 30px; padding: 0 17px;
+    border: 1px solid #bdbdbd; border-radius: 17px; background: #ffffff;
+    display: inline-flex; align-items: center; justify-content: center;
+    font: inherit; font-size: 14px; line-height: 1; color: #222222; cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+  }
+  .rpfu-variant.active { background: #050505; border-color: #050505; color: #ffffff; }
+
+  .rpfu-add {
+    width: 100%; height: 51px; margin-top: 12px; padding: 0; border: 0;
+    background: #050505; color: #ffffff; font: inherit; font-size: 16px; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s ease, opacity 0.2s ease;
+  }
+  .rpfu-add:hover { background: #181818; }
+  .rpfu-add:disabled { opacity: 0.55; cursor: not-allowed; }
+  .rpfu-add.loading { position: relative; color: transparent; }
+  .rpfu-add.loading::after {
+    content: ""; width: 17px; height: 17px; position: absolute; top: 50%; left: 50%;
+    margin: -8.5px 0 0 -8.5px; border: 2px solid rgba(255,255,255,.35); border-top-color: #ffffff;
+    border-radius: 50%; animation: rpfuSpin .7s linear infinite;
+  }
+  @keyframes rpfuSpin { to { transform: rotate(360deg); } }
+
+  .rpfu-toast {
+    position: fixed; left: 50%; bottom: 25px; z-index: 99999;
+    transform: translate(-50%, 20px); padding: 12px 18px;
+    background: #050505; color: #ffffff; font-family: var(--font-body--family, "Jost", sans-serif); font-size: 14px;
+    border-radius: 3px; opacity: 0; pointer-events: none; transition: opacity .25s ease, transform .25s ease;
+  }
+  .rpfu-toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+  @media screen and (max-width: 1100px) {
+    .rpfu-container { width: calc(100% - 50px); }
+    .rpfu-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .rpfu-grid > :nth-child(n+4) { display: none; }
+  }
+  @media screen and (max-width: 749px) {
+    .rpfu-container { width: calc(100% - 32px); }
+    .rpfu-heading { margin-bottom: 30px; font-size: 30px; letter-spacing: -0.9px; }
+    .rpfu-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 30px 12px; }
+    .rpfu-grid > :nth-child(n+4) { display: block; }
+    .rpfu-info { padding-top: 16px; }
+    .rpfu-title { font-size: 16px; }
+    .rpfu-description { font-size: 13px; margin-top: 7px; }
+    .rpfu-price { font-size: 14px; }
+    .rpfu-variants { margin-top: 13px; gap: 6px; }
+    .rpfu-variant { height: 28px; min-width: 55px; padding: 0 13px; font-size: 12px; }
+    .rpfu-add, .rpfu-skel__btn { height: 46px; font-size: 14px; margin-top: 10px; }
+  }
+  @media screen and (max-width: 420px) {
+    .rpfu-container { width: calc(100% - 24px); }
+    .rpfu-grid { gap: 28px 10px; }
+    .rpfu-title { font-size: 14px; }
+    .rpfu-description { font-size: 12px; }
+  }
+</style>
+
+<section class="rpfu-section" id="rpfu-{{ section.id }}" data-product-id="{{ product.id }}">
+  <div class="rpfu-container">
+    <h2 class="rpfu-heading">Recommended</h2>
+    <div class="rpfu-stage">
+      <div class="rpfu-grid rpfu-grid--skel" aria-hidden="true">
+        {%- for i in (1..CARD_COUNT) -%}
+          <div class="rpfu-skel">
+            <div class="rpfu-skel__media"></div>
+            <div class="rpfu-skel__line"></div>
+            <div class="rpfu-skel__line rpfu-skel__line--short"></div>
+            <div class="rpfu-skel__btn"></div>
           </div>
-          {% unless forloop.last %}
-            <!--@list/split-->
-          {% endunless %}
-        {% endfor %}
-      {% endcapture %}
-
-      {% liquid
-        # Create an array from the list items to be used in the carousel
-        assign slide_content = list_items | strip
-        assign slides = slide_content | split: '<!--@list/split-->'
-
-        if products != blank and products.size > 0
-          assign has_recommendations = 'true'
-        else
-          assign has_recommendations = 'false'
-        endif
-      %}
-
-      <div
-        class="
-          resource-list
-          {% if section.settings.layout_type == 'carousel' %}
-            force-full-width
-          {% endif %}
-          {% if section.settings.carousel_on_mobile and section.settings.layout_type != 'carousel' %}
-            hidden--mobile
-          {% endif %}
-          {{ classes }}
-        "
-        {% if section.settings.layout_type == 'grid' %}
-          data-testid="resource-list-grid"
-        {% endif %}
-        data-has-recommendations="{{ has_recommendations }}"
-      >
-        {% case section.settings.layout_type %}
-          {% when 'grid' %}
-            {{ list_items }}
-          {% when 'carousel' %}
-            {% render 'resource-list-carousel',
-              ref: 'resourceListCarousel',
-              slides: slides,
-              slide_count: recommendations.products.size,
-              settings: section.settings
-            %}
-        {% endcase %}
+        {%- endfor -%}
       </div>
-
-      {% if section.settings.carousel_on_mobile and section.settings.layout_type != 'carousel' %}
-        {% liquid
-          assign mobile_carousel_gap = section.settings.columns_gap
-        %}
-        <div
-          class="
-            resource-list
-            hidden--desktop
-            force-full-width
-          "
-          style="
-            --resource-list-gap: {{ mobile_carousel_gap }}px;
-            --column-count: {{ section.settings.columns }};
-          "
-        >
-          {% render 'resource-list-carousel',
-            ref: 'resourceListCarouselMobile',
-            slides: slides,
-            slide_count: recommendations.products.size,
-            settings: section.settings
-          %}
-        </div>
-      {% endif %}
-    {%- else -%}
-      <div
-        class="resource-list resource-list--grid"
-      >
-        {% for i in (1..section.settings.columns) %}
-          <div
-            class="product-recommendations__skeleton-item"
-            aria-label="{{ 'accessibility.loading_product_recommendations' | t }}"
-          ></div>
-        {% endfor %}
-      </div>
-    {%- endif -%}
+      <div class="rpfu-grid rpfu-grid--real" data-rpfu-grid></div>
+    </div>
   </div>
-</product-recommendations>
+</section>
+
+<div class="rpfu-toast" data-rpfu-toast role="status" aria-live="polite">Added to cart</div>
+
+<script>
+(function () {
+  var section = document.getElementById('rpfu-{{ section.id }}');
+  if (!section) return;
+  var grid = section.querySelector('[data-rpfu-grid]');
+  var toast = document.querySelector('[data-rpfu-toast]');
+  var productId = section.dataset.productId;
+  var CARD_COUNT = {{ CARD_COUNT }};
+  var IMAGE_WIDTH = {{ IMAGE_WIDTH }};
+  if (!grid || !productId) return;
+
+  function hideSection() { section.hidden = true; section.style.display = 'none'; }
+  function reveal() { section.classList.add('is-ready'); }
+
+  function money(value) {
+    var amount = Number(value || 0) / 100;
+    return 'Rs. ' + amount.toLocaleString('en-PK', { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+  }
+  function esc(v) {
+    return String(v || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+  }
+  function sized(image) {
+    var src = !image ? '' : (typeof image === 'string' ? image : (image.src || ''));
+    if (!src) return '';
+    return src + (src.indexOf('?') > -1 ? '&' : '?') + 'width=' + IMAGE_WIDTH;
+  }
+
+  var toastTimer = null;
+  function showToast(msg) {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { toast.classList.remove('show'); }, 2200);
+  }
+
+  function createCard(product) {
+    var card = document.createElement('article');
+    card.className = 'rpfu-card';
+    var url = product.url || '#';
+    var tags = Array.isArray(product.tags) ? product.tags : [];
+    if (tags.some(function (t) { return String(t).toLowerCase().indexOf('trending') > -1; })) card.classList.add('is-trending');
+
+    var images = Array.isArray(product.images) ? product.images : [];
+    if (!images.length && product.featured_image) images = [product.featured_image];
+    images = images.slice(0, 8);
+    if (images.length <= 1) card.classList.add('single-image');
+
+    var imgs = images.map(function (img, i) {
+      return '<div class="rpfu-slide"><img src="' + esc(sized(img)) + '" alt="' + esc(product.title) + '"' +
+        (i === 0 ? ' fetchpriority="low" decoding="async"' : ' loading="lazy" decoding="async"') + '></div>';
+    }).join('');
+    var dots = images.map(function (_, i) { return '<span class="rpfu-dot' + (i === 0 ? ' active' : '') + '" data-dot="' + i + '"></span>'; }).join('');
+
+    var variants = Array.isArray(product.variants) ? product.variants : [];
+    var first = variants.length ? variants[0] : null;
+    var price = first ? first.price : product.price;
+    var compare = first ? first.compare_at_price : product.compare_at_price;
+    var priceHtml = '<span class="rpfu-price">' + money(price) + '</span>';
+    if (compare && Number(compare) > Number(price)) priceHtml += '<span class="rpfu-compare">' + money(compare) + '</span>';
+
+    var desc = '';
+    if (product.description) {
+      var tmp = document.createElement('div');
+      tmp.innerHTML = product.description;
+      desc = tmp.textContent.replace(/\s+/g, ' ').trim();
+      if (desc.length > 58) desc = desc.substring(0, 58).trim() + '...';
+    }
+
+    var variantHtml = '';
+    if (variants.length > 1) {
+      variantHtml = '<div class="rpfu-variants">' + variants.slice(0, 6).map(function (v, i) {
+        var label = (!v.title || v.title === 'Default Title') ? (v.option1 || 'Option ' + (i + 1)) : v.title;
+        return '<button type="button" class="rpfu-variant' + (i === 0 ? ' active' : '') + '" data-variant-id="' + v.id + '">' + esc(label) + '</button>';
+      }).join('') + '</div>';
+    }
+
+    card.innerHTML =
+      '<div class="rpfu-media">' +
+        '<a href="' + esc(url) + '" class="rpfu-image-link" aria-label="' + esc(product.title) + '"><div class="rpfu-slides" data-slides>' + imgs + '</div></a>' +
+        '<span class="rpfu-trending">Trending</span>' +
+        '<button type="button" class="rpfu-image-arrow rpfu-prev" data-prev aria-label="Previous image"><svg viewBox="0 0 24 24"><path d="M15 18L9 12L15 6"></path></svg></button>' +
+        '<button type="button" class="rpfu-image-arrow rpfu-next" data-next aria-label="Next image"><svg viewBox="0 0 24 24"><path d="M9 18L15 12L9 6"></path></svg></button>' +
+        '<div class="rpfu-dots">' + dots + '</div>' +
+      '</div>' +
+      '<div class="rpfu-info">' +
+        '<h3 class="rpfu-title"><a href="' + esc(url) + '" class="rpfu-title-link">' + esc(product.title) + '</a></h3>' +
+        '<div class="rpfu-description">' + esc(desc) + '</div>' +
+        '<div class="rpfu-price-row">' + priceHtml + '</div>' +
+        variantHtml +
+        '<button type="button" class="rpfu-add' + (variants.length > 1 ? ' select-size' : '') + '" data-add data-variant-id="' + (first ? first.id : '') + '">' +
+          (variants.length > 1 ? 'Select Size' : 'Add to Cart') +
+        '</button>' +
+      '</div>';
+
+    var slides = card.querySelector('[data-slides]');
+    var dotEls = card.querySelectorAll('[data-dot]');
+    var current = 0;
+    function go(i) {
+      if (images.length <= 1) return;
+      current = (i + images.length) % images.length;
+      slides.style.transform = 'translateX(-' + (current * 100) + '%)';
+      dotEls.forEach(function (d, n) { d.classList.toggle('active', n === current); });
+    }
+    card.querySelector('[data-prev]').addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); go(current - 1); });
+    card.querySelector('[data-next]').addEventListener('click', function (e) { e.preventDefault(); e.stopPropagation(); go(current + 1); });
+
+    var addBtn = card.querySelector('[data-add]');
+    var vBtns = card.querySelectorAll('.rpfu-variant');
+    vBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        vBtns.forEach(function (x) { x.classList.remove('active'); });
+        b.classList.add('active');
+        addBtn.dataset.variantId = b.dataset.variantId;
+        addBtn.textContent = 'Add to Cart';
+        addBtn.classList.remove('select-size');
+      });
+    });
+    addBtn.addEventListener('click', function () {
+      var id = addBtn.dataset.variantId;
+      if (!id) return;
+      addBtn.classList.add('loading');
+      addBtn.disabled = true;
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ items: [{ id: Number(id), quantity: 1 }] })
+      })
+        .then(function (r) { if (!r.ok) throw new Error('Cart error'); return r.json(); })
+        .then(function () {
+          showToast('Added to cart');
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+          document.dispatchEvent(new CustomEvent('cart:updated'));
+        })
+        .catch(function () { showToast('Unable to add to cart'); })
+        .then(function () { addBtn.classList.remove('loading'); addBtn.disabled = false; });
+    });
+
+    return card;
+  }
+
+  /* pehli images load hone ka wait (max 2.5s), phir fade in */
+  function whenImagesReady(cards, cb) {
+    var imgs = cards.map(function (c) { return c.querySelector('.rpfu-slide img'); }).filter(Boolean);
+    var left = imgs.length, done = false;
+    function finish() { if (done) return; done = true; cb(); }
+    if (!left) return finish();
+    imgs.forEach(function (img) {
+      if (img.complete) { if (--left === 0) finish(); return; }
+      var d = function () { if (--left === 0) finish(); };
+      img.addEventListener('load', d, { once: true });
+      img.addEventListener('error', d, { once: true });
+    });
+    setTimeout(finish, 2500);
+  }
+
+  fetch('/recommendations/products.json?product_id=' + encodeURIComponent(productId) + '&limit=8&intent=related')
+    .then(function (r) { if (!r.ok) throw new Error('Recommendation request failed'); return r.json(); })
+    .then(function (data) {
+      var products = (data.products || []).slice(0, CARD_COUNT);
+      if (!products.length) return hideSection();
+      var cards = products.map(createCard);
+      cards.forEach(function (c) { grid.appendChild(c); });
+      whenImagesReady(cards, reveal);
+    })
+    .catch(function () { hideSection(); });
+})();
+</script>
 
 {% schema %}
 {
-  "name": "t:names.product_recommendations",
-  "disabled_on": {
-    "groups": ["header", "footer"]
-  },
-  "blocks": [
-    {
-      "type": "@theme"
-    },
-    {
-      "type": "@app"
-    },
-    {
-      "type": "text"
-    },
-    {
-      "type": "icon"
-    },
-    {
-      "type": "image"
-    },
-    {
-      "type": "button"
-    },
-    {
-      "type": "video"
-    },
-    {
-      "type": "group"
-    },
-    {
-      "type": "spacer"
-    },
-    {
-      "type": "_divider"
-    }
-  ],
-  "settings": [
-    {
-      "type": "product",
-      "id": "product",
-      "label": "t:settings.product"
-    },
-    {
-      "type": "select",
-      "id": "recommendation_type",
-      "label": "t:settings.type",
-      "options": [
-        {
-          "value": "related",
-          "label": "t:options.related"
-        },
-        {
-          "value": "complementary",
-          "label": "t:options.complementary"
-        }
-      ],
-      "default": "related"
-    },
-    {
-      "type": "paragraph",
-      "content": "t:content.complementary_products"
-    },
-    {
-      "type": "header",
-      "content": "t:content.cards_layout"
-    },
-    {
-      "type": "select",
-      "id": "layout_type",
-      "label": "t:settings.layout_style",
-      "options": [
-        {
-          "value": "grid",
-          "label": "t:options.grid"
-        },
-        {
-          "value": "carousel",
-          "label": "t:options.carousel"
-        }
-      ],
-      "default": "grid"
-    },
-    {
-      "type": "checkbox",
-      "id": "carousel_on_mobile",
-      "label": "t:settings.carousel_on_mobile",
-      "default": false,
-      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
-    },
-    {
-      "type": "range",
-      "id": "max_products",
-      "label": "t:settings.product_count",
-      "min": 3,
-      "max": 10,
-      "step": 1,
-      "default": 4
-    },
-    {
-      "type": "range",
-      "id": "columns",
-      "label": "t:settings.columns",
-      "min": 1,
-      "max": 8,
-      "step": 1,
-      "default": 4
-    },
-    {
-      "type": "select",
-      "id": "mobile_columns",
-      "label": "t:settings.mobile_columns",
-      "options": [
-        {
-          "value": "1",
-          "label": "t:options.one_number"
-        },
-        {
-          "value": "2",
-          "label": "t:options.two_number"
-        }
-      ],
-      "default": "2",
-      "visible_if": "{{ section.settings.layout_type == 'grid' and section.settings.carousel_on_mobile == false }}"
-    },
-    {
-      "type": "range",
-      "id": "columns_gap",
-      "label": "t:settings.horizontal_gap",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 16,
-      "visible_if": "{{ section.settings.layout_type == 'grid' or section.settings.layout_type == 'carousel' }}"
-    },
-    {
-      "type": "range",
-      "id": "rows_gap",
-      "label": "t:settings.vertical_gap",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 16,
-      "visible_if": "{{ section.settings.layout_type == 'grid' }}"
-    },
-    {
-      "type": "header",
-      "content": "t:content.carousel_navigation",
-      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
-    },
-    {
-      "type": "select",
-      "id": "icons_style",
-      "label": "t:settings.icon",
-      "options": [
-        {
-          "value": "arrow",
-          "label": "t:options.arrows"
-        },
-        {
-          "value": "chevron",
-          "label": "t:options.chevrons"
-        },
-        {
-          "value": "arrows_large",
-          "label": "t:options.arrows_large"
-        },
-        {
-          "value": "chevron_large",
-          "label": "t:options.chevron_large"
-        },
-        {
-          "value": "none",
-          "label": "t:options.none"
-        }
-      ],
-      "default": "arrow",
-      "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
-    },
-    {
-      "type": "select",
-      "id": "icons_shape",
-      "label": "t:settings.icon_background",
-      "options": [
-        {
-          "value": "none",
-          "label": "t:options.none"
-        },
-        {
-          "value": "circle",
-          "label": "t:options.circle"
-        },
-        {
-          "value": "square",
-          "label": "t:options.square"
-        }
-      ],
-      "default": "none",
-      "visible_if": "{{ section.settings.icons_style != 'none' and section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
-    },
-    {
-      "type": "header",
-      "content": "t:content.section_layout"
-    },
-    {
-      "type": "select",
-      "id": "section_width",
-      "label": "t:settings.width",
-      "options": [
-        {
-          "value": "page-width",
-          "label": "t:options.page"
-        },
-        {
-          "value": "full-width",
-          "label": "t:options.full"
-        }
-      ],
-      "default": "page-width"
-    },
-    {
-      "type": "range",
-      "id": "gap",
-      "label": "t:settings.gap",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 12
-    },
-    {
-      "type": "color",
-      "id": "background_color",
-      "label": "t:settings.background_color",
-      "placeholder": "t:settings.default"
-    },
-    {
-      "type": "header",
-      "content": "t:content.padding"
-    },
-    {
-      "type": "range",
-      "id": "padding-block-start",
-      "label": "t:settings.top",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
-    },
-    {
-      "type": "range",
-      "id": "padding-block-end",
-      "label": "t:settings.bottom",
-      "min": 0,
-      "max": 100,
-      "step": 1,
-      "unit": "px",
-      "default": 0
-    }
-  ],
-  "presets": [
-    {
-      "name": "t:names.product_recommendations",
-      "category": "t:categories.products",
-      "settings": {
-        "product": "{{ closest.product }}",
-        "recommendation_type": "related",
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
-        "max_products": 4,
-        "columns": 4,
-        "mobile_columns": "2",
-        "columns_gap": 12,
-        "rows_gap": 24,
-        "icons_style": "arrow",
-        "icons_shape": "none",
-        "section_width": "page-width",
-        "gap": 28,
-        "padding-block-start": 48,
-        "padding-block-end": 48
-      },
-      "blocks": {
-        "header": {
-          "type": "text",
-          "name": "t:names.header",
-          "settings": {
-            "text": "t:html_defaults.related_product",
-            "type_preset": "h3"
-          }
-        },
-        "static-product-card": {
-          "type": "_product-card",
-          "name": "t:names.product_card",
-          "static": true,
-          "settings": {
-            "product_card_gap": 4
-          },
-          "blocks": {
-            "product-card-gallery": {
-              "type": "_product-card-gallery",
-              "name": "t:names.product_card_media",
-              "settings": {
-                "image_ratio": "adapt",
-                "border": "none",
-                "border_width": 1,
-                "border_opacity": 100,
-                "border_radius": 0,
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              }
-            },
-            "product_title": {
-              "type": "product-title",
-              "name": "t:names.product_title",
-              "settings": {
-                "width": "fit-content",
-                "max_width": "normal",
-                "alignment": "left",
-                "type_preset": "paragraph",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "wrap": "pretty",
-                "background": false,
-                "background_color": "#00000026",
-                "corner_radius": 0,
-                "padding-block-start": 4,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              }
-            },
-            "price": {
-              "type": "price",
-              "name": "t:names.product_price",
-              "settings": {
-                "show_sale_price_first": true,
-                "show_installments": false,
-                "show_tax_info": false,
-                "type_preset": "h6",
-                "width": "100%",
-                "alignment": "left",
-                "font": "var(--font-body--family)",
-                "font_size": "1rem",
-                "line_height": "normal",
-                "letter_spacing": "normal",
-                "case": "none",
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              }
-            }
-          },
-          "block_order": ["product-card-gallery", "product_title", "price"]
-        }
-      },
-      "block_order": ["header"]
-    }
-  ]
+  "name": "Recommended Products",
+  "tag": "section",
+  "class": "recommended-products-section",
+  "settings": [],
+  "presets": [{ "name": "Recommended Products" }]
 }
 {% endschema %}
