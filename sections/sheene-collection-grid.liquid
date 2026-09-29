@@ -1,0 +1,241 @@
+{% comment %}
+  SHEENE - Collection grid
+
+  Collection pages par wahi cards jo home page (Shop Bundles / Our Best
+  Sellers) aur product page ke Recommended mein hain. Snippet
+  'sheene-home-product-slider' hi render hota hai.
+
+  Is section mein:
+  - Collection ka title (H1) aur description (optional)
+  - Sort dropdown (Best selling, Price, A-Z wagera, Shopify ke apne options)
+  - Product count
+  - Pagination (har page par kitne products, theme editor se)
+
+  Lagana: theme editor > Collection template > Add section >
+  "Sheene collection grid". Horizon ka purana "Product grid" /
+  main collection section hide kar do.
+{% endcomment %}
+
+{% liquid
+  assign per_page = section.settings.products_per_page | default: 24
+  assign show_sort = section.settings.show_sort
+  assign show_desc = section.settings.show_description
+  assign show_badge = section.settings.show_badge
+  assign badge_text = section.settings.badge_text
+%}
+
+<style>
+  .sh-col {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 36px 0 56px;
+    font-family: var(--font-body--family, "Jost", sans-serif);
+    color: #111;
+  }
+  .sh-col__head { padding: 0 7px; }
+  .sh-col__title {
+    margin: 0;
+    font-size: clamp(30px, 26px + 1.2vw, 42px);
+    line-height: 1.15;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+  }
+  .sh-col__desc {
+    margin-top: 10px;
+    max-width: 62ch;
+    font-size: 16px;
+    line-height: 1.55;
+    color: #6e6e6e;
+  }
+  .sh-col__desc p { margin: 0; }
+  .sh-col__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 24px;
+    padding: 14px 0;
+    border-top: 1px solid #e6e6e6;
+    border-bottom: 1px solid #e6e6e6;
+  }
+  .sh-col__count { font-size: 15px; color: #6e6e6e; }
+  .sh-col__sort { display: inline-flex; align-items: center; gap: 10px; font-size: 15px; }
+  .sh-col__sort label { color: #6e6e6e; }
+  .sh-col__sort select {
+    appearance: none;
+    -webkit-appearance: none;
+    min-height: 42px;
+    padding: 0 38px 0 14px;
+    border: 1px solid #d4d4d4;
+    border-radius: 0;
+    background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center / 16px;
+    font: inherit;
+    font-size: 15px;
+    color: #111;
+    cursor: pointer;
+  }
+  /* snippet ka apna upar ka padding yahan kam */
+  .sh-col .custom-best-sellers { padding-top: 28px !important; }
+
+  .sh-col__pages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 44px;
+  }
+  .sh-col__page {
+    min-width: 42px;
+    height: 42px;
+    padding: 0 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #d4d4d4;
+    color: #111;
+    text-decoration: none;
+    font-size: 15px;
+  }
+  .sh-col__page.is-current { background: #111; border-color: #111; color: #fff; }
+  .sh-col__page.is-gap { border-color: transparent; }
+  .sh-col__empty { padding: 60px 7px; text-align: center; color: #6e6e6e; }
+
+  @media screen and (max-width: 989px) {
+    .sh-col__head { padding: 0 12px; }
+  }
+  @media screen and (max-width: 749px) {
+    .sh-col { padding: 24px 0 40px; }
+    .sh-col__head { padding: 0 7px; }
+    .sh-col__bar { margin-top: 18px; padding: 10px 0; }
+    .sh-col__count { font-size: 14px; }
+    .sh-col__sort label { display: none; }
+    .sh-col__sort select { min-height: 40px; font-size: 14px; }
+    .sh-col__pages { margin-top: 32px; }
+  }
+</style>
+
+{% paginate collection.products by per_page %}
+  <div class="sh-col" id="ShCol-{{ section.id }}">
+    <div class="sh-col__head">
+      <h1 class="sh-col__title">{{ collection.title }}</h1>
+      {%- if show_desc and collection.description != blank -%}
+        <div class="sh-col__desc">{{ collection.description }}</div>
+      {%- endif -%}
+
+      <div class="sh-col__bar">
+        <span class="sh-col__count">
+          {{ collection.products_count }}
+          {% if collection.products_count == 1 %}product{% else %}products{% endif %}
+        </span>
+
+        {%- if show_sort and collection.products_count > 1 -%}
+          {%- assign current_sort = collection.sort_by | default: collection.default_sort_by -%}
+          <div class="sh-col__sort">
+            <label for="ShColSort-{{ section.id }}">Sort by</label>
+            <select id="ShColSort-{{ section.id }}" data-sh-col-sort>
+              {%- for option in collection.sort_options -%}
+                <option value="{{ option.value }}"{% if option.value == current_sort %} selected{% endif %}>{{ option.name }}</option>
+              {%- endfor -%}
+            </select>
+          </div>
+        {%- endif -%}
+      </div>
+    </div>
+
+    {%- if collection.products.size > 0 -%}
+      {% render 'sheene-home-product-slider',
+        product_list: collection.products,
+        grid_id: 'collection',
+        heading: '',
+        limit: per_page,
+        mobile_limit: per_page,
+        show_badge: show_badge,
+        badge_text: badge_text,
+        show_view_all: false
+      %}
+    {%- else -%}
+      <p class="sh-col__empty">Is collection mein abhi koi product nahi hai.</p>
+    {%- endif -%}
+
+    {%- if paginate.pages > 1 -%}
+      <nav class="sh-col__pages" aria-label="Pagination">
+        {%- if paginate.previous -%}
+          <a class="sh-col__page" href="{{ paginate.previous.url }}" aria-label="Previous page">&lsaquo;</a>
+        {%- endif -%}
+        {%- for part in paginate.parts -%}
+          {%- if part.is_link -%}
+            <a class="sh-col__page" href="{{ part.url }}">{{ part.title }}</a>
+          {%- elsif part.title == paginate.current_page -%}
+            <span class="sh-col__page is-current" aria-current="page">{{ part.title }}</span>
+          {%- else -%}
+            <span class="sh-col__page is-gap">{{ part.title }}</span>
+          {%- endif -%}
+        {%- endfor -%}
+        {%- if paginate.next -%}
+          <a class="sh-col__page" href="{{ paginate.next.url }}" aria-label="Next page">&rsaquo;</a>
+        {%- endif -%}
+      </nav>
+    {%- endif -%}
+  </div>
+{% endpaginate %}
+
+<script>
+  (function () {
+    var root = document.getElementById('ShCol-{{ section.id }}');
+    if (!root) return;
+    var select = root.querySelector('[data-sh-col-sort]');
+    if (!select) return;
+    select.addEventListener('change', function () {
+      var url = new URL(window.location.href);
+      url.searchParams.set('sort_by', select.value);
+      url.searchParams.delete('page');
+      window.location.href = url.toString();
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Sheene collection grid",
+  "tag": "section",
+  "class": "sheene-collection-grid",
+  "settings": [
+    {
+      "type": "range",
+      "id": "products_per_page",
+      "label": "Products per page",
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "default": 24
+    },
+    {
+      "type": "checkbox",
+      "id": "show_sort",
+      "label": "Show sort dropdown",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_badge",
+      "label": "Show badge on cards",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "badge_text",
+      "label": "Badge text",
+      "default": "Best Seller"
+    }
+  ],
+  "presets": [{ "name": "Sheene collection grid" }]
+}
+{% endschema %}
