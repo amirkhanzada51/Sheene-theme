@@ -288,6 +288,7 @@
           ]
         }
       },
+      "disabled": true,
       "custom_css": [
         "quick-add-component,.quick-add {display: none !important;}"
       ],
@@ -307,11 +308,23 @@
         "padding-block-start": 0,
         "padding-block-end": 32
       }
+    },
+    "sheene_collection_grid_tkMQpH": {
+      "type": "sheene-collection-grid",
+      "name": "Sheene collection grid",
+      "settings": {
+        "products_per_page": 24,
+        "show_sort": true,
+        "show_description": false,
+        "show_badge": false,
+        "badge_text": "Best Seller"
+      }
     }
   },
   "order": [
     "section",
     "product_card_Uwbra4",
-    "main"
+    "main",
+    "sheene_collection_grid_tkMQpH"
   ]
 }
