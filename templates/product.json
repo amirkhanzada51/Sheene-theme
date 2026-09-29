@@ -902,6 +902,7 @@
     },
     "custom_liquid_AaGq46": {
       "type": "custom-liquid",
+      "disabled": true,
       "name": "Recommendation products",
       "settings": {
         "custom_liquid": "{%- render 'sheene-product-page-recommendation' -%}",
@@ -913,7 +914,6 @@
     },
     "recommended_products_HzXXfa": {
       "type": "recommended-products",
-      "disabled": true,
       "name": "Recommended Products",
       "settings": {}
     },
