@@ -1,0 +1,147 @@
+{% comment %}
+==========================================================================
+  SHEENE - Floating WhatsApp button (har page, bottom right)
+==========================================================================
+
+  Snippet ka naam:  sheene-whatsapp
+
+  ISTEMAAL
+  --------
+  layout/theme.liquid mein </body> se pehle, baqi Sheene lines ke saath:
+
+      {%- render 'sheene-whatsapp' -%}
+
+  NUMBER
+  ------
+  Khud aata hai: Settings > General > Brand > Social links > WhatsApp.
+  0 se shuru number (0327...) khud 92 wala ban jata hai.
+  Yahan WHATSAPP_NUMBER likho to woh override karta hai.
+
+  MESSAGE
+  -------
+  Chat pehle se likhe message ke saath khulti hai:
+    Product page par:  product ka naam aur link bhi saath jata hai,
+                       taake pata ho customer kis product ki baat kar raha hai.
+    Baqi pages par:    simple salam wala message.
+
+  Koi popup, cart drawer ya menu khula ho to button khud chhup jata hai,
+  taake "Add to cart" jaisa koi button na dhake.
+{% endcomment %}
+
+{% liquid
+  # Sirf digits, country code ke saath, jaise 923001234567. Khali = Brand settings.
+  assign WHATSAPP_NUMBER = ''
+
+  assign MSG_DEFAULT = 'Hi Sheene, mujhe kuch poochna hai.'
+  assign MSG_PRODUCT = 'Hi Sheene, mujhe is product ke baare mein poochna hai:'
+
+  assign BUTTON_COLOR = '#25D366'
+  assign TOOLTIP_TEXT = 'Chat with us'
+  assign SHOW_TOOLTIP = true
+
+  # ---- number ----
+  if WHATSAPP_NUMBER == blank
+    assign wa_brand = shop.brand.metafields.social_links.whatsapp.value
+    if wa_brand != blank
+      assign WHATSAPP_NUMBER = wa_brand | split: '?' | first | split: '/' | last
+    endif
+  endif
+  assign WHATSAPP_NUMBER = WHATSAPP_NUMBER | remove: '+' | remove: ' ' | remove: '-'
+  assign wa_first = WHATSAPP_NUMBER | slice: 0
+  if wa_first == '0'
+    assign WHATSAPP_NUMBER = WHATSAPP_NUMBER | remove_first: '0' | prepend: '92'
+  endif
+
+  # ---- message ----
+  assign wa_text = MSG_DEFAULT
+  if template.name == 'product' and product
+    assign wa_text = MSG_PRODUCT | append: ' ' | append: product.title | append: ' ' | append: shop.url | append: product.url
+  endif
+%}
+
+{%- if WHATSAPP_NUMBER != blank -%}
+<a
+  class="sh-wa"
+  href="https://wa.me/{{ WHATSAPP_NUMBER }}?text={{ wa_text | url_encode }}"
+  target="_blank"
+  rel="noopener"
+  aria-label="Chat with Sheene on WhatsApp"
+>
+  {%- if SHOW_TOOLTIP and TOOLTIP_TEXT != blank -%}
+    <span class="sh-wa__tip" aria-hidden="true">{{ TOOLTIP_TEXT }}</span>
+  {%- endif -%}
+  <span class="sh-wa__btn" aria-hidden="true">
+    <svg viewBox="0 0 32 32"><path d="M16.04 3C9 3 3.3 8.7 3.3 15.73c0 2.25.59 4.44 1.7 6.37L3.2 28.8l6.88-1.8a12.7 12.7 0 0 0 5.96 1.5h.01c7.03 0 12.74-5.7 12.74-12.74 0-3.4-1.33-6.6-3.73-9A12.66 12.66 0 0 0 16.04 3zm0 23.35h-.01a10.6 10.6 0 0 1-5.4-1.48l-.39-.23-4.08 1.07 1.09-3.98-.25-.41a10.56 10.56 0 0 1-1.62-5.6c0-5.84 4.75-10.6 10.6-10.6 2.83 0 5.49 1.1 7.49 3.11a10.53 10.53 0 0 1 3.1 7.5c0 5.85-4.76 10.62-10.53 10.62zm5.81-7.94c-.32-.16-1.88-.93-2.17-1.03-.29-.11-.5-.16-.71.16-.21.32-.82 1.03-1 1.24-.19.21-.37.24-.69.08-.32-.16-1.34-.5-2.56-1.58-.95-.85-1.59-1.89-1.77-2.21-.19-.32-.02-.49.14-.65.14-.14.32-.37.48-.56.16-.19.21-.32.32-.53.11-.21.05-.4-.03-.56-.08-.16-.71-1.71-.98-2.34-.26-.62-.52-.53-.71-.54h-.61c-.21 0-.56.08-.85.4-.29.32-1.11 1.09-1.11 2.66 0 1.57 1.14 3.08 1.3 3.3.16.21 2.24 3.42 5.43 4.8.76.33 1.35.52 1.81.67.76.24 1.45.21 2 .13.61-.09 1.88-.77 2.14-1.51.27-.74.27-1.38.19-1.51-.08-.13-.29-.21-.61-.37z"/></svg>
+  </span>
+</a>
+
+<style>
+  .sh-wa {
+    position: fixed;
+    right: max(20px, env(safe-area-inset-right, 0px));
+    bottom: max(20px, calc(env(safe-area-inset-bottom, 0px) + 12px));
+    z-index: 90;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font-family: var(--font-body--family, "Jost", sans-serif);
+    -webkit-tap-highlight-color: transparent;
+    transition: opacity .2s ease, transform .2s ease;
+  }
+  .sh-wa__btn {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: {{ BUTTON_COLOR }};
+    color: #fff;
+    box-shadow: 0 6px 20px rgb(0 0 0 / .18);
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .sh-wa__btn svg { width: 31px; height: 31px; fill: currentColor; }
+  .sh-wa:hover .sh-wa__btn { transform: scale(1.06); box-shadow: 0 8px 26px rgb(0 0 0 / .22); }
+  .sh-wa:active .sh-wa__btn { transform: scale(.96); }
+
+  .sh-wa__tip {
+    padding: 9px 14px;
+    border-radius: 999px;
+    background: #fff;
+    color: #111;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgb(0 0 0 / .12);
+    opacity: 0;
+    transform: translateX(6px);
+    pointer-events: none;
+    transition: opacity .2s ease, transform .2s ease;
+  }
+  @media (hover: hover) {
+    .sh-wa:hover .sh-wa__tip { opacity: 1; transform: none; }
+  }
+
+  /* koi popup / drawer / menu khula ho to hide */
+  body:has(dialog[open]) .sh-wa,
+  body:has(.menu-drawer-container[open]) .sh-wa,
+  body.sh-fd-open .sh-wa,
+  body.shpg-modal-open .sh-wa {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(10px);
+  }
+
+  @media screen and (max-width: 749px) {
+    .sh-wa {
+      right: max(14px, env(safe-area-inset-right, 0px));
+      bottom: max(16px, calc(env(safe-area-inset-bottom, 0px) + 10px));
+    }
+    .sh-wa__btn { width: 54px; height: 54px; }
+    .sh-wa__btn svg { width: 29px; height: 29px; }
+    .sh-wa__tip { display: none; }
+  }
+
+  @media print { .sh-wa { display: none; } }
+</style>
+{%- endif -%}
