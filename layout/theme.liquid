@@ -191,7 +191,11 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+    
+    {% comment %}
+    {% endcomment %}
     {% render 'sheene-drawer-fix' %}
     {%- render 'sheene-mobile-menu' -%}
+
   </body>
 </html>
