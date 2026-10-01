@@ -46,6 +46,7 @@
         },
         "announcement_byzfMC": {
           "type": "_announcement",
+          "disabled": true,
           "settings": {
             "text": "🛍️ BUY MORE, SAVE MORE — Special Discounts Available on <strong>Bulk Orders</strong>",
             "link": "",
@@ -76,7 +77,7 @@
         "announcement_Fj7MWe": {
           "type": "_announcement",
           "settings": {
-            "text": "🚚 <strong>FREE DELIVERY</strong> — <strong>FLAT 10% OFF </strong>— <strong>FREE 5ml TESTER</strong>",
+            "text": "🎁 ORDERS ABOVE RS 2,500: <strong>FREE DELIVERY</strong> + <strong>2 FREE 5ml TESTERS</strong>",
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.75rem",
