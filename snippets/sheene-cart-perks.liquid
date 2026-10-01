@@ -1,0 +1,267 @@
+{% comment %}
+==========================================================================
+  SHEENE - Cart rewards card (cart drawer + cart page)
+==========================================================================
+
+  Snippet ka naam:  sheene-cart-perks
+
+  ISTEMAAL
+  --------
+  layout/theme.liquid mein </body> se pehle, baqi Sheene lines ke saath:
+
+      {%- render 'sheene-cart-perks' -%}
+
+  Wahi card jo product page par hai, lekin yahan hisaab CART ke subtotal
+  se hota hai (discount se pehle wali raqam, jaise Shopify ke discount
+  minimum check karte hain). Card khud jagah dhoond leta hai:
+    Cart drawer:  header ke theek neeche
+    Cart page:    total / checkout wale hisse ke upar
+  Cart mein kuch add, remove ya quantity change ho, card bina reload
+  update hota hai. Cart khali ho to card hide.
+
+  Thresholds product page (sheene-product-page) wale hi rakhna.
+{% endcomment %}
+
+{% liquid
+  # ---- thresholds PKR mein (product page jaise) ----
+  assign FREE_DELIVERY_MIN = 2500
+  assign TESTERS_MIN = 4000
+  assign DISCOUNT_MIN = 2500
+
+  assign FREE_DELIVERY_LABEL = 'Free Delivery'
+  assign TESTERS_LABEL = 'Free 5 ml tester bottles'
+  assign DISCOUNT_LABEL = 'Extra 10% off'
+  assign PERK_MET_TEXT = 'Unlocked'
+  assign PERK_ALWAYS_TEXT = 'On all orders'
+  assign PERKS_AWAY_TEXT = 'away from'
+  assign PERKS_ALL_TEXT = 'All rewards unlocked on your order'
+
+  assign COLOR_MET = '#2E7D4F'
+  assign COLOR_UNMET = '#C0392B'
+
+  assign fd_cents = FREE_DELIVERY_MIN | times: 100
+  assign ts_cents = TESTERS_MIN | times: 100
+  assign dc_cents = DISCOUNT_MIN | times: 100
+%}
+
+<template id="ShCartPerksTpl">
+  <div class="sh-cp" data-sh-cp>
+    <div class="sh-cp__card" data-sh-cp-card>
+      <div class="sh-cp__head">
+        <p class="sh-cp__msg" data-sh-cp-msg>&nbsp;</p>
+        <div class="sh-cp__bar" aria-hidden="true"><span class="sh-cp__fill" data-sh-cp-fill></span></div>
+      </div>
+      <ul class="sh-cp__list">
+        <li class="sh-cp__perk" data-sh-cp-perk data-min="{{ fd_cents }}" data-label="{{ FREE_DELIVERY_LABEL | escape }}">
+          <span class="sh-cp__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M2.75 6.25h10.5v9.5H2.75z"/><path d="M13.25 9.75h3.4l3.6 3.4v2.6h-7z"/><circle cx="6.75" cy="17.75" r="1.6"/><circle cx="16.75" cy="17.75" r="1.6"/><path d="M8.35 17.75h6.8"/></svg></span>
+          <span class="sh-cp__label">{{ FREE_DELIVERY_LABEL }}</span>
+          <span class="sh-cp__status" data-sh-cp-status></span>
+        </li>
+        <li class="sh-cp__perk" data-sh-cp-perk data-min="{{ ts_cents }}" data-label="{{ TESTERS_LABEL | escape }}">
+          <span class="sh-cp__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9.5 3h5M10.5 3v3.5h3V3"/><path d="M9 6.5h6a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1z"/><path d="M8 12h8"/></svg></span>
+          <span class="sh-cp__label">{{ TESTERS_LABEL }}</span>
+          <span class="sh-cp__status" data-sh-cp-status></span>
+        </li>
+        <li class="sh-cp__perk" data-sh-cp-perk data-min="{{ dc_cents }}" data-label="{{ DISCOUNT_LABEL | escape }}">
+          <span class="sh-cp__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="7" cy="7" r="2.5"/><circle cx="17" cy="17" r="2.5"/></svg></span>
+          <span class="sh-cp__label">{{ DISCOUNT_LABEL }}</span>
+          <span class="sh-cp__status" data-sh-cp-status></span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<style>
+  .sh-cp {
+    --sh-cp-ok: {{ COLOR_MET }};
+    --sh-cp-no: {{ COLOR_UNMET }};
+    --sh-cp-hair: rgb(17 17 17 / 0.12);
+    font-family: var(--font-body--family, "Jost", sans-serif);
+    color: #111;
+    margin: 0 0 16px;
+  }
+  .sh-cp[hidden] { display: none !important; }
+  .sh-cp--drawer { margin: 0; padding: 12px 16px 14px; border-bottom: 1px solid var(--sh-cp-hair); }
+  .sh-cp__card { border: 1px solid var(--sh-cp-hair); border-radius: 14px; overflow: hidden; background: #fff; text-align: left; }
+  .sh-cp__head { padding: 12px 14px; background: #F7F7F5; }
+  .sh-cp__msg { margin: 0 0 8px; font-size: 14px; line-height: 1.35; color: rgb(17 17 17 / 0.75); }
+  .sh-cp__msg strong { color: #111; font-weight: 700; }
+  .sh-cp__bar { height: 6px; border-radius: 999px; background: rgb(17 17 17 / 0.1); overflow: hidden; }
+  .sh-cp__fill {
+    display: block; height: 100%; width: var(--sh-cp-progress, 0%);
+    border-radius: inherit; background: #111;
+    transition: width .45s ease, background .3s ease;
+  }
+  .sh-cp__card.is-complete .sh-cp__fill { background: var(--sh-cp-ok); }
+
+  .sh-cp__list { list-style: none; margin: 0; padding: 0; }
+  .sh-cp__perk {
+    --c: var(--sh-cp-no);
+    --bg: rgb(192 57 43 / 0.09);
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px;
+    border-top: 1px solid var(--sh-cp-hair);
+  }
+  .sh-cp__perk.is-met { --c: var(--sh-cp-ok); --bg: rgb(46 125 79 / 0.1); }
+  .sh-cp__icon {
+    flex: 0 0 auto; width: 30px; height: 30px; border-radius: 50%;
+    display: grid; place-items: center; background: var(--bg); color: var(--c);
+    transition: background .2s ease, color .2s ease;
+  }
+  .sh-cp__icon svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .sh-cp__label { flex: 1 1 auto; min-width: 0; font-weight: 600; font-size: 14px; line-height: 1.25; }
+  .sh-cp__status {
+    flex: 0 0 auto; padding: 4px 10px; border-radius: 999px;
+    background: var(--bg); color: var(--c);
+    font-weight: 600; font-size: 12px; line-height: 1.2; white-space: nowrap;
+    transition: background .2s ease, color .2s ease;
+  }
+  @media screen and (max-width: 400px) {
+    .sh-cp--drawer { padding: 10px 12px 12px; }
+    .sh-cp__perk { padding: 8px 12px; gap: 8px; }
+    .sh-cp__label { font-size: 13px; }
+  }
+</style>
+
+<script>
+  (function () {
+    if (window.__shCartPerks) return;
+    window.__shCartPerks = true;
+
+    var tpl = document.getElementById('ShCartPerksTpl');
+    if (!tpl) return;
+
+    var MONEY_FORMAT = {{ shop.money_format | strip_html | json }};
+    var MET_TEXT = {{ PERK_MET_TEXT | json }};
+    var ALWAYS_TEXT = {{ PERK_ALWAYS_TEXT | json }};
+    var AWAY_TEXT = {{ PERKS_AWAY_TEXT | json }};
+    var ALL_TEXT = {{ PERKS_ALL_TEXT | json }};
+
+    var state = { subtotal: {{ cart.items_subtotal_price | default: 0 }}, count: {{ cart.item_count | default: 0 }} };
+
+    /* card kahan lagana hai: [anchor selector, kaise lagana] */
+    var SPOTS = [
+      { sel: '#CartDrawer .drawer__header', how: 'after', drawer: true },
+      { sel: 'cart-drawer-component .cart-drawer__header', how: 'after', drawer: true },
+      { sel: '.cart-drawer__header', how: 'after', drawer: true },
+      { sel: '#main-cart-footer .cart__blocks', how: 'prepend' },
+      { sel: '.cart-page__summary', how: 'prepend' },
+      { sel: '.cart__summary-inner', how: 'prepend' }
+    ];
+
+    function num(n, dec, th, ds) {
+      var p = n.toFixed(dec).split('.');
+      p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, th);
+      return p.join(ds);
+    }
+    function money(cents) {
+      var v = cents / 100;
+      return MONEY_FORMAT.replace(/\{\{\s*(\w+)\s*\}\}/, function (_, k) {
+        switch (k) {
+          case 'amount_no_decimals': return num(v, 0, ',', '.');
+          case 'amount_with_comma_separator': return num(v, 2, '.', ',');
+          case 'amount_no_decimals_with_comma_separator': return num(v, 0, '.', ',');
+          default: return num(v, 2, ',', '.').replace(/\.00$/, '');
+        }
+      });
+    }
+    function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+    function paint(box) {
+      var sub = state.subtotal;
+      box.hidden = state.count === 0;
+      var perks = box.querySelectorAll('[data-sh-cp-perk]');
+      var nextMin = 0, nextLabel = '';
+      perks.forEach(function (el) {
+        var m = parseInt(el.dataset.min, 10) || 0;
+        if (m > sub && (nextMin === 0 || m < nextMin)) { nextMin = m; nextLabel = el.dataset.label || ''; }
+      });
+      var card = box.querySelector('[data-sh-cp-card]');
+      var msg = box.querySelector('[data-sh-cp-msg]');
+      var fill = box.querySelector('[data-sh-cp-fill]');
+      if (card) card.classList.toggle('is-complete', nextMin === 0);
+      if (msg) {
+        msg.innerHTML = nextMin === 0
+          ? '<strong>' + esc(ALL_TEXT) + '</strong>'
+          : '<strong>' + esc(money(Math.ceil((nextMin - sub) / 100) * 100)) + '</strong> ' + esc(AWAY_TEXT) + ' <strong>' + esc(nextLabel) + '</strong>';
+      }
+      if (fill) fill.style.setProperty('--sh-cp-progress', (nextMin === 0 ? 100 : Math.min(100, Math.floor(sub * 100 / nextMin))) + '%');
+      perks.forEach(function (el) {
+        var min = parseInt(el.dataset.min, 10) || 0;
+        var met = sub >= min;
+        el.classList.toggle('is-met', met);
+        var st = el.querySelector('[data-sh-cp-status]');
+        if (!st) return;
+        if (min === 0) st.textContent = ALWAYS_TEXT;
+        else if (met) st.textContent = MET_TEXT;
+        else st.textContent = 'Add ' + money(Math.ceil((min - sub) / 100) * 100) + ' more';
+      });
+    }
+
+    function paintAll() { document.querySelectorAll('[data-sh-cp]').forEach(paint); }
+
+    function inject() {
+      var done = {};
+      SPOTS.forEach(function (s) {
+        document.querySelectorAll(s.sel).forEach(function (anchor) {
+          var host = s.how === 'after' ? anchor.parentNode : anchor;
+          if (!host || done[s.drawer ? 'd' : 'p'] === host) return;
+          var exists = s.how === 'after'
+            ? (anchor.nextElementSibling && anchor.nextElementSibling.hasAttribute('data-sh-cp'))
+            : (anchor.firstElementChild && anchor.firstElementChild.hasAttribute('data-sh-cp'));
+          if (exists || host.querySelector(':scope > [data-sh-cp]')) { done[s.drawer ? 'd' : 'p'] = host; return; }
+          var node = tpl.content.firstElementChild.cloneNode(true);
+          if (s.drawer) node.classList.add('sh-cp--drawer');
+          if (s.how === 'after') anchor.insertAdjacentElement('afterend', node);
+          else anchor.insertAdjacentElement('afterbegin', node);
+          paint(node);
+          done[s.drawer ? 'd' : 'p'] = host;
+        });
+      });
+    }
+
+    function refresh() {
+      fetch('/cart.js', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
+        .then(function (r) { return r.json(); })
+        .then(function (c) {
+          state.subtotal = c.items_subtotal_price || 0;
+          state.count = c.item_count || 0;
+          inject();
+          paintAll();
+        })
+        .catch(function () {});
+    }
+
+    /* cart badalne ki khabar: theme ki cart fetch calls dekhte hain */
+    if (!window.__shCartWatch) {
+      window.__shCartWatch = true;
+      var origFetch = window.fetch;
+      window.fetch = function () {
+        var args = arguments;
+        var input = args[0];
+        var url = typeof input === 'string' ? input : (input && input.url) || '';
+        return origFetch.apply(window, args).then(function (res) {
+          if (/\/cart\/(add|change|update|clear)/.test(url)) {
+            setTimeout(function () { document.dispatchEvent(new CustomEvent('sheene:cart-changed')); }, 60);
+          }
+          return res;
+        });
+      };
+    }
+    document.addEventListener('sheene:cart-changed', refresh);
+    document.addEventListener('cart:update', refresh);
+    window.addEventListener('pageshow', function (e) { if (e.persisted) refresh(); });
+
+    /* drawer dobara render ho to card wapas lagao */
+    var moTimer;
+    new MutationObserver(function () {
+      clearTimeout(moTimer);
+      moTimer = setTimeout(function () { inject(); paintAll(); }, 80);
+    }).observe(document.body, { childList: true, subtree: true });
+
+    function start() { inject(); paintAll(); }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start);
+    else start();
+  })();
+</script>
