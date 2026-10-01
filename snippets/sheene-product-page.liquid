@@ -60,7 +60,11 @@
   Ek card: upar progress bar + "Rs.X away from <agla reward>", neeche teen
   rewards ki rows, har row green (unlocked) ya red (Add Rs.X more). Card ke
   neeche Dermatologist aur Returns chhoti trust line. Threshold 0 ho to
-  hamesha green ("On all orders"). Cart kahin se bhi badle, sab khud update.
+  hamesha green ("On all orders").
+  Product page par hisaab IS PRODUCT ki price x quantity se hota hai, cart
+  se nahi. Variant ya quantity badlo to card khud update.
+  Cart drawer / cart page wala card alag snippet hai: sheene-cart-perks.
+  Thresholds dono files mein same rakhna.
 
   ESTIMATED DELIVERY
   ------------------
@@ -81,7 +85,7 @@
   assign product = product | default: closest.product
 
   # ================= BODY / SLIDER =================
-  # SAFE_MODE = true: sticky JS, cart watcher aur  JS band. Debug ke liye.
+  # SAFE_MODE = true: sticky JS band. Debug ke liye.
   assign SAFE_MODE = false
 
   assign GALLERY_RATIO = '1 / 1'
@@ -117,7 +121,7 @@
   assign PERK_MET_TEXT = 'Unlocked'
   assign PERK_ALWAYS_TEXT = 'On all orders'
   assign PERKS_AWAY_TEXT = 'away from'
-  assign PERKS_ALL_TEXT = 'All rewards unlocked on this order'
+  assign PERKS_ALL_TEXT = 'All rewards unlocked with this product'
 
   assign SHOW_DERMATOLOGIST = true
   assign DERMATOLOGIST_LABEL = 'Dermatologist Trusted Brand'
@@ -990,7 +994,8 @@
     assign intro_field = product.metafields.custom.pp_intro
     assign benefits = product.metafields.custom.pp_benefits.value
 
-    assign cart_cents = cart.items_subtotal_price | default: 0
+    # perks ka hisaab: is product ki price (selected variant), cart nahi
+    assign cart_cents = current_variant.price | default: 0
     assign fd_cents = FREE_DELIVERY_MIN | times: 100
     assign ts_cents = TESTERS_MIN | times: 100
     assign dc_cents = DISCOUNT_MIN | times: 100
@@ -1260,6 +1265,7 @@
         "available": {{ v.available }},
         "options": {{ v.options | json }},
         "price": {{ v.price | money | json }},
+        "price_cents": {{ v.price | default: 0 }},
         "compare_at": {{ v.compare_at_price | money | json }},
         "on_sale": {% if v.compare_at_price > v.price %}true{% else %}false{% endif %},
         "media_index": {% if v.featured_media %}{{ v.featured_media.position | minus: 1 }}{% else %}null{% endif %}
@@ -1325,6 +1331,9 @@
           priceCompare.hidden = !variant.on_sale;
         }
         if (priceBadge) priceBadge.hidden = !variant.on_sale;
+
+        root.dataset.price = variant.price_cents;
+        root.dispatchEvent(new CustomEvent('sheene:variant', { detail: { price: variant.price_cents } }));
 
         document.querySelectorAll('form[action*="/cart/add"] [name="id"]').forEach(function (el) {
           el.value = variant.id;
@@ -1469,33 +1478,34 @@
         });
       }
 
-      function refresh() {
-        fetch('/cart.js', { credentials: 'same-origin', headers: { Accept: 'application/json' } })
-          .then(function (r) { return r.json(); })
-          .then(function (c) { paint(c.items_subtotal_price || 0); })
-          .catch(function () {});
+      /* ---- product price x quantity ---- */
+      var unitPrice = parseInt(root.dataset.price, 10) || {{ current_variant.price | default: 0 }};
+      var QTY_SEL = 'product-form-component input[name="quantity"], .product-form input[name="quantity"], form[action*="/cart/add"] input[name="quantity"]:not([type="hidden"])';
+      function qty() {
+        var el = document.querySelector(QTY_SEL);
+        var n = el ? parseInt(el.value, 10) : 1;
+        return n > 0 ? n : 1;
       }
+      function update() { paint(unitPrice * qty()); }
 
       if (perks.length) {
-        if (!window.__shCartWatch && !{{ SAFE_MODE | json }}) {
-          window.__shCartWatch = true;
-          var origFetch = window.fetch;
-          window.fetch = function () {
-            var args = arguments;
-            var input = args[0];
-            var url = typeof input === 'string' ? input : (input && input.url) || '';
-            return origFetch.apply(window, args).then(function (res) {
-              if (/\/cart\/(add|change|update|clear)/.test(url)) {
-                setTimeout(function () { document.dispatchEvent(new CustomEvent('sheene:cart-changed')); }, 60);
-              }
-              return res;
-            });
-          };
+        root.addEventListener('sheene:variant', function (e) {
+          if (e.detail && e.detail.price != null) unitPrice = e.detail.price;
+          update();
+        });
+        var qTimer;
+        function onQtyEvent(e) {
+          var t = e.target;
+          if (!t || !t.closest) return;
+          if (t.matches && t.matches('input[name="quantity"]') || t.closest('quantity-selector-component, .quantity-selector, .quantity')) {
+            clearTimeout(qTimer);
+            qTimer = setTimeout(update, 30);
+          }
         }
-        document.addEventListener('sheene:cart-changed', refresh);
-        document.addEventListener('cart:update', refresh);
-        window.addEventListener('pageshow', function (e) { if (e.persisted) refresh(); });
-        refresh();
+        document.addEventListener('input', onQtyEvent);
+        document.addEventListener('change', onQtyEvent);
+        document.addEventListener('click', onQtyEvent);
+        update();
       }
     })();
   </script>
