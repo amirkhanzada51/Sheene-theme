@@ -238,7 +238,6 @@
                     "custom_liquid_7V8NUK": {
                       "type": "custom-liquid",
                       "name": "Goes Well Product",
-                      "disabled": true,
                       "settings": {
                         "custom_liquid": "{% render 'sheene-product-page', part: 'goes_well' %}"
                       },
