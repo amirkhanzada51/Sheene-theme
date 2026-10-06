@@ -1108,6 +1108,12 @@
       <p class="sh-subtitle">{{ subtitle | escape }}</p>
     {% endif %}
 
+    {%- liquid
+      assign off_pct = 0
+      if current_variant.compare_at_price > current_variant.price
+        assign off_pct = current_variant.compare_at_price | minus: current_variant.price | times: 100 | divided_by: current_variant.compare_at_price
+      endif
+    -%}
     <div class="sh-price">
       <span class="sh-price-compare" data-sh-compare
         {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>
@@ -1115,7 +1121,7 @@
       </span>
       <span class="sh-price-current" data-sh-current>{{ current_variant.price | money }}</span>
       <span class="sh-price-badge" data-sh-badge
-        {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>Sale</span>
+        {% unless current_variant.compare_at_price > current_variant.price %}hidden{% endunless %}>{% if off_pct >= 1 %}{{ off_pct }}% OFF{% else %}Sale{% endif %}</span>
     </div>
 
     {% if intro_field != blank %}
@@ -1335,7 +1341,13 @@
           priceCompare.innerHTML = variant.compare_at || '';
           priceCompare.hidden = !variant.on_sale;
         }
-        if (priceBadge) priceBadge.hidden = !variant.on_sale;
+        if (priceBadge) {
+          priceBadge.hidden = !variant.on_sale;
+          if (variant.on_sale) {
+            var pct = Math.floor((variant.compare_cents - variant.price_cents) * 100 / variant.compare_cents);
+            priceBadge.textContent = pct >= 1 ? pct + '% OFF' : 'Sale';
+          }
+        }
 
         root.dataset.price = variant.price_cents;
         root.dispatchEvent(new CustomEvent('sheene:variant', { detail: { price: variant.price_cents, compare: variant.compare_cents } }));
