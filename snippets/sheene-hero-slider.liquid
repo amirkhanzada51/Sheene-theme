@@ -1,0 +1,245 @@
+{%- comment -%}
+  SHEENE HERO SLIDER (Custom Liquid)
+
+  Banner add / remove karne ke liye sirf neeche wali list edit karo.
+  Har banner ek line:   IMAGE URL | LINK URL | ALT TEXT
+  Jitni lines, utne banners. Ek hi line ho to arrows, dots aur autoplay khud band.
+  LINK khali chhoro (image | | alt) to banner clickable nahi hoga.
+{%- endcomment -%}
+
+{%- capture BANNERS -%}
+https://cdn.shopify.com/s/files/1/0704/1295/9787/files/ChatGPT_Image_Sep_3_2026_11_00_59_PM.png?v=1788458506 | /products/retinol-serum-anti-ageing | Introducing Retinol and Glycolic Face Serums
+https://cdn.shopify.com/s/files/1/0704/1295/9787/files/Brighter_Skin_Serum_Duo.png?v=1791307666 | /products/vitamin-c-serum | Introducing Brightening Serum Duo Vitamin C and Niacinamide
+https://cdn.shopify.com/s/files/1/0704/1295/9787/files/ChatGPT_Image_Sep_3_2026_10_46_09_PM.png?v=1788457586 | /products/bundle-of-3-face-masks | Introducing the bundle of all three face masks
+{%- endcapture -%}
+
+{%- liquid
+  assign RATIO = '1600 / 528'
+  assign AUTOPLAY_MS = 5000
+  assign banner_lines = BANNERS | strip | newline_to_br | split: '<br />'
+  assign first_done = false
+-%}
+
+<style>
+.sh-hero { position: relative; width: 100%; overflow: hidden; line-height: 0; isolation: isolate; }
+.sh-hero *, .sh-hero *::before, .sh-hero *::after { box-sizing: border-box; }
+.sh-hero__track {
+  display: flex;
+  width: 100%;
+  transition: transform .55s cubic-bezier(.22,.61,.36,1);
+  will-change: transform;
+  touch-action: pan-y;
+}
+.sh-hero__slide {
+  display: block;
+  flex: 0 0 100%;
+  min-width: 0;
+  aspect-ratio: {{ RATIO }};
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+a.sh-hero__slide { cursor: pointer; }
+.sh-hero__slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+.sh-hero__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(30px, 4.2vw, 50px);
+  height: clamp(30px, 4.2vw, 50px);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255,255,255,.95);
+  cursor: pointer;
+  transform: translateY(-50%);
+  box-shadow: 0 4px 18px rgba(0,0,0,.1);
+  transition: transform .2s ease, box-shadow .2s ease;
+  appearance: none;
+  -webkit-appearance: none;
+  touch-action: manipulation;
+}
+.sh-hero__arrow:hover { background: #fff; box-shadow: 0 6px 22px rgba(0,0,0,.16); }
+.sh-hero__arrow:active { transform: translateY(-50%) scale(.94); }
+.sh-hero__arrow--prev { left: clamp(6px, 1.6vw, 24px); }
+.sh-hero__arrow--next { right: clamp(6px, 1.6vw, 24px); }
+.sh-hero__arrow svg {
+  width: 56%;
+  height: 56%;
+  fill: none;
+  stroke: #111;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.sh-hero__dots {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(7px, 1.2vw, 18px);
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transform: translateX(-50%);
+}
+.sh-hero__dot {
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: rgba(0,0,0,.25);
+  cursor: pointer;
+  flex-shrink: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  transition: width .25s ease, background .25s ease;
+}
+.sh-hero__dot.is-active { width: 21px; background: #111; }
+
+.sh-hero[data-single] .sh-hero__arrow,
+.sh-hero[data-single] .sh-hero__dots { display: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-hero__track { transition: none; }
+}
+</style>
+
+<div class="sh-hero" data-autoplay="{{ AUTOPLAY_MS }}">
+  <div class="sh-hero__track">
+    {%- for line in banner_lines -%}
+      {%- liquid
+        assign parts = line | strip | split: '|'
+        assign b_img = parts[0] | strip
+        assign b_url = parts[1] | strip
+        assign b_alt = parts[2] | strip | escape
+      -%}
+      {%- if b_img == blank -%}{%- continue -%}{%- endif -%}
+
+      {%- if b_url != blank -%}
+        <a class="sh-hero__slide" href="{{ b_url }}" draggable="false" aria-label="{{ b_alt }}">
+      {%- else -%}
+        <div class="sh-hero__slide">
+      {%- endif -%}
+
+      {%- if first_done -%}
+        <img src="{{ b_img }}" alt="{{ b_alt }}" loading="lazy" decoding="async" draggable="false">
+      {%- else -%}
+        <img src="{{ b_img }}" alt="{{ b_alt }}" loading="eager" fetchpriority="high" draggable="false">
+        {%- assign first_done = true -%}
+      {%- endif -%}
+
+      {%- if b_url != blank -%}</a>{%- else -%}</div>{%- endif -%}
+    {%- endfor -%}
+  </div>
+
+  <button type="button" class="sh-hero__arrow sh-hero__arrow--prev" aria-label="Previous banner">
+    <svg viewBox="0 0 24 24"><path d="M15 18L9 12L15 6"></path></svg>
+  </button>
+  <button type="button" class="sh-hero__arrow sh-hero__arrow--next" aria-label="Next banner">
+    <svg viewBox="0 0 24 24"><path d="M9 18L15 12L9 6"></path></svg>
+  </button>
+  <div class="sh-hero__dots"></div>
+</div>
+
+<script>
+(function () {
+  function init(slider) {
+    if (slider.dataset.ready) return;
+    slider.dataset.ready = '1';
+
+    var track = slider.querySelector('.sh-hero__track');
+    var slides = slider.querySelectorAll('.sh-hero__slide');
+    var dotsWrap = slider.querySelector('.sh-hero__dots');
+    var total = slides.length;
+    var delay = parseInt(slider.dataset.autoplay, 10) || 0;
+    var current = 0, timer = null, startX = 0, endX = 0, swiped = false;
+    var dots = [];
+
+    if (total < 2) { slider.setAttribute('data-single', ''); return; }
+
+    for (var i = 0; i < total; i++) {
+      var d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'sh-hero__dot';
+      d.setAttribute('aria-label', 'Go to banner ' + (i + 1));
+      (function (n) {
+        d.addEventListener('click', function () { go(n); play(); });
+      })(i);
+      dotsWrap.appendChild(d);
+      dots.push(d);
+    }
+
+    function go(n) {
+      current = (n + total) % total;
+      track.style.transform = 'translate3d(' + (-current * 100) + '%,0,0)';
+      for (var j = 0; j < total; j++) {
+        dots[j].classList.toggle('is-active', j === current);
+      }
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function play() {
+      stop();
+      if (delay > 0) timer = setInterval(function () { go(current + 1); }, delay);
+    }
+
+    slider.querySelector('.sh-hero__arrow--prev').addEventListener('click', function () { go(current - 1); play(); });
+    slider.querySelector('.sh-hero__arrow--next').addEventListener('click', function () { go(current + 1); play(); });
+
+    track.addEventListener('touchstart', function (e) {
+      startX = endX = e.touches[0].clientX;
+      swiped = false;
+      stop();
+    }, { passive: true });
+    track.addEventListener('touchmove', function (e) {
+      endX = e.touches[0].clientX;
+    }, { passive: true });
+    track.addEventListener('touchend', function () {
+      var dist = endX - startX;
+      if (Math.abs(dist) > 50) {
+        swiped = true;
+        go(current + (dist < 0 ? 1 : -1));
+      }
+      play();
+    }, { passive: true });
+
+    /* swipe ke baad link open na ho */
+    track.addEventListener('click', function (e) {
+      if (swiped) { e.preventDefault(); swiped = false; }
+    }, true);
+
+    slider.addEventListener('mouseenter', stop);
+    slider.addEventListener('mouseleave', play);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) stop(); else play();
+    });
+
+    go(0);
+    play();
+  }
+
+  function initAll() {
+    document.querySelectorAll('.sh-hero').forEach(init);
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
+  document.addEventListener('shopify:section:load', initAll);
+})();
+</script>
