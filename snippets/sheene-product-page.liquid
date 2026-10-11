@@ -1631,7 +1631,18 @@
   </div>
 
   <style>
+    /* mobile: Custom Liquid block ka wrapper content jitna sikur jata hai,
+       is liye box aadha reh jata tha. Wrapper ko poori width do. */
+    @media screen and (max-width: 749px) {
+      *:has(> .sh-gww) {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+        align-self: stretch !important;
+      }
+    }
     .sh-gww {
+      box-sizing: border-box;
       width: 100%;
       border: 1px solid rgb(var(--color-border-rgb, 17 17 17) / 0.22);
       padding: clamp(1rem, 0.85rem + 0.5vw, 1.5rem);
