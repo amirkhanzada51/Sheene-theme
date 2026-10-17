@@ -90,7 +90,7 @@
                        cover = frame bhar de, non-square images crop hongi
     SHOW_ZOOM / ZOOM_SCALE   zoom on/off aur kitna bara
   LCP: page khulte hi jo image dikhti hai (selected variant ki, warna
-  pehli) wo eager + fetchpriority high + preload. Baaki slides aur saare
+  pehli) wo eager + fetchpriority high (preload nahi, neeche note). Baaki slides aur saare
   thumbnails lazy. Ye mat hatana, TikTok traffic ka LCP isi se theek hua.
 
   ESTIMATED DELIVERY
@@ -1186,14 +1186,16 @@
                 {% case media.media_type %}
                   {% when 'image' %}
                     {%- liquid
+                      # preload: true jaan boojh kar NAHI lagaya. Shopify ka Link header
+                      # preload bina fetchpriority ke jata hai, Chrome usay low priority
+                      # deta hai aur img wala high tag us ke peeche reh jata hai. PSI ne
+                      # yahi pakra tha (image 2 MB scripts ke baad aati thi, LCP 10.7s).
                       if media.id == sh_lcp_media_id
                         assign sh_img_loading = 'eager'
                         assign sh_img_priority = 'high'
-                        assign sh_img_preload = true
                       else
                         assign sh_img_loading = 'lazy'
                         assign sh_img_priority = 'auto'
-                        assign sh_img_preload = false
                       endif
                       # alt pehle assign karna zaroori hai: filter argument ke andar
                       # "| default" lagane se class wagera image_tag tak pohanchte hi nahi thay
@@ -1205,7 +1207,6 @@
                       | image_tag:
                         loading: sh_img_loading,
                         fetchpriority: sh_img_priority,
-                        preload: sh_img_preload,
                         sizes: '(min-width: 750px) 52vw, 100vw',
                         widths: '400,600,800,1000,1200,1600',
                         alt: sh_img_alt,
