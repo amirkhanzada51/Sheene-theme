@@ -109,7 +109,7 @@
     "blocks": {
       "14060646107696862457": {
         "type": "shopify://apps/judge-me-reviews/blocks/judgeme_core/61ccd3b1-a9f2-4160-9fe9-4fec8413e5d8",
-        "disabled": false,
+        "disabled": true,
         "settings": {}
       }
     },
@@ -229,7 +229,7 @@
     "custom_css": [
       ".menu-list__link {font-size: 16px;}",
       ".offers-slider-wrapper {font-family: \"Jost\", sans-serif !important; width: 100%; margin: 0px 0px; box-sizing: border-box;}",
-      "@media screen and (min-width: 768px) {.offers-slider-wrapper {max-width: 50%!important; }}"
+      "@media screen and (min-width: 768px) {.offers-slider-wrapper {max-width: 50% !important; }}"
     ]
   }
 }
