@@ -60,12 +60,38 @@
   Ek card: upar progress bar + "Rs.X away from <agla reward>", neeche do
   rewards ki rows (Free Delivery, Testers) aur ek "You're saving Rs X on this
   product" row (compare-at price minus price, x quantity; bachat na ho to hide), har row green (unlocked) ya red (Add Rs.X more). Card ke
-  neeche Dermatologist aur Returns chhoti trust line. Threshold 0 ho to
+  neeche trust row (COD, Dermatologist, Returns). Threshold 0 ho to
   hamesha green ("On all orders").
   Product page par hisaab IS PRODUCT ki price x quantity se hota hai, cart
   se nahi. Variant ya quantity badlo to card khud update.
   Cart drawer / cart page wala card alag snippet hai: sheene-cart-perks.
   Thresholds dono files mein same rakhna.
+
+  TRUST ROW (perks card ke neeche, jenpharm jaisi)
+  ---------
+  Cash on Delivery, Dermatologist, Easy Returns. Har item: icon + bold
+  title (peeche halka marker) + chhota subtitle. Mobile par icon upar.
+    TRUST_*_TITLE / TRUST_*_SUB   text
+    SHOW_DERMATOLOGIST            false = sirf COD aur Returns (2 columns)
+    TRUST_MARK_COLOR              title ke peeche marker ka rang
+
+  SLIDER (jenpharm jaisa)
+  ------
+  Desktop: left mein thumbnails ka column, right mein bari image, round
+  arrows, aur neeche right corner mein zoom button. Mobile: image upar,
+  thumbnails ki row neeche, arrows band (swipe chalta hai). Zoom button ya
+  image dabao to full screen view khulta hai: click se 2x zoom, mouse ya
+  ungli se pan, Esc ya X se band. Image par koi label nahi.
+    SHOW_THUMBS        false = thumbnails ki jagah purane dots
+    THUMB_SIZE         desktop thumbnail (left column ki width)
+    THUMB_SIZE_MOBILE  mobile thumbnail
+    THUMB_GAP / THUMB_RADIUS / GALLERY_RADIUS   spacing aur corners
+    IMAGE_FIT          contain = poori image dikhe (default)
+                       cover = frame bhar de, non-square images crop hongi
+    SHOW_ZOOM / ZOOM_SCALE   zoom on/off aur kitna bara
+  LCP: page khulte hi jo image dikhti hai (selected variant ki, warna
+  pehli) wo eager + fetchpriority high + preload. Baaki slides aur saare
+  thumbnails lazy. Ye mat hatana, TikTok traffic ka LCP isi se theek hua.
 
   ESTIMATED DELIVERY
   ------------------
@@ -94,6 +120,17 @@
   assign MAX_WIDTH = '1240px'
   assign COLUMN_GAP = '48px'
   assign STICKY_MEDIA = true
+
+  # ---- slider design (jenpharm jaisa) ----
+  assign SHOW_THUMBS = true
+  assign THUMB_SIZE = '92px'
+  assign THUMB_SIZE_MOBILE = '62px'
+  assign THUMB_GAP = '12px'
+  assign THUMB_RADIUS = '12px'
+  assign GALLERY_RADIUS = '20px'
+  assign IMAGE_FIT = 'contain'
+  assign SHOW_ZOOM = true
+  assign ZOOM_SCALE = 2.2
 
   assign VARIANT_BOX_TITLE = 'Choose variants'
   assign OPTION_LABEL_PREFIX = 'Select'
@@ -125,9 +162,15 @@
   assign PERKS_AWAY_TEXT = 'away from'
   assign PERKS_ALL_TEXT = 'All rewards unlocked with this product'
 
+  # ---- trust row (perks card ke neeche) ----
+  assign TRUST_COD_TITLE = 'Cash on Delivery'
+  assign TRUST_COD_SUB = 'pay when it arrives'
   assign SHOW_DERMATOLOGIST = true
-  assign DERMATOLOGIST_LABEL = 'Dermatologist Trusted Brand'
-  assign RETURNS_LABEL = 'Easy Returns, 3 days'
+  assign TRUST_DERM_TITLE = 'Dermatologist'
+  assign TRUST_DERM_SUB = 'trusted brand'
+  assign TRUST_RETURNS_TITLE = 'Easy Returns'
+  assign TRUST_RETURNS_SUB = '3 days'
+  assign TRUST_MARK_COLOR = '#E7E5DE'
 
   assign COLOR_MET = '#2E7D4F'
   assign COLOR_UNMET = '#C0392B'
@@ -259,15 +302,33 @@
   .sh-gallery {
     width: 100%;
     --sh-gallery-ratio: {{ GALLERY_RATIO }};
+    --sh-gallery-fit: {{ IMAGE_FIT }};
+    --sh-gallery-radius: {{ GALLERY_RADIUS }};
+    --sh-thumb-size: {{ THUMB_SIZE_MOBILE }};
+    --sh-thumb-gap: {{ THUMB_GAP }};
+    --sh-thumb-radius: {{ THUMB_RADIUS }};
+    --sh-thumb-line: rgb(var(--color-foreground-rgb, 17 17 17) / 0.12);
   }
 
+  /* stage = bari image + thumbnails. Mobile: image upar, thumbs neeche.
+     Desktop (neeche media query): thumbs left column mein. */
+  .sh-gallery-stage {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "main";
+    gap: var(--sh-thumb-gap);
+  }
+  .sh-gallery-stage--thumbs { grid-template-areas: "main" "thumbs"; }
+
   .sh-gallery-viewport {
+    grid-area: main;
     position: relative;
     width: 100%;
     aspect-ratio: var(--sh-gallery-ratio);
     overflow: hidden;
-    background: rgb(var(--color-foreground-rgb, 17 17 17) / 0.04);
-    border-radius: var(--style-border-radius-md, 0);
+    isolation: isolate;
+    background: #F7F7F5;
+    border-radius: var(--sh-gallery-radius);
     touch-action: pan-y;
     overscroll-behavior-x: contain;
   }
@@ -295,36 +356,132 @@
   .sh-gallery-media model-viewer {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: var(--sh-gallery-fit);
     display: block;
   }
+  {%- if SHOW_ZOOM %}
+  img.sh-gallery-media { cursor: zoom-in; }
+  {%- endif %}
 
   .sh-gallery-media--embed { position: relative; width: 100%; height: 100%; }
   .sh-gallery-media--embed iframe { width: 100%; height: 100%; border: 0; }
 
-  .sh-gallery-arrow {
+  /* round white buttons: arrows + zoom */
+  .sh-gallery-arrow,
+  .sh-gallery-zoom {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 2.5rem;
-    height: 2.5rem;
+    z-index: 1;
+    width: 2.75rem;
+    height: 2.75rem;
     padding: 0;
     border: none;
     border-radius: 50%;
-    background: rgb(var(--color-background-rgb, 255 255 255) / 0.85);
+    background: var(--color-background, #FFFFFF);
     color: var(--color-foreground, #111111);
+    box-shadow: 0 2px 10px rgb(0 0 0 / 0.1);
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background var(--animation-speed, 0.15s) ease;
+    transition: box-shadow var(--animation-speed, 0.15s) ease;
   }
-  .sh-gallery-arrow--prev { left: 0.75rem; }
-  .sh-gallery-arrow--next { right: 0.75rem; }
-  .sh-gallery-arrow:hover { background: var(--color-background, #FFFFFF); }
-  .sh-gallery-arrow:focus-visible {
+  .sh-gallery-arrow:hover,
+  .sh-gallery-zoom:hover { box-shadow: 0 4px 16px rgb(0 0 0 / 0.16); }
+  .sh-gallery-arrow:focus-visible,
+  .sh-gallery-zoom:focus-visible {
     outline: var(--focus-outline-width, 2px) solid var(--color-foreground, #111111);
     outline-offset: 2px;
+  }
+  .sh-gallery-arrow svg,
+  .sh-gallery-zoom svg { width: 1.25rem; height: 1.25rem; display: block; }
+  .sh-gallery-arrow { top: 50%; transform: translateY(-50%); }
+  .sh-gallery-arrow--prev { left: 1rem; }
+  .sh-gallery-arrow--next { right: 1rem; }
+  .sh-gallery-zoom { right: 1rem; bottom: 1rem; cursor: zoom-in; }
+  .sh-gallery-zoom[hidden] { display: none; }
+
+  /* ---------- thumbnails ---------- */
+  .sh-gallery-thumbs-wrap { grid-area: thumbs; min-width: 0; }
+  .sh-gallery-thumbs {
+    display: flex;
+    gap: var(--sh-thumb-gap);
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+  }
+  .sh-gallery-thumbs::-webkit-scrollbar { display: none; }
+  .sh-gallery-thumb {
+    position: relative;
+    flex: 0 0 var(--sh-thumb-size);
+    width: var(--sh-thumb-size);
+    aspect-ratio: var(--sh-gallery-ratio);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--sh-thumb-radius);
+    overflow: hidden;
+    background: #FFFFFF;
+    cursor: pointer;
+  }
+  .sh-gallery-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: var(--sh-gallery-fit);
+    display: block;
+  }
+  .sh-gallery-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--sh-thumb-line);
+    border-radius: inherit;
+    pointer-events: none;
+    transition: border-color var(--animation-speed, 0.15s) ease;
+  }
+  .sh-gallery-thumb:hover::after { border-color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.35); }
+  .sh-gallery-thumb.is-active::after {
+    border: 2px solid var(--color-foreground, #111111);
+    box-shadow: inset 0 0 0 2px var(--color-background, #FFFFFF);
+  }
+  .sh-gallery-thumb:focus-visible {
+    outline: 2px solid var(--color-foreground, #111111);
+    outline-offset: -5px;
+  }
+  .sh-gallery-thumb__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 1.75rem;
+    height: 1.75rem;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.92);
+    color: var(--color-foreground, #111111);
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
+  .sh-gallery-thumb__play svg { width: 0.75rem; height: 0.75rem; display: block; fill: currentColor; }
+
+  @media screen and (min-width: 750px) {
+    .sh-gallery { --sh-thumb-size: {{ THUMB_SIZE }}; }
+    .sh-gallery-stage--thumbs {
+      grid-template-columns: var(--sh-thumb-size) minmax(0, 1fr);
+      grid-template-areas: "thumbs main";
+      gap: 1rem;
+    }
+    /* thumbs column ki height = bari image ki height; zyada thumbs hon to andar scroll */
+    .sh-gallery-stage--thumbs .sh-gallery-thumbs-wrap { position: relative; }
+    .sh-gallery-stage--thumbs .sh-gallery-thumbs {
+      position: absolute;
+      inset: 0;
+      flex-direction: column;
+      overflow-x: hidden;
+      overflow-y: auto;
+      overscroll-behavior-y: contain;
+    }
+    .sh-gallery-stage--thumbs .sh-gallery-thumb { flex: 0 0 auto; width: 100%; }
   }
 
   .sh-gallery-dots {
@@ -349,6 +506,97 @@
     background: var(--color-foreground, #111111);
     border-color: var(--color-foreground, #111111);
   }
+  {%- if SHOW_ZOOM %}
+
+  /* ---------- full screen zoom ---------- */
+  html:has(dialog.sh-zoom[open]) { overflow: hidden; }
+  dialog.sh-zoom {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    overscroll-behavior: contain;
+    background: var(--color-background, #FFFFFF);
+    color: var(--color-foreground, #111111);
+  }
+  dialog.sh-zoom::backdrop { background: rgb(17 17 17 / 0.4); }
+  .sh-zoom__stage {
+    position: absolute;
+    inset: 4rem 1rem 3.5rem;
+    overflow: hidden;
+    touch-action: pinch-zoom;
+  }
+  /* khulte hi focus stage par jata hai (close button par ring nahi), Tab se buttons */
+  .sh-zoom__stage:focus { outline: none; }
+  .sh-zoom__img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    cursor: zoom-in;
+    transform-origin: 50% 50%;
+    transition: transform 0.25s ease;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+  }
+  dialog.sh-zoom.is-zoomed .sh-zoom__img { transform: scale({{ ZOOM_SCALE }}); cursor: zoom-out; }
+  dialog.sh-zoom.is-zoomed .sh-zoom__stage { touch-action: none; }
+  .sh-zoom__btn {
+    position: absolute;
+    z-index: 1;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #F7F7F5;
+    color: var(--color-foreground, #111111);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--animation-speed, 0.15s) ease;
+  }
+  .sh-zoom__btn:hover { background: #ECEBE6; }
+  .sh-zoom__btn:focus-visible {
+    outline: 2px solid var(--color-foreground, #111111);
+    outline-offset: 2px;
+  }
+  .sh-zoom__btn svg { width: 1.25rem; height: 1.25rem; display: block; }
+  .sh-zoom__close { top: 0.75rem; right: 0.75rem; }
+  .sh-zoom__nav { top: 50%; transform: translateY(-50%); }
+  .sh-zoom__nav--prev { left: 1rem; }
+  .sh-zoom__nav--next { right: 1rem; }
+  .sh-zoom__count {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1.1rem;
+    margin: 0;
+    text-align: center;
+    font-family: var(--font-body--family, system-ui, sans-serif);
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.6);
+  }
+  dialog.sh-zoom.sh-zoom--single .sh-zoom__nav,
+  dialog.sh-zoom.sh-zoom--single .sh-zoom__count { display: none; }
+  @media screen and (min-width: 750px) {
+    .sh-zoom__stage { inset: 4rem 5.5rem 3.5rem; }
+  }
+  @media screen and (max-width: 749px) {
+    .sh-zoom__nav { display: none; }
+    .sh-zoom__stage { inset: 3.75rem 0 3.25rem; }
+  }
+  {%- endif %}
 
   /* ---------- info column ---------- */
   .sh-pdp {
@@ -681,16 +929,86 @@
     transition: background 0.2s ease, color 0.2s ease;
   }
 
-  .sh-perks__trust {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.5rem 1.4rem;
-    font-size: clamp(0.8rem, 0.77rem + 0.12vw, 0.88rem);
-    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.7);
+  /* ---------- trust row (jenpharm jaisi, Sheene ke rang) ---------- */
+  /* columns kabhi apne sabse lambe lafz se patle nahi hote (DERMATOLOGIST),
+     is liye chhoti screen par bhi text bahar nahi nikalta */
+  .sh-trust {
+    --sh-trust-mark: {{ TRUST_MARK_COLOR }};
+    container-type: inline-size;
+    display: grid;
+    grid-template-columns: repeat(var(--sh-trust-cols, 3), minmax(min-content, 1fr));
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.35rem 0 0;
+    list-style: none;
   }
-  .sh-perks__trust-item { display: inline-flex; align-items: center; gap: 0.45rem; }
-  .sh-perks__trust-item .sh-ico { width: 17px; height: 17px; display: block; }
+  .sh-trust__item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    min-width: 0;
+  }
+  .sh-trust__icon {
+    flex: 0 0 auto;
+    width: 2.1rem;
+    height: 2.1rem;
+    display: block;
+    color: var(--color-foreground, #111111);
+  }
+  .sh-trust__icon svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.4px;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .sh-trust__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    min-width: 0;
+    text-align: left;
+  }
+  .sh-trust__title {
+    display: block;
+    font-weight: 700;
+    font-size: 0.75rem;
+    line-height: 1.35;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-foreground, #111111);
+  }
+  .sh-trust__title span {
+    padding: 0 0.15em;
+    margin: 0 -0.15em;
+    background: linear-gradient(transparent 52%, var(--sh-trust-mark) 52%, var(--sh-trust-mark) 94%, transparent 94%);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  .sh-trust__sub {
+    font-size: 0.82rem;
+    line-height: 1.3;
+    color: rgb(var(--color-foreground-rgb, 17 17 17) / 0.62);
+  }
+  /* patli jagah (mobile, ya tablet par patla info column): icon upar, text neeche */
+  @media screen and (max-width: 749px) {
+    .sh-trust { gap: 0.5rem; }
+    .sh-trust__item { flex-direction: column; justify-content: flex-start; gap: 0.45rem; text-align: center; }
+    .sh-trust__text { align-items: center; text-align: center; }
+    .sh-trust__icon { width: 1.85rem; height: 1.85rem; }
+    .sh-trust__title { font-size: clamp(0.6rem, 0.45rem + 0.9vw, 0.75rem); letter-spacing: 0.04em; }
+    .sh-trust__sub { font-size: clamp(0.7rem, 0.6rem + 0.5vw, 0.82rem); }
+  }
+  @container (max-width: 440px) {
+    .sh-trust__item { flex-direction: column; justify-content: flex-start; gap: 0.45rem; text-align: center; }
+    .sh-trust__text { align-items: center; text-align: center; }
+    .sh-trust__icon { width: 1.85rem; height: 1.85rem; }
+    .sh-trust__title { font-size: clamp(0.6rem, 0.3rem + 2.4cqi, 0.75rem); letter-spacing: 0.04em; }
+  }
 
   @media screen and (max-width: 400px) {
     .sh-perk { gap: 0.65rem; padding: 0.75rem 0.9rem; }
@@ -815,60 +1133,164 @@
 
 {% comment %} ============ GALLERY ============ {% endcomment %}
 {% if part == 'slider' or part == 'all' %}
-  {% assign media_count = product.media.size %}
+  {% liquid
+    assign media_count = product.media.size
 
-  <div class="sh-gallery" id="ShGallery-{{ product.id }}" data-total="{{ media_count }}">
-    <div class="sh-gallery-viewport">
-      {% if media_count > 0 %}
-        <div class="sh-gallery-track">
-          {% for media in product.media %}
-            <div class="sh-gallery-slide" data-index="{{ forloop.index0 }}">
-              {% case media.media_type %}
-                {% when 'image' %}
-                  {{
-                    media
-                    | image_url: width: 1600
-                    | image_tag:
-                      loading: 'lazy',
-                      sizes: '(min-width: 750px) 52vw, 100vw',
-                      widths: '400,600,800,1000,1200,1600',
-                      alt: media.alt | default: product.title,
-                      class: 'sh-gallery-media'
-                  }}
-                {% when 'video' %}
-                  {{ media | video_tag: controls: true, autoplay: false, loop: false, muted: false, class: 'sh-gallery-media' }}
-                {% when 'external_video' %}
-                  <div class="sh-gallery-media sh-gallery-media--embed">{{ media | external_video_tag }}</div>
-                {% when 'model' %}
-                  {{ media | model_viewer_tag: class: 'sh-gallery-media' }}
-              {% endcase %}
-            </div>
-          {% endfor %}
+    # LCP FIX: jo slide page khulte hi dikhti hai (selected variant ki image,
+    # warna pehli image) wo eager + fetchpriority high + preload hoti hai.
+    # Baaki sab slides lazy. Pehle sab lazy thin, mobile LCP 10.7s tha.
+    # Variant wala check zaroori hai: ad link mein ?variant= ho to JS usi
+    # variant ki image par slider le jata hai, wahi pehli nazar wali image hai.
+    assign sh_lcp_media_id = product.media.first.id
+    assign sh_lcp_variant = product.selected_or_first_available_variant
+    if sh_lcp_variant.featured_media != blank
+      assign sh_lcp_media_id = sh_lcp_variant.featured_media.id
+    endif
+
+    # Wahi slide aur uska thumbnail server se hi khule render hote hain,
+    # taake JS chalne se pehle bhi sahi image dikhe (koi jump nahi).
+    assign sh_start_index = 0
+    assign has_image = false
+    for m in product.media
+      if m.id == sh_lcp_media_id
+        assign sh_start_index = forloop.index0
+      endif
+      if m.media_type == 'image'
+        assign has_image = true
+      endif
+    endfor
+    assign sh_start_offset = sh_start_index | times: 100
+    assign start_is_image = false
+    if product.media[sh_start_index].media_type == 'image'
+      assign start_is_image = true
+    endif
+
+    assign show_thumbs = false
+    if SHOW_THUMBS and media_count > 1
+      assign show_thumbs = true
+    endif
+    assign show_zoom = false
+    if SHOW_ZOOM and has_image
+      assign show_zoom = true
+    endif
+    assign thumb_sizes = '(min-width: 750px) ' | append: THUMB_SIZE | append: ', ' | append: THUMB_SIZE_MOBILE
+  %}
+
+  <div class="sh-gallery" id="ShGallery-{{ product.id }}" data-total="{{ media_count }}" data-start="{{ sh_start_index }}">
+    <div class="sh-gallery-stage{% if show_thumbs %} sh-gallery-stage--thumbs{% endif %}">
+      <div class="sh-gallery-viewport">
+        {% if media_count > 0 %}
+          <div class="sh-gallery-track"{% if sh_start_offset > 0 %} style="transform: translateX(-{{ sh_start_offset }}%);"{% endif %}>
+            {% for media in product.media %}
+              <div class="sh-gallery-slide" data-index="{{ forloop.index0 }}">
+                {% case media.media_type %}
+                  {% when 'image' %}
+                    {%- liquid
+                      if media.id == sh_lcp_media_id
+                        assign sh_img_loading = 'eager'
+                        assign sh_img_priority = 'high'
+                        assign sh_img_preload = true
+                      else
+                        assign sh_img_loading = 'lazy'
+                        assign sh_img_priority = 'auto'
+                        assign sh_img_preload = false
+                      endif
+                      # alt pehle assign karna zaroori hai: filter argument ke andar
+                      # "| default" lagane se class wagera image_tag tak pohanchte hi nahi thay
+                      assign sh_img_alt = media.alt | default: product.title
+                    -%}
+                    {{
+                      media
+                      | image_url: width: 1600
+                      | image_tag:
+                        loading: sh_img_loading,
+                        fetchpriority: sh_img_priority,
+                        preload: sh_img_preload,
+                        sizes: '(min-width: 750px) 52vw, 100vw',
+                        widths: '400,600,800,1000,1200,1600',
+                        alt: sh_img_alt,
+                        class: 'sh-gallery-media'
+                    }}
+                  {% when 'video' %}
+                    {{ media | video_tag: controls: true, autoplay: false, loop: false, muted: false, class: 'sh-gallery-media' }}
+                  {% when 'external_video' %}
+                    <div class="sh-gallery-media sh-gallery-media--embed">{{ media | external_video_tag }}</div>
+                  {% when 'model' %}
+                    {{ media | model_viewer_tag: class: 'sh-gallery-media' }}
+                {% endcase %}
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="sh-gallery-slide sh-gallery-empty"></div>
+        {% endif %}
+
+        {% if media_count > 1 %}
+          <button type="button" class="sh-gallery-arrow sh-gallery-arrow--prev" data-direction="prev" aria-label="Previous image">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg>
+          </button>
+          <button type="button" class="sh-gallery-arrow sh-gallery-arrow--next" data-direction="next" aria-label="Next image">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"/></svg>
+          </button>
+        {% endif %}
+
+        {% if show_zoom %}
+          <button type="button" class="sh-gallery-zoom" aria-label="Zoom image" aria-haspopup="dialog"{% unless start_is_image %} hidden{% endunless %}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.75" cy="10.75" r="6.25"/><path d="m15.5 15.5 4.25 4.25M10.75 8v5.5M8 10.75h5.5"/></svg>
+          </button>
+        {% endif %}
+      </div>
+
+      {% if show_thumbs %}
+        <div class="sh-gallery-thumbs-wrap">
+          <div class="sh-gallery-thumbs" role="group" aria-label="Product images">
+            {% for media in product.media %}
+              {%- liquid
+                assign thumb_on = false
+                if forloop.index0 == sh_start_index
+                  assign thumb_on = true
+                endif
+              -%}
+              <button type="button" class="sh-gallery-thumb{% if thumb_on %} is-active{% endif %}" data-goto="{{ forloop.index0 }}" aria-label="Show image {{ forloop.index }} of {{ media_count }}"{% if thumb_on %} aria-current="true"{% endif %}>
+                {%- if media.preview_image != blank -%}
+                  {{ media.preview_image | image_url: width: 240 | image_tag: loading: 'lazy', widths: '120,180,240', sizes: thumb_sizes, alt: '' }}
+                {%- endif -%}
+                {%- if media.media_type == 'video' or media.media_type == 'external_video' -%}
+                  <span class="sh-gallery-thumb__play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z"/></svg></span>
+                {%- endif -%}
+              </button>
+            {% endfor %}
+          </div>
         </div>
-      {% else %}
-        <div class="sh-gallery-slide sh-gallery-empty"></div>
-      {% endif %}
-
-      {% if media_count > 1 %}
-        <button type="button" class="sh-gallery-arrow sh-gallery-arrow--prev" data-direction="prev" aria-label="Previous image">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
-        </button>
-        <button type="button" class="sh-gallery-arrow sh-gallery-arrow--next" data-direction="next" aria-label="Next image">
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg>
-        </button>
       {% endif %}
     </div>
 
-    {% if media_count > 1 %}
+    {% if media_count > 1 and show_thumbs == false %}
       <div class="sh-gallery-dots" aria-label="Product images">
         {% for media in product.media %}
-          <button type="button" class="sh-gallery-dot" data-goto="{{ forloop.index0 }}" aria-label="Go to image {{ forloop.index }}"></button>
+          <button type="button" class="sh-gallery-dot{% if forloop.index0 == sh_start_index %} is-active{% endif %}" data-goto="{{ forloop.index0 }}" aria-label="Go to image {{ forloop.index }}"></button>
         {% endfor %}
       </div>
     {% endif %}
 
     {% if EXPERT_UNDER_SLIDER and expert_html != blank %}
       <div class="sh-gallery-expert">{{ expert_html }}</div>
+    {% endif %}
+
+    {% if show_zoom %}
+      <dialog class="sh-zoom" aria-label="Product image zoom">
+        <div class="sh-zoom__stage" tabindex="-1" autofocus><img class="sh-zoom__img" alt="" decoding="async"></div>
+        <button type="button" class="sh-zoom__btn sh-zoom__close" data-zoom-close aria-label="Close zoom">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+        <button type="button" class="sh-zoom__btn sh-zoom__nav sh-zoom__nav--prev" data-zoom-prev aria-label="Previous image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 5.5 8 12l6.5 6.5"/></svg>
+        </button>
+        <button type="button" class="sh-zoom__btn sh-zoom__nav sh-zoom__nav--next" data-zoom-next aria-label="Next image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9.5 5.5 6.5 6.5-6.5 6.5"/></svg>
+        </button>
+        <p class="sh-zoom__count" aria-live="polite"><span data-zoom-current>1</span> / <span data-zoom-total>1</span></p>
+      </dialog>
     {% endif %}
   </div>
 
@@ -880,38 +1302,89 @@
 
       var total = parseInt(root.dataset.total, 10) || 0;
       var track = root.querySelector('.sh-gallery-track');
+      var slides = root.querySelectorAll('.sh-gallery-slide[data-index]');
       var dots = root.querySelectorAll('.sh-gallery-dot');
+      var thumbs = root.querySelectorAll('.sh-gallery-thumb');
+      var thumbList = root.querySelector('.sh-gallery-thumbs');
       var arrows = root.querySelectorAll('.sh-gallery-arrow');
-      var index = 0;
+      var zoomBtn = root.querySelector('.sh-gallery-zoom');
+      var vp = root.querySelector('.sh-gallery-viewport');
+      var index = parseInt(root.dataset.start, 10) || 0;
+      var ready = false;
+
+      function slideImg(i) {
+        var s = slides[i];
+        return s ? s.querySelector('img.sh-gallery-media') : null;
+      }
+
+      /* active thumbnail ko list ke andar nazar mein lao, page scroll kiye bina */
+      function revealThumb(t) {
+        if (!t || !thumbList) return;
+        var l = thumbList.getBoundingClientRect();
+        var r = t.getBoundingClientRect();
+        if (r.top < l.top) thumbList.scrollTop -= l.top - r.top + 8;
+        else if (r.bottom > l.bottom) thumbList.scrollTop += r.bottom - l.bottom + 8;
+        if (r.left < l.left) thumbList.scrollLeft -= l.left - r.left + 8;
+        else if (r.right > l.right) thumbList.scrollLeft += r.right - l.right + 8;
+      }
 
       function goTo(n) {
         if (total < 1 || !track) return;
-        index = ((n % total) + total) % total;
+        var next = ((n % total) + total) % total;
+        if (ready && next === index) return;
+        index = next;
         track.style.transform = 'translateX(-' + (index * 100) + '%)';
         dots.forEach(function (d, i) { d.classList.toggle('is-active', i === index); });
+        thumbs.forEach(function (t, i) {
+          var on = i === index;
+          t.classList.toggle('is-active', on);
+          if (on) t.setAttribute('aria-current', 'true');
+          else t.removeAttribute('aria-current');
+        });
+        if (ready) revealThumb(thumbs[index]);
+        if (zoomBtn) zoomBtn.hidden = !slideImg(index);
         root.querySelectorAll('video').forEach(function (v) { v.pause(); });
       }
       root.shGoTo = goTo;
 
-      if (total > 1) {
-        arrows.forEach(function (b) {
-          b.addEventListener('click', function () {
-            goTo(b.dataset.direction === 'next' ? index + 1 : index - 1);
-          });
+      arrows.forEach(function (b) {
+        b.addEventListener('click', function () {
+          goTo(b.dataset.direction === 'next' ? index + 1 : index - 1);
         });
-        dots.forEach(function (d) {
-          d.addEventListener('click', function () { goTo(parseInt(d.dataset.goto, 10)); });
-        });
-        var vp = root.querySelector('.sh-gallery-viewport');
-        var startX = 0;
-        vp.addEventListener('touchstart', function (e) { startX = e.touches[0].clientX; }, { passive: true });
+      });
+      dots.forEach(function (d) {
+        d.addEventListener('click', function () { goTo(parseInt(d.dataset.goto, 10)); });
+      });
+      thumbs.forEach(function (t) {
+        t.addEventListener('click', function () { goTo(parseInt(t.dataset.goto, 10)); });
+      });
+
+      /* swipe. Chhota sa tap swipe nahi hai, wo zoom kholta hai. */
+      var startX = 0;
+      var startY = 0;
+      var swiped = false;
+      if (vp) {
+        vp.addEventListener('touchstart', function (e) {
+          startX = e.touches[0].clientX;
+          startY = e.touches[0].clientY;
+          swiped = false;
+        }, { passive: true });
         vp.addEventListener('touchend', function (e) {
           var dx = startX - e.changedTouches[0].clientX;
-          if (Math.abs(dx) > 40) goTo(dx > 0 ? index + 1 : index - 1);
+          var dy = startY - e.changedTouches[0].clientY;
+          if (Math.abs(dx) > 10 || Math.abs(dy) > 10) swiped = true;
+          if (total > 1 && Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) goTo(dx > 0 ? index + 1 : index - 1);
         }, { passive: true });
       }
 
-      goTo(0);
+      goTo(index);
+      ready = true;
+      /* ?variant= link ki image aage ho to uska thumbnail bhi load par nazar aaye */
+      if (thumbList && index > 0) {
+        thumbList.style.scrollBehavior = 'auto';
+        revealThumb(thumbs[index]);
+        thumbList.style.scrollBehavior = '';
+      }
 
       {% if sticky_on and SAFE_MODE == false %}
       /* Sticky left column jo viewport se lamba ho: pehle scroll hota hai,
@@ -936,6 +1409,118 @@
       window.addEventListener('resize', setStickyTop);
       window.addEventListener('load', setStickyTop);
       if (window.ResizeObserver) new ResizeObserver(setStickyTop).observe(root);
+      {% endif %}
+
+      {% if show_zoom %}
+      /* ---- full screen zoom: ek hi <img>, hi-res file sirf khulne par aati hai ---- */
+      var dlg = root.querySelector('dialog.sh-zoom');
+      if (dlg) {
+        var zStage = dlg.querySelector('.sh-zoom__stage');
+        var zImg = dlg.querySelector('.sh-zoom__img');
+        var zCur = dlg.querySelector('[data-zoom-current]');
+        var zTot = dlg.querySelector('[data-zoom-total]');
+        var imgIdx = [];
+        slides.forEach(function (s, i) { if (s.querySelector('img.sh-gallery-media')) imgIdx.push(i); });
+        var zPos = 0;
+        var zoomed = false;
+        var zMoved = false;
+        var zx = 0;
+        var zy = 0;
+
+        var bigSrc = function (img) {
+          var raw = img.getAttribute('src') || img.currentSrc || '';
+          try {
+            var u = new URL(raw, window.location.href);
+            var px = Math.max(window.innerWidth, window.innerHeight) * Math.min(window.devicePixelRatio || 1, 2.5);
+            u.searchParams.set('width', String(Math.min(2400, Math.max(1000, Math.ceil(px / 200) * 200))));
+            return u.toString();
+          } catch (e) {
+            return raw;
+          }
+        };
+        var setOrigin = function (cx, cy) {
+          var r = zStage.getBoundingClientRect();
+          if (!r.width || !r.height) return;
+          var x = Math.min(100, Math.max(0, ((cx - r.left) / r.width) * 100));
+          var y = Math.min(100, Math.max(0, ((cy - r.top) / r.height) * 100));
+          zImg.style.transformOrigin = x + '% ' + y + '%';
+        };
+        var setZoom = function (on, cx, cy) {
+          zoomed = !!on;
+          if (zoomed && cx !== undefined) setOrigin(cx, cy);
+          dlg.classList.toggle('is-zoomed', zoomed);
+        };
+        var show = function (p) {
+          if (!imgIdx.length) return;
+          zPos = ((p % imgIdx.length) + imgIdx.length) % imgIdx.length;
+          var img = slideImg(imgIdx[zPos]);
+          if (!img) return;
+          setZoom(false);
+          var hi = bigSrc(img);
+          zImg.dataset.want = hi;
+          zImg.src = img.currentSrc || img.getAttribute('src');
+          zImg.alt = img.getAttribute('alt') || '';
+          var pre = new Image();
+          pre.onload = function () { if (zImg.dataset.want === hi) zImg.src = hi; };
+          pre.src = hi;
+          if (zCur) zCur.textContent = zPos + 1;
+          goTo(imgIdx[zPos]);
+        };
+        var open = function () {
+          var p = imgIdx.indexOf(index);
+          if (p < 0) return;
+          if (zTot) zTot.textContent = imgIdx.length;
+          dlg.classList.toggle('sh-zoom--single', imgIdx.length < 2);
+          show(p);
+          if (dlg.open) return;
+          if (typeof dlg.showModal === 'function') dlg.showModal();
+          else dlg.setAttribute('open', '');
+        };
+
+        if (zoomBtn) zoomBtn.addEventListener('click', open);
+        imgIdx.forEach(function (i) {
+          slideImg(i).addEventListener('click', function () { if (!swiped) open(); });
+        });
+        dlg.querySelector('[data-zoom-close]').addEventListener('click', function () { dlg.close(); });
+        dlg.querySelector('[data-zoom-prev]').addEventListener('click', function () { show(zPos - 1); });
+        dlg.querySelector('[data-zoom-next]').addEventListener('click', function () { show(zPos + 1); });
+        dlg.addEventListener('keydown', function (e) {
+          if (e.key === 'ArrowLeft') { e.preventDefault(); show(zPos - 1); }
+          else if (e.key === 'ArrowRight') { e.preventDefault(); show(zPos + 1); }
+        });
+        dlg.addEventListener('close', function () { setZoom(false); });
+
+        /* click = 2x zoom on/off, zoom mein mouse ya ungli se pan */
+        zImg.addEventListener('click', function (e) {
+          if (zMoved) { zMoved = false; return; }
+          setZoom(!zoomed, e.clientX, e.clientY);
+        });
+        zStage.addEventListener('mousemove', function (e) {
+          if (zoomed) setOrigin(e.clientX, e.clientY);
+        });
+        zStage.addEventListener('touchstart', function (e) {
+          if (e.touches.length !== 1) return;
+          zx = e.touches[0].clientX;
+          zy = e.touches[0].clientY;
+          zMoved = false;
+        }, { passive: true });
+        zStage.addEventListener('touchmove', function (e) {
+          if (e.touches.length !== 1) return;
+          var t = e.touches[0];
+          if (Math.abs(t.clientX - zx) > 8 || Math.abs(t.clientY - zy) > 8) zMoved = true;
+          if (zoomed) setOrigin(t.clientX, t.clientY);
+        }, { passive: true });
+        /* iPhone par html overflow lock kaafi nahi: ek ungli ka drag page ko scroll na kare */
+        dlg.addEventListener('touchmove', function (e) {
+          if (!zoomed && e.touches.length === 1 && e.cancelable) e.preventDefault();
+        }, { passive: false });
+        zStage.addEventListener('touchend', function (e) {
+          if (zoomed || !zMoved || e.changedTouches.length !== 1) return;
+          var dx = zx - e.changedTouches[0].clientX;
+          var dy = zy - e.changedTouches[0].clientY;
+          if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) show(dx > 0 ? zPos + 1 : zPos - 1);
+        }, { passive: true });
+      }
       {% endif %}
     })();
   </script>
@@ -1228,18 +1813,37 @@
         </ul>
       </div>
 
-      <div class="sh-perks__trust">
-        {% if SHOW_DERMATOLOGIST %}
-          <span class="sh-perks__trust-item">
-            <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3 5 6v5.5c0 4.4 3 8 7 9.5 4-1.5 7-5.1 7-9.5V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></svg></span>
-            {{ DERMATOLOGIST_LABEL }}
+      {%- liquid
+        assign trust_cols = 2
+        if SHOW_DERMATOLOGIST
+          assign trust_cols = 3
+        endif
+      -%}
+      <ul class="sh-trust" style="--sh-trust-cols: {{ trust_cols }};">
+        <li class="sh-trust__item">
+          <span class="sh-trust__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="2.75" y="6.25" width="18.5" height="11.5" rx="1.75"/><circle cx="12" cy="12" r="2.75"/><path d="M6.25 9.5v5M17.75 9.5v5"/></svg></span>
+          <span class="sh-trust__text">
+            <span class="sh-trust__title"><span>{{ TRUST_COD_TITLE | escape }}</span></span>
+            <span class="sh-trust__sub">{{ TRUST_COD_SUB | escape }}</span>
           </span>
-        {% endif %}
-        <span class="sh-perks__trust-item">
-          <span class="sh-ico" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 9h11a5 5 0 0 1 0 10H9"/><path d="M8 5 4 9l4 4"/></svg></span>
-          {{ RETURNS_LABEL }}
-        </span>
-      </div>
+        </li>
+        {%- if SHOW_DERMATOLOGIST %}
+        <li class="sh-trust__item">
+          <span class="sh-trust__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9.25 3.25h5.5"/><path d="M10.25 3.25v5.4l-4.9 8.6a2 2 0 0 0 1.74 2.99h9.82a2 2 0 0 0 1.74-2.99l-4.9-8.6v-5.4"/><path d="M7.6 14.25h8.8"/></svg></span>
+          <span class="sh-trust__text">
+            <span class="sh-trust__title"><span>{{ TRUST_DERM_TITLE | escape }}</span></span>
+            <span class="sh-trust__sub">{{ TRUST_DERM_SUB | escape }}</span>
+          </span>
+        </li>
+        {%- endif %}
+        <li class="sh-trust__item">
+          <span class="sh-trust__icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3.25" y="5.25" width="17.5" height="4" rx="1"/><path d="M4.75 9.25v9.5a1 1 0 0 0 1 1h12.5a1 1 0 0 0 1-1v-9.5"/><path d="M10.25 12.75h3.5a1.75 1.75 0 0 1 0 3.5h-2.5"/><path d="m11.75 11.25-1.5 1.5 1.5 1.5"/></svg></span>
+          <span class="sh-trust__text">
+            <span class="sh-trust__title"><span>{{ TRUST_RETURNS_TITLE | escape }}</span></span>
+            <span class="sh-trust__sub">{{ TRUST_RETURNS_SUB | escape }}</span>
+          </span>
+        </li>
+      </ul>
     </div>
 
     {% if has_real_options %}
