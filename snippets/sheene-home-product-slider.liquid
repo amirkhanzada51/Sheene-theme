@@ -1051,7 +1051,9 @@ body {
                         "
                         sizes="(min-width: 750px) 23vw, 48vw"
                         alt="{{ image.alt | default: product.title | escape }}"
-                        loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+                        
+                         loading="lazy"
+                         decoding="async"
                         width="{{ image.width }}"
                         height="{{ image.height }}"
                         draggable="false"
