@@ -55,6 +55,7 @@
     },
     "custom_liquid_ePT4bq": {
       "type": "custom-liquid",
+      "disabled": true,
       "name": "Offer banner",
       "settings": {
         "custom_liquid": "{% render 'sheene-offer-banner' %}",
