@@ -57,7 +57,7 @@
       "type": "custom-liquid",
       "name": "Offer banner",
       "settings": {
-        "custom_liquid": "",
+        "custom_liquid": "{% render 'sheene-offer-banner' %}",
         "background_color": "",
         "section_width": "page-width",
         "padding-block-start": 0,
