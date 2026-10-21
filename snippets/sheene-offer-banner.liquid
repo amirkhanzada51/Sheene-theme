@@ -1,0 +1,83 @@
+{%- comment -%}
+  SHEENE OFFER BANNER
+
+  Ye pehle index.json ke Custom Liquid block mein inline likha tha.
+  Ab Custom Liquid block mein sirf ye ek line rakho:
+
+    {% render 'sheene-offer-banner' %}
+
+  Kya badla (speed):
+  1. loading="eager" + fetchpriority="high" hata diya. Ye banner fold ke neeche hai,
+     lekin high priority ki wajah se hero image se bandwidth cheen raha tha.
+  2. hero-banner.png asal file 1.9MB (1971x907) hai. Ab srcset se mobile par ~768px wali jati hai.
+  3. width/height asal file ke (1971 x 907). Pehle 1826 x 813 likha tha.
+
+  File ka naam badalna ho to neeche BANNER_FILE badlo (Settings > Files mein jo naam hai).
+{%- endcomment -%}
+
+{%- liquid
+  assign BANNER_FILE = 'hero-banner.png'
+  assign BANNER_ALT = 'Build Your Own Bundle'
+  assign BANNER_W = 1971
+  assign BANNER_H = 907
+
+  assign banner_url = BANNER_FILE | file_url
+  if banner_url contains '?'
+    assign sep = '&'
+  else
+    assign sep = '?'
+  endif
+  assign wbase = banner_url | append: sep | append: 'width='
+-%}
+
+<section class="exact-hero-banner">
+  <img
+    src="{{ wbase }}1100"
+    srcset="{{ wbase }}480 480w, {{ wbase }}768 768w, {{ wbase }}1100 1100w, {{ wbase }}1600 1600w, {{ wbase }}1971 1971w"
+    sizes="100vw"
+    alt="{{ BANNER_ALT | escape }}"
+    class="exact-hero-banner__image"
+    width="{{ BANNER_W }}"
+    height="{{ BANNER_H }}"
+    loading="lazy"
+    decoding="async"
+  >
+</section>
+
+<style>
+  .exact-hero-banner {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    margin-top: 25px;
+    margin-bottom: 40px;
+    padding: 0;
+    overflow: hidden;
+    line-height: 0;
+  }
+
+  .exact-hero-banner__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  /* Mobile: poori original image proportional rehti hai */
+  @media screen and (max-width: 749px) {
+    .exact-hero-banner {
+      width: 100%;
+      overflow: hidden;
+    }
+
+    .exact-hero-banner__image {
+      width: 100%;
+      height: auto;
+      min-width: 0;
+      object-fit: contain;
+    }
+  }
+</style>
