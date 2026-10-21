@@ -1,344 +1,247 @@
+{% comment %}
+  ==========================================================
+  SHEENE - Shop by Concerns
+  4 column static grid, cards clickable hain
+  ==========================================================
+
+  Kya badla (speed):
+  Images ab srcset ke saath aati hain (300 / 450 / 600 / 800 px).
+  Mobile par card sirf ~180px chauda hota hai, pehle poori size wali image jati thi.
+  width/height bhi lagi hain, taake layout shift na ho.
+
+  Titles / images / links neeche teen lines mein hain. Neeche ka markup haath nahi lagana.
+  Separator `|` hai (comma nahi, kyunki "Fine Lines / Wrinkles" jaise titles mein comma aa sakta hai).
+
+  Baad mein alag alag bundle par bhejna ho to concern_links mein har card ka apna URL daalo,
+  order wahi rakhna jo titles ka hai.
+    Product ka URL: /products/<handle>
+    Collection ka URL: /collections/<handle>
+{% endcomment %}
+
+{% liquid
+  assign concern_titles = 'Uneven Tone|Acne Control|Oiliness|Fine Lines / Wrinkles' | split: '|'
+
+  assign concern_images = 'https://cdn.shopify.com/s/files/1/0704/1295/9787/files/Home-page-shop-by-concerns-Uneven_Tone_or_Pigmentation-min.webp?v=1789061447|https://cdn.shopify.com/s/files/1/0704/1295/9787/files/Home-page-shop-by-concerns-Acne-min.webp?v=1789061448|https://cdn.shopify.com/s/files/1/0704/1295/9787/files/Home-page-shop-by-concerns-Oiliness-min.webp?v=1789061448|https://cdn.shopify.com/s/files/1/0704/1295/9787/files/Home-page-shop-by-concerns-Fine_Lines_Wrinkles-min.webp?v=1789061447' | split: '|'
+
+  assign concern_links = '/products/get-back-your-glow-kit|/products/destroy-acne-kit|/products/oil-pore-lockdown-kit|/products/killing-pigmentation-kit' | split: '|'
+%}
+
 <style>
 /* =========================================================
    SHOP BY CONCERNS
-   STATIC 4 COLUMN — NO DYNAMIC / NO CAROUSEL
+   STATIC 4 COLUMN
    ========================================================= */
-
 .soc-static,
 .soc-static * {
   box-sizing: border-box;
 }
-
 .soc-static {
   width: 100%;
   background: #ffffff;
   font-family: "Jost", sans-serif;
   overflow: hidden;
 }
-
 .soc-static-container {
   width: calc(100% - 76px);
   margin: 0 auto;
 }
-
-
 /* =========================================================
    HEADING
    ========================================================= */
-
 .soc-static-heading {
   margin: 0 0 34px;
   padding: 0;
-
   color: #080808;
-
   font-family: "Jost", sans-serif;
-
   font-size: 32px;
   line-height: 1.15;
-
   font-weight: 500;
-
   letter-spacing: -1.2px;
 }
-
-
 /* =========================================================
    4 COLUMN GRID
    ========================================================= */
-
 .soc-static-grid {
   width: 100%;
-
   display: grid;
-
-  grid-template-columns:
-    repeat(4, minmax(0, 1fr));
-
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   column-gap: 37px;
-
   row-gap: 45px;
 }
-
-
 /* =========================================================
-   CARD
+   CARD - <a>, poora clickable
    ========================================================= */
-
 .soc-static-card {
   width: 100%;
-
   display: block;
-
   text-decoration: none;
-
   color: #111111;
-
   font-family: "Jost", sans-serif;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
-
-
+.soc-static-card:hover,
+.soc-static-card:focus,
+.soc-static-card:visited {
+  color: #111111;
+  text-decoration: none;
+}
+.soc-static-card:focus-visible {
+  outline: 2px solid #111111;
+  outline-offset: 4px;
+}
 /* =========================================================
    IMAGE
    ========================================================= */
-
 .soc-static-image {
   width: 100%;
-
   aspect-ratio: 1.42 / 1;
-
   display: block;
-
   overflow: hidden;
-
   background: #eeeeee;
 }
-
 .soc-static-image img {
   width: 100%;
   height: 100%;
-
   display: block;
-
   object-fit: cover;
-
   transition: transform 0.35s ease;
 }
-
-
-/* Very subtle hover — same clean look */
-
 .soc-static-card:hover .soc-static-image img {
   transform: scale(1.02);
 }
-
-
 /* =========================================================
-   STATIC TEXT
+   TITLE
    ========================================================= */
-
 .soc-static-title {
   width: 100%;
-
   margin-top: 27px;
-
   padding: 0;
-
   text-align: center;
-
   color: #111111;
-
   font-family: "Jost", sans-serif;
-
   font-size: 16px;
-
   line-height: 1.25;
-
   font-weight: 400;
-
   letter-spacing: 0;
-
   white-space: nowrap;
-
   overflow: hidden;
-
   text-overflow: ellipsis;
+  transition: opacity 0.2s ease;
 }
-
-
+.soc-static-card:hover .soc-static-title {
+  opacity: 0.65;
+}
 /* =========================================================
    TABLET
    ========================================================= */
-
 @media screen and (max-width: 1100px) {
-
   .soc-static-grid {
-    grid-template-columns:
-      repeat(2, minmax(0, 1fr));
-
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 35px 25px;
   }
-
 }
-
-
 /* =========================================================
    MOBILE
    ========================================================= */
-
 @media screen and (max-width: 749px) {
-
   .soc-static {
     padding: 48px 0;
   }
-
   .soc-static-container {
     width: calc(100% - 32px);
   }
-
   .soc-static-heading {
     margin-bottom: 30px;
-
     font-size: 30px;
-
     letter-spacing: -0.8px;
   }
-
   .soc-static-grid {
     grid-template-columns: 1fr 1fr;
-
     column-gap: 16px;
-
     row-gap: 30px;
   }
-
   .soc-static-title {
     margin-top: 18px;
-
     font-size: 16px;
   }
-
+  .soc-static-card:hover .soc-static-image img {
+    transform: none;
+  }
+  .soc-static-card:hover .soc-static-title {
+    opacity: 1;
+  }
 }
-
-
 /* =========================================================
    VERY SMALL MOBILE
    ========================================================= */
-
 @media screen and (max-width: 480px) {
-
   .soc-static-container {
     width: calc(100% - 24px);
   }
-
   .soc-static-grid {
     column-gap: 12px;
     row-gap: 25px;
   }
-
   .soc-static-title {
     font-size: 17px;
   }
-
 }
 </style>
 
-
 <section class="soc-static">
-
   <div class="soc-static-container">
 
-
-    <!-- =====================================================
-         STATIC HEADING
-         ===================================================== -->
-
-    <h2 class="soc-static-heading">
-      Shop by Concerns
-    </h2>
-
-
-    <!-- =====================================================
-         STATIC 4 COLUMNS
-         ===================================================== -->
+    <h2 class="soc-static-heading">Shop by Concerns</h2>
 
     <div class="soc-static-grid">
-
-
-      <!-- ===================================================
-           COLUMN 1
-           =================================================== -->
-
-      <div class="soc-static-card">
-
-        <div class="soc-static-image">
-
-          <img
-            src="https://beminimalist.co/cdn/shop/files/Uneven_Tone_or_Pigmentation-min.png"
-            alt="Dry Skin"
-            loading="lazy"
-          >
-
-        </div>
-
-        <div class="soc-static-title">
-          Uneven Tone
-        </div>
-
-      </div>
-
-
-      <!-- ===================================================
-           COLUMN 2
-           =================================================== -->
-
-      <div class="soc-static-card">
-
-        <div class="soc-static-image">
-
-          <img
-            src="https://beminimalist.co/cdn/shop/files/Acne-min.png"
-            alt="Acne"
-            loading="lazy"
-          >
-
-        </div>
-
-        <div class="soc-static-title">
-          Acne Control
-        </div>
-
-      </div>
-
-
-      <!-- ===================================================
-           COLUMN 3
-           =================================================== -->
-
-      <div class="soc-static-card">
-
-        <div class="soc-static-image">
-
-          <img
-            src="https://beminimalist.co/cdn/shop/files/Oiliness-min.png"
-            alt="Dull Skin"
-            loading="lazy"
-          >
-
-        </div>
-
-        <div class="soc-static-title">
-         Oiliness
-        </div>
-
-      </div>
-
-
-      <!-- ===================================================
-           COLUMN 4
-           =================================================== -->
-
-      <div class="soc-static-card">
-
-        <div class="soc-static-image">
-
-          <img
-            src="https://beminimalist.co/cdn/shop/files/Fine_Lines_Wrinkles-min.png"
-            alt="Sensitive Skin"
-            loading="lazy"
-          >
-
-        </div>
-
-        <div class="soc-static-title">
-          Fine Line / Wrinkles
-        </div>
-
-      </div>
-
-
+      {% for title in concern_titles %}
+        {%- liquid
+          assign i = forloop.index0
+          assign c_img = concern_images[i]
+          assign c_use_srcset = false
+          if c_img contains 'cdn.shopify.com'
+            assign c_use_srcset = true
+            if c_img contains '?'
+              assign c_sep = '&'
+            else
+              assign c_sep = '?'
+            endif
+            assign c_wbase = c_img | append: c_sep | append: 'width='
+          endif
+        -%}
+        <a
+          class="soc-static-card"
+          href="{{ concern_links[i] | default: '/collections/bundles' }}"
+          aria-label="{{ title | strip | escape }}"
+        >
+          <div class="soc-static-image">
+            {%- if c_use_srcset -%}
+              <img
+                src="{{ c_wbase }}600"
+                srcset="{{ c_wbase }}300 300w, {{ c_wbase }}450 450w, {{ c_wbase }}600 600w, {{ c_wbase }}800 800w"
+                sizes="(min-width: 1101px) 22vw, (min-width: 750px) 44vw, 46vw"
+                width="800"
+                height="563"
+                alt="{{ title | strip | escape }}"
+                loading="lazy"
+                decoding="async"
+              >
+            {%- else -%}
+              <img
+                src="{{ c_img }}"
+                width="800"
+                height="563"
+                alt="{{ title | strip | escape }}"
+                loading="lazy"
+                decoding="async"
+              >
+            {%- endif -%}
+          </div>
+          <div class="soc-static-title">{{ title | strip }}</div>
+        </a>
+      {% endfor %}
     </div>
 
   </div>
-
 </section>
