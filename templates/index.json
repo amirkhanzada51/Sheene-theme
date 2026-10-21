@@ -11,7 +11,7 @@
   "sections": {
     "custom_liquid_HChwgB": {
       "type": "custom-liquid",
-      "name": "t:names.custom_liquid",
+      "name": "Banner Slider",
       "settings": {
         "custom_liquid": "{% render 'sheene-hero-slider' %}",
         "background_color": "",
@@ -31,17 +31,6 @@
         "padding-block-end": 0
       }
     },
-    "custom_liquid_RVWDg8": {
-      "type": "custom-liquid",
-      "name": "Shop Bundles",
-      "settings": {
-        "custom_liquid": "{% render 'sheene-home-product-slider' \ncollection: 'bundles',\n  heading: 'Shop Bundles',\n  badge_text: 'Bundle',\n  limit: 8,\n  mobile_limit: 4,\n  view_all_text: 'View all bundles',\n  assets: false\n%}",
-        "background_color": "",
-        "section_width": "page-width",
-        "padding-block-start": 0,
-        "padding-block-end": 0
-      }
-    },
     "custom_liquid_tb6mWJ": {
       "type": "custom-liquid",
       "name": "Shop by Concerns",
@@ -53,11 +42,22 @@
         "padding-block-end": 0
       }
     },
+    "custom_liquid_RVWDg8": {
+      "type": "custom-liquid",
+      "name": "Shop Bundles",
+      "settings": {
+        "custom_liquid": "{% render 'sheene-home-product-slider' \ncollection: 'bundles',\n  heading: 'Shop Bundles',\n  badge_text: 'Bundle',\n  limit: 8,\n  mobile_limit: 4,\n  view_all_text: 'View all bundles',\n  assets: false\n%}",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
     "custom_liquid_ePT4bq": {
       "type": "custom-liquid",
       "name": "Offer banner",
       "settings": {
-        "custom_liquid": "{% comment %}\n  Minimalist — Exact Hero Banner\n  Upload screenshot/banner to Shopify > Settings > Files\n  Filename: hero-banner.png\n{% endcomment %}\n\n<section class=\"exact-hero-banner\">\n  <img\n    src=\"{{ 'hero-banner.png' | file_url }}\"\n    alt=\"Build Your Own Bundle\"\n    class=\"exact-hero-banner__image\"\n    width=\"1826\"\n    height=\"813\"\n    loading=\"eager\"\n    fetchpriority=\"high\"\n  >\n</section>\n\n<style>\n  .exact-hero-banner {\n    width: 100%;\n    max-width: 100%;\n    margin: 0;\n    margin-top:25px;\n    margin-bottom:40px;\n    padding: 0;\n    overflow: hidden;\n    line-height: 0;\n  }\n\n  .exact-hero-banner__image {\n    display: block;\n    width: 100%;\n    height: auto;\n    max-width: 100%;\n    margin: 0;\n    padding: 0;\n    border: 0;\n  }\n\n  /* Mobile — keeps the complete original image proportional */\n  @media screen and (max-width: 749px) {\n    .exact-hero-banner {\n      width: 100%;\n      overflow: hidden;\n    }\n\n    .exact-hero-banner__image {\n      width: 100%;\n      height: auto;\n      min-width: 0;\n      object-fit: contain;\n    }\n  }\n</style>",
+        "custom_liquid": "",
         "background_color": "",
         "section_width": "page-width",
         "padding-block-start": 0,
