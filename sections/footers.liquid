@@ -3,6 +3,17 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 
+{%- comment -%}
+  LOGO: theme editor > is footer section > "Logo" mein image select karo.
+  Khali ho to theme ka apna logo (Theme settings > Logo) use hota hai,
+  wo bhi na ho to store ka naam text mein.
+  "Logo ko white karo" on ho to kaala logo dark footer par safed dikhta hai.
+{%- endcomment -%}
+{%- liquid
+  assign footer_logo = section.settings.logo | default: settings.logo
+  assign logo_w = section.settings.logo_width | default: 140
+-%}
+
 <style>
   .custom-footer-section {
     background-color: #1a1a1a;
@@ -39,6 +50,33 @@
 
   .custom-footer-col-3 {
     max-width: 380px;
+  }
+
+  /* ---------- logo ---------- */
+  .custom-footer-logo {
+    display: inline-block;
+    margin: 0 0 22px;
+    line-height: 0;
+    text-decoration: none;
+  }
+
+  .custom-footer-logo img {
+    display: block;
+    width: {{ logo_w }}px;
+    max-width: 100%;
+    height: auto;
+  }
+
+  .custom-footer-logo--white img {
+    filter: brightness(0) invert(1);
+  }
+
+  .custom-footer-logo-text {
+    color: #ffffff;
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 1.2;
+    letter-spacing: 0.5px;
   }
 
   .custom-footer-heading {
@@ -84,7 +122,7 @@
   .custom-footer-link-underline:hover {
     color: #ffffff;
     cursor:pointer;
-    
+
   }
 
   .custom-footer-socials {
@@ -146,9 +184,17 @@
 
 <footer class="custom-footer-section">
   <div class="custom-footer-container">
-    
-    <!-- Column 1: Company Overview -->
+
+    <!-- Column 1: Logo + Company Overview -->
     <div class="custom-footer-col custom-footer-col-1">
+      <a href="{{ routes.root_url }}" class="custom-footer-logo{% if section.settings.logo_white %} custom-footer-logo--white{% endif %}" aria-label="{{ shop.name | escape }} home">
+        {%- if footer_logo != blank -%}
+          {{ footer_logo | image_url: width: 600 | image_tag: loading: 'lazy', widths: '200, 300, 400, 600', sizes: '200px', alt: shop.name }}
+        {%- else -%}
+          <span class="custom-footer-logo-text">{{ shop.name }}</span>
+        {%- endif -%}
+      </a>
+
       {% comment %} <div class="custom-footer-heading">Company Overview</div> {% endcomment %}
       <ul class="custom-footer-links">
         {% comment %} <li><a href="/pages/about-us">About Us</a></li> {% endcomment %}
@@ -181,7 +227,7 @@
     <!-- Column 3: Contact Us -->
     <div class="custom-footer-col custom-footer-col-3">
       <div class="custom-footer-heading">Contact Us</div>
-      
+
       <p class="custom-footer-contact-p">Need help fast?</p>
       <p class="custom-footer-contact-p">
         <a href="https://wa.me/923273626163" target="_blank" class="custom-footer-link-underline">+923273626163</a>
@@ -189,14 +235,14 @@
       <p class="custom-footer-contact-p">This is AI WhatsApp number. Kindly DM.</p>
       <p class="custom-footer-contact-p">OR</p>
       <p class="custom-footer-contact-p">
-        Fill out <a href="/pages/contact" class="custom-footer-link-underline">our form</a> or email 
+        Fill out <a href="/pages/contact" class="custom-footer-link-underline">our form</a> or email
         <a href="mailto:contact@sheene.shop" class="custom-footer-link-underline">contact@sheene.shop</a>
       </p>
-      
+
       <br>
-      
+
       <p class="custom-footer-contact-p">
-        For gifting inquiries, write to us at 
+        For gifting inquiries, write to us at
         <a href="mailto:contact@sheene.shop" class="custom-footer-link-underline">contact@sheene.shop</a>
       </p>
 
@@ -209,7 +255,7 @@
           <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
         </a>
         <a href="https://www.tiktok.com/@sheene.skincare" aria-label="TikTok" target="_blank">
-        <svg class="icon icon-tiktok" viewBox="0 0 20 20"><path fill="currentColor" d="M10.511 1.705h2.74s-.157 3.51 3.795 3.768v2.711s-2.114.129-3.796-1.158l.028 5.606A5.073 5.073 0 1 1 8.213 7.56h.708v2.785a2.298 2.298 0 1 0 1.618 2.205z"></path></svg>  
+        <svg class="icon icon-tiktok" viewBox="0 0 20 20"><path fill="currentColor" d="M10.511 1.705h2.74s-.157 3.51 3.795 3.768v2.711s-2.114.129-3.796-1.158l.028 5.606A5.073 5.073 0 1 1 8.213 7.56h.708v2.785a2.298 2.298 0 1 0 1.618 2.205z"></path></svg>
         </a>
       </div>
     </div>
@@ -227,7 +273,30 @@
 {% schema %}
 {
   "name": "Custom Exact Footer",
-  "settings": [],
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Khali ho to theme ka logo use hoga"
+    },
+    {
+      "type": "range",
+      "id": "logo_width",
+      "label": "Logo width",
+      "min": 80,
+      "max": 260,
+      "step": 10,
+      "unit": "px",
+      "default": 140
+    },
+    {
+      "type": "checkbox",
+      "id": "logo_white",
+      "label": "Logo ko white karo (dark footer ke liye)",
+      "default": true
+    }
+  ],
   "presets": [
     {
       "name": "Custom Exact Footer"
