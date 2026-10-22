@@ -59,7 +59,7 @@
   PERKS ROW
   ---------
   Ek card: upar progress bar + "Rs.X away from <agla reward>", neeche do
-  rewards ki rows (Free Delivery, Testers) aur ek "You're saving Rs X on this
+  rewards ki rows (Free Delivery, Testers, Dermatologist consultation) aur ek "You're saving Rs X on this
   product" row (compare-at price minus price, x quantity; bachat na ho to hide), har row green (unlocked) ya red (Add Rs.X more). Card ke
   neeche trust row (COD, Dermatologist, Returns). Threshold 0 ho to
   hamesha green ("On all orders").
@@ -170,6 +170,12 @@
 
   assign FREE_DELIVERY_LABEL = 'Free Delivery'
   assign TESTERS_LABEL = 'Free 5 ml tester 2 bottles'
+
+  # free dermatologist consultation: CONSULT_MIN = 0 karo to har order par
+  # green "On all orders"; SHOW_CONSULT = false se row hat jati hai
+  assign SHOW_CONSULT = true
+  assign CONSULT_MIN = 2500
+  assign CONSULT_LABEL = 'Free dermatologist consultation'
   assign SAVE_TEXT_BEFORE = "You're saving"
   assign SAVE_TEXT_AFTER = 'on this product'
   assign SAVE_PILL = 'Nice!'
@@ -1609,6 +1615,7 @@
     assign cart_cents = current_variant.price | default: 0
     assign fd_cents = FREE_DELIVERY_MIN | times: 100
     assign ts_cents = TESTERS_MIN | times: 100
+    assign dc_cents = CONSULT_MIN | times: 100
 
     assign has_real_options = false
     for option in product.options_with_values
@@ -1791,6 +1798,12 @@
           assign next_label = TESTERS_LABEL
         endif
       endif
+      if SHOW_CONSULT and dc_cents > cart_cents
+        if next_min == 0 or dc_cents < next_min
+          assign next_min = dc_cents
+          assign next_label = CONSULT_LABEL
+        endif
+      endif
       assign progress = 100
       if next_min > 0
         assign progress = cart_cents | times: 100 | divided_by: next_min
@@ -1820,6 +1833,13 @@
             <span class="sh-perk__label">{{ TESTERS_LABEL }}</span>
             <span class="sh-perk__status" data-sh-perk-status>{% if ts_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= ts_cents %}{{ PERK_MET_TEXT }}{% else %}Add {% assign gap = ts_cents | minus: cart_cents %}{{ gap | money_without_trailing_zeros }} more{% endif %}</span>
           </li>
+          {% if SHOW_CONSULT %}
+          <li class="sh-perk {% if cart_cents >= dc_cents %}is-met{% endif %}" data-sh-perk data-min="{{ dc_cents }}" data-label="{{ CONSULT_LABEL | escape }}">
+            <span class="sh-perk__icon" aria-hidden="true"><span class="sh-ico"><svg viewBox="0 0 24 24"><path d="M6 3.5v5a4 4 0 0 0 8 0v-5"/><path d="M4.5 3.5H7M13 3.5h2.5"/><path d="M10 12.5v2.5a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="11" r="2"/></svg></span></span>
+            <span class="sh-perk__label">{{ CONSULT_LABEL }}</span>
+            <span class="sh-perk__status" data-sh-perk-status>{% if dc_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= dc_cents %}{{ PERK_MET_TEXT }}{% else %}Add {% assign gap = dc_cents | minus: cart_cents %}{{ gap | money_without_trailing_zeros }} more{% endif %}</span>
+          </li>
+          {% endif %}
           {%- liquid
             assign was = current_variant.compare_at_price | default: 0
             assign save_cents = 0
