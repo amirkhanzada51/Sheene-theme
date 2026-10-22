@@ -51,6 +51,7 @@
     pp_refer_note       Single line text           optional
     expert_quote        Metaobject ref > expert_quote (single ya list,
                         list ho to pehli entry). pp_expert bhi chalega.
+    pp_video            File (Video)               Video popup (neeche dekho)
 
   ADMIN: METAOBJECT
     expert_quote     name, credentials, quote (multi line), photo (image)
@@ -104,6 +105,21 @@
   REVIEW STARS
   ------------
   Judge.me (reviews.rating) ya Loox. Click Judge.me widget tak le jata hai.
+
+  VIDEO POPUP
+  -----------
+  Admin: custom.pp_video (File, sirf Video). Khali ho to popup nahi banta.
+  Page khulne ke VIDEO_DELAY_SEC baad popup, video muted chalti hai
+  (browser ka rule), "Tap for sound" dabao to shuru se awaaz ke saath.
+  Har product ki video ek session mein sirf ek dafa. Video tab tak load
+  nahi hoti jab tak popup na khule, is liye page speed par asar nahi.
+  X, Esc ya bahar click se band. Koi aur popup (cart drawer, zoom) khula
+  ho to intezar karta hai.
+  Theme editor mein khud nahi khulta. Test ke liye URL ke aakhir mein
+  ?video=1 (ya &video=1) lagao, session wala rule ignore ho jata hai.
+    VIDEO_POPUP        false = band
+    VIDEO_DELAY_SEC    kitne second baad khule
+    VIDEO_SOUND_TEXT   awaaz wale button ka text
 {% endcomment %}
 
 
@@ -198,6 +214,11 @@
   # ================= EXPERT QUOTE =================
   assign EXPERT_UNDER_SLIDER = true
   assign EXPERT_MOBILE_UNDER_SLIDER = false
+
+  # ================= VIDEO POPUP =================
+  assign VIDEO_POPUP = true
+  assign VIDEO_DELAY_SEC = 4
+  assign VIDEO_SOUND_TEXT = 'Tap for sound'
 %}
 
 {% comment %} ================================================================
@@ -2141,6 +2162,166 @@
       }
     })();
   </script>
+
+  {% comment %} ---------- video popup ---------- {% endcomment %}
+  {%- liquid
+    assign sh_vid = nil
+    if VIDEO_POPUP
+      assign sh_vid = product.metafields.custom.pp_video.value
+    endif
+    assign sh_vid_ratio = sh_vid.aspect_ratio | default: 0.5625
+  -%}
+  {% if sh_vid != blank and sh_vid.media_type == 'video' %}
+    <dialog class="sh-vpop" data-sh-vpop="{{ product.id }}" aria-label="{{ product.title | escape }} video" style="--sh-vpop-r: {{ sh_vid_ratio }};">
+      <div class="sh-vpop__frame">
+        {{ sh_vid | video_tag: autoplay: false, loop: true, muted: true, controls: false, playsinline: true, preload: 'none', class: 'sh-vpop__video' }}
+        <button type="button" class="sh-vpop__close" data-sh-vpop-close aria-label="Close video">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+        <button type="button" class="sh-vpop__sound" data-sh-vpop-sound>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+          {{ VIDEO_SOUND_TEXT | escape }}
+        </button>
+      </div>
+    </dialog>
+
+    <style>
+      .sh-vpop {
+        padding: 0;
+        margin: auto;
+        border: 0;
+        background: transparent;
+        overflow: visible;
+        max-width: none;
+        max-height: none;
+        width: min(92vw, calc(86vh * var(--sh-vpop-r)), 900px);
+        width: min(92vw, calc(86dvh * var(--sh-vpop-r)), 900px);
+      }
+      .sh-vpop::backdrop { background: rgb(0 0 0 / 0.72); }
+      .sh-vpop__frame {
+        position: relative;
+        width: 100%;
+        aspect-ratio: var(--sh-vpop-r);
+        border-radius: 16px;
+        overflow: hidden;
+        background: #000;
+        box-shadow: 0 20px 60px rgb(0 0 0 / 0.35);
+      }
+      .sh-vpop__video,
+      .sh-vpop__frame video {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .sh-vpop__close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        z-index: 2;
+        width: 40px;
+        height: 40px;
+        padding: 0;
+        border: 0;
+        border-radius: 50%;
+        background: rgb(255 255 255 / 0.95);
+        color: #111;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
+      }
+      .sh-vpop__close svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; }
+      .sh-vpop__sound {
+        position: absolute;
+        left: 50%;
+        bottom: 16px;
+        z-index: 2;
+        transform: translateX(-50%);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.45rem;
+        padding: 0.65rem 1.1rem;
+        border: 0;
+        border-radius: 999px;
+        background: rgb(255 255 255 / 0.95);
+        color: #111;
+        font-family: var(--font-body--family, system-ui, sans-serif);
+        font-weight: 600;
+        font-size: 0.9rem;
+        line-height: 1;
+        white-space: nowrap;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgb(0 0 0 / 0.2);
+      }
+      .sh-vpop__sound svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+      .sh-vpop__sound[hidden] { display: none; }
+      html.sh-vpop-lock { overflow: hidden; }
+    </style>
+
+    <script>
+      (function () {
+        /* sheene-product-page page par do dafa render hota hai: sirf pehla popup rakho */
+        var all = document.querySelectorAll('[data-sh-vpop="{{ product.id }}"]');
+        var dlg = all[0];
+        for (var i = 1; i < all.length; i++) all[i].remove();
+        if (!dlg || dlg.dataset.shInit) return;
+        dlg.dataset.shInit = '1';
+        if (typeof dlg.showModal !== 'function') return;
+
+        var v = dlg.querySelector('video');
+        var soundBtn = dlg.querySelector('[data-sh-vpop-sound]');
+        if (!v) return;
+
+        var KEY = 'shVideoSeen:{{ product.id }}';
+        var DELAY = {{ VIDEO_DELAY_SEC | times: 1000 }};
+        var force = /[?&]video=1(&|$)/.test(window.location.search);
+        var inEditor = {{ request.design_mode | json }};
+        if (inEditor && !force) return;
+
+        var seen = false;
+        try { seen = sessionStorage.getItem(KEY) === '1'; } catch (e) {}
+        if (seen && !force) return;
+
+        var tries = 0;
+        function open() {
+          /* cart drawer, zoom ya koi aur dialog khula ho to thora ruko */
+          if (document.querySelector('dialog[open]')) {
+            if (tries++ < 6) setTimeout(open, 2000);
+            return;
+          }
+          try { sessionStorage.setItem(KEY, '1'); } catch (e) {}
+          v.muted = true;
+          v.controls = false;
+          if (soundBtn) soundBtn.hidden = false;
+          dlg.showModal();
+          document.documentElement.classList.add('sh-vpop-lock');
+          var p = v.play();
+          if (p && p.catch) p.catch(function () { v.controls = true; });
+        }
+
+        if (soundBtn) {
+          soundBtn.addEventListener('click', function () {
+            v.muted = false;
+            v.currentTime = 0;
+            v.controls = true;
+            soundBtn.hidden = true;
+            var p = v.play();
+            if (p && p.catch) p.catch(function () {});
+          });
+        }
+        dlg.querySelector('[data-sh-vpop-close]').addEventListener('click', function () { dlg.close(); });
+        /* bahar (kaale hisse par) click = band */
+        dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+        dlg.addEventListener('close', function () {
+          v.pause();
+          document.documentElement.classList.remove('sh-vpop-lock');
+        });
+
+        setTimeout(open, DELAY);
+      })();
+    </script>
+  {% endif %}
 {% endif %}
 
 
