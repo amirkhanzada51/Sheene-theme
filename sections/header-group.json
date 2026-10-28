@@ -77,7 +77,7 @@
         "announcement_Fj7MWe": {
           "type": "_announcement",
           "settings": {
-            "text": "🎁 ORDERS ABOVE RS 2,500: <strong>FREE DELIVERY</strong> + <strong>2 FREE 5ml TESTERS</strong>",
+            "text": "🎁 ORDERS RS 2,500 and ABOVE: <strong>FREE DELIVERY</strong> + <strong>2 FREE 5ml TESTERS</strong>",
             "link": "",
             "font": "var(--font-subheading--family)",
             "font_size": "0.75rem",
