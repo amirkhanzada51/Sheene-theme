@@ -169,6 +169,9 @@
   assign TESTERS_MIN = 2500
 
   assign FREE_DELIVERY_LABEL = 'Free Delivery'
+  # jis product/variant par "This is a physical product" off ho (Shopify ka
+  # digital product), us par Free Delivery row hamesha green, ye text ke saath
+  assign FREE_DELIVERY_DIGITAL_TEXT = 'On this product'
   assign TESTERS_LABEL = 'Free 5 ml tester 2 bottles'
 
   # free dermatologist consultation: CONSULT_MIN = 0 karo to har order par
@@ -1614,6 +1617,12 @@
     # perks ka hisaab: is product ki price (selected variant), cart nahi
     assign cart_cents = current_variant.price | default: 0
     assign fd_cents = FREE_DELIVERY_MIN | times: 100
+    assign fd_base_cents = fd_cents
+    assign fd_digital = false
+    if current_variant.requires_shipping == false
+      assign fd_cents = 0
+      assign fd_digital = true
+    endif
     assign ts_cents = TESTERS_MIN | times: 100
     assign dc_cents = CONSULT_MIN | times: 100
 
@@ -1823,10 +1832,10 @@
           <div class="sh-perks__bar" aria-hidden="true"><span class="sh-perks__fill" data-sh-perks-fill style="--sh-progress: {{ progress }}%;"></span></div>
         </div>
         <ul class="sh-perks__list">
-          <li class="sh-perk {% if cart_cents >= fd_cents %}is-met{% endif %}" data-sh-perk data-min="{{ fd_cents }}" data-label="{{ FREE_DELIVERY_LABEL | escape }}">
+          <li class="sh-perk {% if cart_cents >= fd_cents %}is-met{% endif %}" data-sh-perk data-sh-perk-delivery data-min="{{ fd_cents }}" data-base-min="{{ fd_base_cents }}"{% if fd_digital %} data-digital="1"{% endif %} data-label="{{ FREE_DELIVERY_LABEL | escape }}">
             <span class="sh-perk__icon" aria-hidden="true"><span class="sh-ico"><svg viewBox="0 0 24 24"><path d="M2.75 6.25h10.5v9.5H2.75z"/><path d="M13.25 9.75h3.4l3.6 3.4v2.6h-7z"/><circle cx="6.75" cy="17.75" r="1.6"/><circle cx="16.75" cy="17.75" r="1.6"/><path d="M8.35 17.75h6.8"/></svg></span></span>
             <span class="sh-perk__label">{{ FREE_DELIVERY_LABEL }}</span>
-            <span class="sh-perk__status" data-sh-perk-status>{% if fd_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= fd_cents %}{{ PERK_MET_TEXT }}{% else %}Add {% assign gap = fd_cents | minus: cart_cents %}{{ gap | money_without_trailing_zeros }} more{% endif %}</span>
+            <span class="sh-perk__status" data-sh-perk-status>{% if fd_digital %}{{ FREE_DELIVERY_DIGITAL_TEXT }}{% elsif fd_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= fd_cents %}{{ PERK_MET_TEXT }}{% else %}Add {% assign gap = fd_cents | minus: cart_cents %}{{ gap | money_without_trailing_zeros }} more{% endif %}</span>
           </li>
           <li class="sh-perk {% if cart_cents >= ts_cents %}is-met{% endif %}" data-sh-perk data-min="{{ ts_cents }}" data-label="{{ TESTERS_LABEL | escape }}">
             <span class="sh-perk__icon" aria-hidden="true"><span class="sh-ico"><svg viewBox="0 0 24 24"><path d="M9.5 3h5M10.5 3v3.5h3V3"/><path d="M9 6.5h6a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1z"/><path d="M8 12h8"/></svg></span></span>
@@ -1923,6 +1932,7 @@
         "price": {{ v.price | money | json }},
         "price_cents": {{ v.price | default: 0 }},
         "compare_cents": {{ v.compare_at_price | default: 0 }},
+        "requires_shipping": {{ v.requires_shipping | json }},
         "compare_at": {{ v.compare_at_price | money | json }},
         "on_sale": {% if v.compare_at_price > v.price %}true{% else %}false{% endif %},
         "media_index": {% if v.featured_media %}{{ v.featured_media.position | minus: 1 }}{% else %}null{% endif %}
@@ -1996,7 +2006,7 @@
         }
 
         root.dataset.price = variant.price_cents;
-        root.dispatchEvent(new CustomEvent('sheene:variant', { detail: { price: variant.price_cents, compare: variant.compare_cents } }));
+        root.dispatchEvent(new CustomEvent('sheene:variant', { detail: { price: variant.price_cents, compare: variant.compare_cents, shipping: variant.requires_shipping } }));
 
         document.querySelectorAll('form[action*="/cart/add"] [name="id"]').forEach(function (el) {
           el.value = variant.id;
@@ -2041,6 +2051,7 @@
       var MONEY_FORMAT = {{ shop.money_format | strip_html | json }};
       var MET_TEXT = {{ PERK_MET_TEXT | json }};
       var ALWAYS_TEXT = {{ PERK_ALWAYS_TEXT | json }};
+      var DIGITAL_TEXT = {{ FREE_DELIVERY_DIGITAL_TEXT | json }};
 
       /* ---- delivery estimate + countdown, Karachi time (UTC+5, no DST) ---- */
       var eta = root.querySelector('[data-sh-eta]');
@@ -2135,7 +2146,8 @@
           el.classList.toggle('is-met', met);
           var st = el.querySelector('[data-sh-perk-status]');
           if (!st) return;
-          if (min === 0) st.textContent = ALWAYS_TEXT;
+          if (el.dataset.digital === '1') st.textContent = DIGITAL_TEXT;
+          else if (min === 0) st.textContent = ALWAYS_TEXT;
           else if (met) st.textContent = MET_TEXT;
           else st.textContent = 'Add ' + money(Math.ceil((min - subtotal) / 100) * 100) + ' more';
         });
@@ -2164,6 +2176,13 @@
         root.addEventListener('sheene:variant', function (e) {
           if (e.detail && e.detail.price != null) unitPrice = e.detail.price;
           if (e.detail && e.detail.compare != null) unitCompare = e.detail.compare;
+          if (e.detail && typeof e.detail.shipping === 'boolean') {
+            var dRow = root.querySelector('[data-sh-perk-delivery]');
+            if (dRow) {
+              dRow.dataset.min = e.detail.shipping ? (dRow.dataset.baseMin || '0') : '0';
+              dRow.dataset.digital = e.detail.shipping ? '' : '1';
+            }
+          }
           update();
         });
         var qTimer;
