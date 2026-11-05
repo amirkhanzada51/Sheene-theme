@@ -96,6 +96,7 @@
         "announcement_y9CLHW",
         "announcement_Fj7MWe"
       ],
+      "disabled": true,
       "name": "t:names.announcement_bar",
       "settings": {
         "speed": 5,
