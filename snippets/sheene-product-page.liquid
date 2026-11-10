@@ -52,6 +52,8 @@
     expert_quote        Metaobject ref > expert_quote (single ya list,
                         list ho to pehli entry). pp_expert bhi chalega.
     pp_video            File (Video)               Video popup (neeche dekho)
+    pp_perks            List of metaobject refs    Perks card mein is product ka
+                        > pp_perk_options          apna offer (neeche PERKS ROW)
 
   ADMIN: METAOBJECT
     expert_quote     name, credentials, quote (multi line), photo (image)
@@ -65,6 +67,16 @@
   hamesha green ("On all orders").
   Product page par hisaab IS PRODUCT ki price x quantity se hota hai, cart
   se nahi. Variant ya quantity badlo to card khud update.
+  PER PRODUCT OFFER: product ke metafield pp_perks (metaobject pp_perk_options)
+  mein entries hon to testers wali default row ki jagah har entry ki apni row
+  aati hai. Har entry:
+    perk_testers_min    sirf number. 0 ya khali = isi product ke saath free
+                        ("On this product"), 1500 = Rs 1500 par unlock
+    perk_testers_label  row ka text
+  pp_perks khali ho to default TESTERS_MIN / TESTERS_LABEL wali row.
+  Default 2500 wala tester offer bhi us product par dikhana ho to us ki bhi
+  ek entry bana do (2500 | Free 5 ml tester 2 bottles).
+
   Cart drawer / cart page wala card alag snippet hai: sheene-cart-perks.
   Thresholds dono files mein same rakhna.
 
@@ -1626,6 +1638,16 @@
     assign ts_cents = TESTERS_MIN | times: 100
     assign dc_cents = CONSULT_MIN | times: 100
 
+    # ---- per product offer: metafield custom.pp_perks > pp_perk_options ----
+    assign custom_perks = product.metafields.custom.pp_perks.value
+    assign has_custom_perks = false
+    for cp in custom_perks
+      assign cp_label = cp.perk_testers_label.value | newline_to_br | replace: '<br />', ' ' | strip_newlines | strip
+      if cp_label != blank
+        assign has_custom_perks = true
+      endif
+    endfor
+
     assign has_real_options = false
     for option in product.options_with_values
       unless option.name == 'Title' and option.values.size == 1
@@ -1801,7 +1823,21 @@
         assign next_min = fd_cents
         assign next_label = FREE_DELIVERY_LABEL
       endif
-      if ts_cents > cart_cents
+      if has_custom_perks
+        for cp in custom_perks
+          assign cp_label = cp.perk_testers_label.value | newline_to_br | replace: '<br />', ' ' | strip_newlines | strip
+          if cp_label == blank
+            continue
+          endif
+          assign cp_cents = cp.perk_testers_min.value | remove: ',' | strip | plus: 0 | times: 100
+          if cp_cents > cart_cents
+            if next_min == 0 or cp_cents < next_min
+              assign next_min = cp_cents
+              assign next_label = cp_label
+            endif
+          endif
+        endfor
+      elsif ts_cents > cart_cents
         if next_min == 0 or ts_cents < next_min
           assign next_min = ts_cents
           assign next_label = TESTERS_LABEL
@@ -1837,11 +1873,27 @@
             <span class="sh-perk__label">{{ FREE_DELIVERY_LABEL }}</span>
             <span class="sh-perk__status" data-sh-perk-status>{% if fd_digital %}{{ FREE_DELIVERY_DIGITAL_TEXT }}{% elsif fd_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= fd_cents %}{{ PERK_MET_TEXT }}{% else %}Add {% assign gap = fd_cents | minus: cart_cents %}{{ gap | money_without_trailing_zeros }} more{% endif %}</span>
           </li>
+          {%- if has_custom_perks -%}
+            {%- for cp in custom_perks -%}
+              {%- liquid
+                assign cp_label = cp.perk_testers_label.value | newline_to_br | replace: '<br />', ' ' | strip_newlines | strip
+                assign cp_cents = cp.perk_testers_min.value | remove: ',' | strip | plus: 0 | times: 100
+              -%}
+              {%- if cp_label != blank %}
+          <li class="sh-perk {% if cart_cents >= cp_cents %}is-met{% endif %}" data-sh-perk data-min="{{ cp_cents }}"{% if cp_cents == 0 %} data-digital="1"{% endif %} data-label="{{ cp_label | escape }}">
+            <span class="sh-perk__icon" aria-hidden="true"><span class="sh-ico"><svg viewBox="0 0 24 24"><path d="M9.5 3h5M10.5 3v3.5h3V3"/><path d="M9 6.5h6a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1z"/><path d="M8 12h8"/></svg></span></span>
+            <span class="sh-perk__label">{{ cp_label }}</span>
+            <span class="sh-perk__status" data-sh-perk-status>{% if cp_cents == 0 %}{{ FREE_DELIVERY_DIGITAL_TEXT }}{% elsif cart_cents >= cp_cents %}{{ PERK_MET_TEXT }}{% else %}Add {% assign gap = cp_cents | minus: cart_cents %}{{ gap | money_without_trailing_zeros }} more{% endif %}</span>
+          </li>
+              {%- endif -%}
+            {%- endfor -%}
+          {%- else %}
           <li class="sh-perk {% if cart_cents >= ts_cents %}is-met{% endif %}" data-sh-perk data-min="{{ ts_cents }}" data-label="{{ TESTERS_LABEL | escape }}">
             <span class="sh-perk__icon" aria-hidden="true"><span class="sh-ico"><svg viewBox="0 0 24 24"><path d="M9.5 3h5M10.5 3v3.5h3V3"/><path d="M9 6.5h6a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1z"/><path d="M8 12h8"/></svg></span></span>
             <span class="sh-perk__label">{{ TESTERS_LABEL }}</span>
             <span class="sh-perk__status" data-sh-perk-status>{% if ts_cents == 0 %}{{ PERK_ALWAYS_TEXT }}{% elsif cart_cents >= ts_cents %}{{ PERK_MET_TEXT }}{% else %}Add {% assign gap = ts_cents | minus: cart_cents %}{{ gap | money_without_trailing_zeros }} more{% endif %}</span>
           </li>
+          {%- endif %}
           {% if SHOW_CONSULT %}
           <li class="sh-perk {% if cart_cents >= dc_cents %}is-met{% endif %}" data-sh-perk data-min="{{ dc_cents }}" data-label="{{ CONSULT_LABEL | escape }}">
             <span class="sh-perk__icon" aria-hidden="true"><span class="sh-ico"><svg viewBox="0 0 24 24"><path d="M6 3.5v5a4 4 0 0 0 8 0v-5"/><path d="M4.5 3.5H7M13 3.5h2.5"/><path d="M10 12.5v2.5a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="11" r="2"/></svg></span></span>
