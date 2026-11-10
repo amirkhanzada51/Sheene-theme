@@ -23,6 +23,20 @@
   Hisaab cart ke subtotal par (discount se pehle), jaise Shopify discount
   ki minimum check karta hai. Thresholds product page wale hi rakhna.
 
+  PER PRODUCT OFFER (product metafield custom.pp_perks > pp_perk_options)
+  -----------------------------------------------------------------------
+  Cart mein jin products ke pp_perks mein entries hain, un sab ki rows
+  aati hain (same text wali row ek hi dafa). Aisa koi product na ho to
+  default TESTERS_MIN / TESTERS_LABEL wali row. Product page jaisa hi.
+    perk_testers_min    sirf number. 0 ya khali = product cart mein hai to
+                        unlocked, 1500 = cart Rs 1500 par unlock
+    perk_testers_label  row ka text
+
+  FREE DELIVERY
+  -------------
+  Cart mein sirf non-physical (free delivery wale) products hon to
+  delivery row unlocked.
+
   SAVINGS ROW
   -----------
   Teesri row ab "You're saving Rs X on this order" dikhati hai. X =
@@ -42,35 +56,66 @@
   assign SAVE_TEXT_AFTER = 'on this order'
   assign SAVE_PILL = 'Nice!'
   assign PERK_MET_TEXT = 'Unlocked'
-  assign PERK_ALWAYS_TEXT = 'On all orders'
+  assign PERK_ALWAYS_TEXT = 'Unlocked'
   assign PERKS_AWAY_TEXT = 'away from'
   assign PERKS_ALL_TEXT = 'All rewards unlocked on your order'
 
   assign sub = cart.items_subtotal_price | default: 0
   assign fd = FREE_DELIVERY_MIN | times: 100
-  assign ts = TESTERS_MIN | times: 100
+
+  # cart mein sirf free delivery wale products hon to delivery unlocked
+  if cart.requires_shipping == false
+    assign fd = 0
+  endif
+
+  # rows: pehle delivery, phir products ke apne offers (ya default testers)
+  assign mins_csv = fd | append: ''
+  assign labels_psv = FREE_DELIVERY_LABEL
+  assign seen = '|'
+  assign has_custom = false
+  for item in cart.items
+    assign cps = item.product.metafields.custom.pp_perks.value
+    for cp in cps
+      assign cp_label = cp.perk_testers_label.value | newline_to_br | replace: '<br />', ' ' | strip_newlines | strip | remove: '|'
+      if cp_label == blank
+        continue
+      endif
+      assign seen_key = '|' | append: cp_label | append: '|'
+      if seen contains seen_key
+        continue
+      endif
+      assign seen = seen | append: cp_label | append: '|'
+      assign has_custom = true
+      assign cp_cents = cp.perk_testers_min.value | remove: ',' | strip | plus: 0 | times: 100
+      assign mins_csv = mins_csv | append: ',' | append: cp_cents
+      assign labels_psv = labels_psv | append: '|' | append: cp_label
+    endfor
+  endfor
+  unless has_custom
+    assign ts = TESTERS_MIN | times: 100
+    assign mins_csv = mins_csv | append: ',' | append: ts
+    assign labels_psv = labels_psv | append: '|' | append: TESTERS_LABEL
+  endunless
+  assign perk_mins = mins_csv | split: ','
+  assign perk_labels = labels_psv | split: '|'
 
   # agla reward jo abhi lock hai (sab se kam threshold)
   assign next_min = 0
   assign next_label = ''
-  if fd > sub
-    assign next_min = fd
-    assign next_label = FREE_DELIVERY_LABEL
-  endif
-  if ts > sub
-    if next_min == 0 or ts < next_min
-      assign next_min = ts
-      assign next_label = TESTERS_LABEL
+  for m in perk_mins
+    assign mv = m | times: 1
+    if mv > sub
+      if next_min == 0 or mv < next_min
+        assign next_min = mv
+        assign next_label = perk_labels[forloop.index0]
+      endif
     endif
-  endif
+  endfor
 
   assign progress = 100
   if next_min > 0
     assign progress = sub | times: 100 | divided_by: next_min
   endif
-
-  assign perk_mins = fd | append: ',' | append: ts | split: ','
-  assign perk_labels = FREE_DELIVERY_LABEL | append: '|' | append: TESTERS_LABEL | split: '|'
 
   # ---- kul bachat ----
   assign saved = 0
@@ -107,7 +152,7 @@
         <span class="sh-cp__icon" aria-hidden="true">
           {%- case forloop.index -%}
             {%- when 1 -%}<svg viewBox="0 0 24 24"><path d="M2.75 6.25h10.5v9.5H2.75z"/><path d="M13.25 9.75h3.4l3.6 3.4v2.6h-7z"/><circle cx="6.75" cy="17.75" r="1.6"/><circle cx="16.75" cy="17.75" r="1.6"/><path d="M8.35 17.75h6.8"/></svg>
-            {%- when 2 -%}<svg viewBox="0 0 24 24"><path d="M9.5 3h5M10.5 3v3.5h3V3"/><path d="M9 6.5h6a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1z"/><path d="M8 12h8"/></svg>
+            {%- else -%}<svg viewBox="0 0 24 24"><path d="M9.5 3h5M10.5 3v3.5h3V3"/><path d="M9 6.5h6a1 1 0 0 1 1 1V20a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1V7.5a1 1 0 0 1 1-1z"/><path d="M8 12h8"/></svg>
           {%- endcase -%}
         </span>
         <span class="sh-cp__label">{{ label }}</span>
